@@ -2,6 +2,21 @@
 
 All notable changes to RiseTogether are documented in this file.
 
+## [Elimination of Dark Blue Strips & Refined Active States] - 2026-09-15
+
+### Fixed
+- **Dark Blue Background Discolorations**:
+  - Removed dark blue-gray hex color overrides (`#111827`, `#0b0f19`, `#172033`) in `tailwind.config.js` and replaced with neutral dark tokens (`#121212`, `#080808`, `#171717`).
+  - Switched body and layout root backgrounds from `bg-gray-900` to pure `bg-black` in `index.html`, `AppLayout.tsx`, `LeaderboardPage.tsx`, and `ProfilePage.tsx`.
+  - Removed fixed ambient colored background spots that produced blue/orange atmospheric bleed above and below page sections.
+
+### Changed
+- **Refined Active Element Styles**:
+  - Navbar desktop and mobile navigation links now use a clean, sophisticated neutral highlight (`text-white bg-neutral-900 border border-neutral-800 font-semibold`) when active, completely eliminating harsh solid orange block backgrounds.
+  - Active tabs (`Tabs.tsx`) and category filter pills (`HomePage.tsx`) now use a sleek dark neutral highlight (`bg-neutral-800 text-white border border-neutral-700 font-semibold shadow-sm`).
+
+---
+
 ## [Pure Jet Black Theme, Sharp Minimal Radius & Layout Alignment] - 2026-09-15
 
 ### Added
