@@ -61,7 +61,7 @@ export const Tabs: React.FC<TabsProps> = ({
   }
 
   return (
-    <div className={`flex flex-wrap gap-2 p-1 bg-gray-900/60 rounded-xl border border-gray-800 ${className}`}>
+    <div className={`flex flex-wrap gap-2 p-1 bg-neutral-950/80 rounded-[3px] border border-neutral-800 ${className}`}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
@@ -69,16 +69,16 @@ export const Tabs: React.FC<TabsProps> = ({
             key={tab.id}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={`flex items-center rounded-lg font-medium transition-all cursor-pointer ${sizeStyles[size]} ${
+            className={`flex items-center rounded-[3px] font-medium transition-all cursor-pointer ${sizeStyles[size]} ${
               isActive
                 ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20 font-semibold'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/60'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-neutral-900'
             }`}
           >
             {tab.icon}
             <span>{tab.label}</span>
             {typeof tab.count === 'number' && (
-              <span className={`ml-1.5 px-1.5 py-0.2 rounded-full text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-gray-800 text-gray-400'}`}>
+              <span className={`ml-1.5 px-1.5 py-0.2 rounded-[2px] text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-neutral-800 text-gray-400'}`}>
                 {tab.count}
               </span>
             )}

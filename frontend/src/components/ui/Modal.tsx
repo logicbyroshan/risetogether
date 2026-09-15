@@ -47,17 +47,17 @@ export const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal Container */}
-      <div className={`relative w-full ${maxWidthClasses[maxWidth]} bg-gray-900 border border-orange-500/30 rounded-2xl shadow-2xl shadow-black/80 z-10 overflow-hidden my-auto`}>
+      <div className={`relative w-full ${maxWidthClasses[maxWidth]} bg-neutral-950 border border-neutral-800 rounded-[3px] shadow-2xl shadow-black/80 z-10 overflow-hidden my-auto`}>
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-gray-900/50">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800 bg-neutral-900/60">
             <h3 className="text-lg font-bold text-gray-100 font-rajdhani tracking-wide flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-orange-500 shadow-glow-orange" />
+              <span className="w-2 h-2 rounded-[1px] bg-orange-500 shadow-glow-orange" />
               {title}
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition-colors"
+              className="text-gray-400 hover:text-white p-1 rounded-[3px] hover:bg-neutral-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

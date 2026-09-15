@@ -61,7 +61,7 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-gray-950/90 backdrop-blur-md border-b border-orange-500/20 shadow-xl'
+          ? 'bg-black/95 backdrop-blur-md border-b border-neutral-800 shadow-2xl'
           : 'bg-transparent border-b border-transparent'
       }`}
     >
@@ -69,7 +69,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-[3px] bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
@@ -86,10 +86,10 @@ export const Navbar: React.FC = () => {
           <nav className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-[3px] text-sm font-medium transition-colors ${
                 location.pathname === '/'
                   ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
+                  : 'text-gray-300 hover:text-white hover:bg-neutral-900'
               }`}
             >
               Home
@@ -100,10 +100,10 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setCommunityDropdownOpen(!communityDropdownOpen)}
                 onBlur={() => setTimeout(() => setCommunityDropdownOpen(false), 200)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-[3px] text-sm font-medium transition-colors cursor-pointer ${
                   location.pathname.startsWith('/community') && location.pathname !== '/community/resources'
                     ? 'text-orange-400 bg-orange-500/10'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
+                    : 'text-gray-300 hover:text-white hover:bg-neutral-900'
                 }`}
               >
                 <span>Community</span>
@@ -111,14 +111,14 @@ export const Navbar: React.FC = () => {
               </button>
 
               {communityDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 glassmorphism rounded-2xl p-2 shadow-2xl z-50 animate-slide-in">
+                <div className="absolute top-full left-0 mt-2 w-64 bg-neutral-950 border border-neutral-800 rounded-[3px] p-2 shadow-2xl z-50 animate-slide-in">
                   {communityLinks.map((item) => (
                     <Link
                       key={item.path}
                       to={item.path}
-                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-800/80 transition-colors"
+                      className="flex items-start gap-3 p-3 rounded-[3px] hover:bg-neutral-900 transition-colors"
                     >
-                      <div className="p-2 rounded-lg bg-gray-800/90 border border-gray-700/50">
+                      <div className="p-2 rounded-[3px] bg-neutral-900 border border-neutral-800">
                         {item.icon}
                       </div>
                       <div>
@@ -133,10 +133,10 @@ export const Navbar: React.FC = () => {
 
             <Link
               to="/feed"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-[3px] text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 location.pathname.startsWith('/feed')
                   ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
+                  : 'text-gray-300 hover:text-white hover:bg-neutral-900'
               }`}
             >
               <Rss className="w-3.5 h-3.5" />
@@ -145,10 +145,10 @@ export const Navbar: React.FC = () => {
 
             <Link
               to="/community/resources"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-[3px] text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 location.pathname === '/community/resources'
                   ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
+                  : 'text-gray-300 hover:text-white hover:bg-neutral-900'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -163,7 +163,7 @@ export const Navbar: React.FC = () => {
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   onBlur={() => setTimeout(() => setUserDropdownOpen(false), 200)}
-                  className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-gray-800/80 border border-orange-500/30 hover:border-orange-500/60 transition-all cursor-pointer"
+                  className="flex items-center gap-2.5 p-1.5 pr-3 rounded-[3px] bg-neutral-900 border border-neutral-800 hover:border-orange-500/50 transition-all cursor-pointer"
                 >
                   <Avatar
                     src={user.profile.profile_pic}
@@ -176,15 +176,15 @@ export const Navbar: React.FC = () => {
                 </button>
 
                 {userDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-56 glassmorphism rounded-2xl p-2 shadow-2xl z-50 animate-slide-in">
-                    <div className="px-3 py-2 border-b border-gray-800 mb-1">
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-neutral-950 border border-neutral-800 rounded-[3px] p-2 shadow-2xl z-50 animate-slide-in">
+                    <div className="px-3 py-2 border-b border-neutral-800 mb-1">
                       <p className="text-xs text-gray-400">Signed in as</p>
                       <p className="text-sm font-bold text-orange-400 truncate">{user.email}</p>
                     </div>
 
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800/70 rounded-xl transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-neutral-900 rounded-[3px] transition-colors"
                     >
                       <UserIcon className="w-4 h-4 text-orange-400" />
                       <span>My Profile</span>
@@ -192,7 +192,7 @@ export const Navbar: React.FC = () => {
 
                     <Link
                       to="/settings"
-                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800/70 rounded-xl transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-neutral-900 rounded-[3px] transition-colors"
                     >
                       <Settings className="w-4 h-4 text-orange-400" />
                       <span>Settings</span>
@@ -203,18 +203,18 @@ export const Navbar: React.FC = () => {
                         href="/admin/"
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-2.5 px-3 py-2 text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-950/40 rounded-xl transition-colors"
+                        className="flex items-center gap-2.5 px-3 py-2 text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-950/40 rounded-[3px] transition-colors"
                       >
                         <Shield className="w-4 h-4 text-amber-400" />
                         <span>Django Admin</span>
                       </a>
                     )}
 
-                    <div className="border-t border-gray-800 my-1" />
+                    <div className="border-t border-neutral-800 my-1" />
 
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 rounded-[3px] transition-colors cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Log Out</span>
@@ -242,7 +242,7 @@ export const Navbar: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/80 focus:outline-none cursor-pointer"
+              className="p-2 rounded-[3px] text-gray-400 hover:text-white hover:bg-neutral-900 focus:outline-none cursor-pointer"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -252,69 +252,69 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden glassmorphism border-t border-orange-500/20 px-4 pt-4 pb-6 space-y-3">
+        <div className="md:hidden bg-neutral-950 border-t border-neutral-800 px-4 pt-4 pb-6 space-y-3">
           <Link
             to="/"
-            className="block px-3 py-2 rounded-xl text-base font-medium text-gray-200 hover:bg-gray-800"
+            className="block px-3 py-2 rounded-[3px] text-base font-medium text-gray-200 hover:bg-neutral-900"
           >
             Home
           </Link>
-          <div className="border-t border-gray-800 pt-2">
+          <div className="border-t border-neutral-800 pt-2">
             <p className="px-3 text-xs font-semibold text-orange-400 uppercase tracking-wider mb-1">
               Community
             </p>
             <Link
               to="/community/blogs"
-              className="block px-3 py-2 rounded-xl text-sm text-gray-300 hover:bg-gray-800"
+              className="block px-3 py-2 rounded-[3px] text-sm text-gray-300 hover:bg-neutral-900"
             >
               Blogs & Articles
             </Link>
             <Link
               to="/community/projects"
-              className="block px-3 py-2 rounded-xl text-sm text-gray-300 hover:bg-gray-800"
+              className="block px-3 py-2 rounded-[3px] text-sm text-gray-300 hover:bg-neutral-900"
             >
               Project Showcase
             </Link>
             <Link
               to="/community/activities"
-              className="block px-3 py-2 rounded-xl text-sm text-gray-300 hover:bg-gray-800"
+              className="block px-3 py-2 rounded-[3px] text-sm text-gray-300 hover:bg-neutral-900"
             >
               Events & Activities
             </Link>
           </div>
           <Link
             to="/feed"
-            className="block px-3 py-2 rounded-xl text-base font-medium text-gray-200 hover:bg-gray-800"
+            className="block px-3 py-2 rounded-[3px] text-base font-medium text-gray-200 hover:bg-neutral-900"
           >
             Social Feed
           </Link>
           <Link
             to="/community/resources"
-            className="block px-3 py-2 rounded-xl text-base font-medium text-gray-200 hover:bg-gray-800"
+            className="block px-3 py-2 rounded-[3px] text-base font-medium text-gray-200 hover:bg-neutral-900"
           >
             Resources Library
           </Link>
 
-          <div className="border-t border-gray-800 pt-3">
+          <div className="border-t border-neutral-800 pt-3">
             {isAuthenticated && user ? (
               <div className="space-y-2">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-orange-400 bg-orange-500/10"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-[3px] text-sm font-medium text-orange-400 bg-orange-500/10"
                 >
                   <Avatar src={user.profile.profile_pic} name={user.username} size="xs" />
                   <span>My Profile (@{user.username})</span>
                 </Link>
                 <Link
                   to="/settings"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:bg-gray-800"
+                  className="flex items-center gap-2 px-3 py-2 rounded-[3px] text-sm font-medium text-gray-300 hover:bg-neutral-900"
                 >
                   <Settings className="w-4 h-4" />
                   <span>Settings</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-950/40 cursor-pointer"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-[3px] text-sm font-medium text-rose-400 hover:bg-rose-950/40 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Log Out</span>
