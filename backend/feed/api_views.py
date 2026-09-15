@@ -1,32 +1,29 @@
 from django.shortcuts import get_object_or_404
-from django.db.models import Q, Count
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions, generics
+from rest_framework import status, permissions
 from rest_framework.pagination import PageNumberPagination
 
-from .models import (
-    FeedPost,
-    PostComment,
-    SavedPostNew,
-)
-from .serializers import (
-    FeedPostSerializer,
-    PostCommentSerializer,
-)
+from .models import FeedPost, PostComment
+from .serializers import FeedPostSerializer, PostCommentSerializer
 from .services import (
     create_feed_post_service,
     toggle_post_like_service,
     toggle_post_save_service,
     toggle_comment_like_service,
 )
+from .selectors import (
+    get_feed_posts_queryset,
+    get_post_comments_queryset,
+    get_saved_posts_for_user,
+)
 from common.permissions import IsOwnerOrReadOnly
 
 
 class FeedPostPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 12
     page_size_query_param = "page_size"
-    max_page_size = 30
+    max_page_size = 50
 
 
 class FeedPostListCreateAPIView(APIView):
@@ -36,41 +33,17 @@ class FeedPostListCreateAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        queryset = FeedPost.objects.filter(is_active=True).select_related(
-            "author", "author__profile"
-        ).prefetch_related(
-            "media_files", "project_links", "post_likes", "post_comments"
-        )
-
         filter_mode = request.query_params.get("filter", "all")
-        if filter_mode == "trending":
-            # Order by engagement (likes + comments + views)
-            queryset = queryset.annotate(
-                engagement_score=Count("post_likes") + Count("post_comments")
-            ).order_by("-engagement_score", "-created_at")
-        else:
-            queryset = queryset.order_by("-is_pinned", "-created_at")
-
-        # Filter by post type (normal, blog, project)
         post_type = request.query_params.get("post_type")
-        if post_type and post_type != "all":
-            queryset = queryset.filter(post_type=post_type)
-
-        # Filter by author
         author = request.query_params.get("author")
-        if author:
-            queryset = queryset.filter(author__username__iexact=author)
-
-        # Filter by search
         search = request.query_params.get("search")
-        if search:
-            queryset = queryset.filter(
-                Q(normal_content__icontains=search) |
-                Q(blog_title__icontains=search) |
-                Q(blog_content__icontains=search) |
-                Q(project_title__icontains=search) |
-                Q(project_content__icontains=search)
-            )
+
+        queryset = get_feed_posts_queryset(
+            filter_mode=filter_mode,
+            post_type=post_type,
+            author_username=author,
+            search=search,
+        )
 
         paginator = FeedPostPagination()
         page = paginator.paginate_queryset(queryset, request)
@@ -197,14 +170,8 @@ class PostCommentListCreateAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk):
-        post = get_object_or_404(FeedPost, pk=pk, is_active=True)
-        comments = PostComment.objects.filter(
-            post=post, parent__isnull=True
-        ).select_related(
-            "author", "author__profile"
-        ).prefetch_related(
-            "replies", "replies__author", "replies__author__profile", "comment_likes_new"
-        ).order_by("created_at")
+        get_object_or_404(FeedPost, pk=pk, is_active=True)
+        comments = get_post_comments_queryset(post_id=pk)
 
         serializer = PostCommentSerializer(comments, many=True, context={"request": request})
         return Response({
@@ -291,13 +258,7 @@ class SavedPostsListAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        saved_items = SavedPostNew.objects.filter(user=request.user).select_related(
-            "post", "post__author", "post__author__profile"
-        ).prefetch_related(
-            "post__media_files", "post__project_links", "post__post_likes", "post__post_comments"
-        ).order_by("-saved_at")
-
-        posts = [item.post for item in saved_items if item.post.is_active]
+        posts = get_saved_posts_for_user(request.user)
         paginator = FeedPostPagination()
         page = paginator.paginate_queryset(posts, request)
         serializer = FeedPostSerializer(page, many=True, context={"request": request})
