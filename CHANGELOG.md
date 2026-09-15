@@ -2,6 +2,27 @@
 
 All notable changes to RiseTogether are documented in this file.
 
+## [DSA Gamification, Leaderboard Landing Page & Coder Social UI] - 2026-09-15
+
+### Added
+- **Grind 500 / Leaderboard Landing Page (`frontend/src/pages/HomePage.tsx`)**:
+  - Replaced landing page with 1:1 reproduction of the Grind 500 Leaderboard from `E:\E\tEST\grind-500`.
+  - Top 3 Players Showcase podium layout (Center #1 Main Player elevated with gold glow, #2 and #3 cards with top avatar badges, trophy rank badges, and diamond total points).
+  - Dynamic timeframe tabs (`Overall`, `Daily`, `Weekly`, `Monthly`) connected to live backend rankings.
+  - User ranking banner (`"You are ranked X out of Y users"`) and styled leaderboard table for rank 4+.
+- **Coder Profile & Problem Solving Social UI (`frontend/src/pages/ProfilePage.tsx`)**:
+  - Tablet-style container with dark IDE color palette (`#1a1b26`, `#24283b`, `#31354b`).
+  - Profile header with custom cover photo, 275px avatar with border, user bio, rank stats (`M Rank`, `W Rank`, `D Rank`), and quick action buttons.
+  - `Problems` tab with `CodingPostCard` items featuring 3-dot options dropdown, difficulty & time complexity badges, dark IDE code editor window (`Fira Code` monospace), star point indicators, and programming language badges.
+  - `Leaderboard` tab with full rankings list and glowing self highlight `(You)`.
+  - `CreateCodingPostModal` with real-time programming language auto-detection (Python, Java, C++, TypeScript, JavaScript) and daily 3-post limit validation.
+- **DSA & Leaderboard Backend Domain (`backend/dsa/`)**:
+  - `Leaderboard` and `CodingProblemPost` models.
+  - Gamified point scoring engine (`services.py`: difficulty points + time complexity points + daily activity bonus + streak bonuses at 7/15/30/60/90 days).
+  - Language detection, point recalculation on post update/deletion, and automatic daily/weekly/monthly rank resets.
+  - DRF endpoints: `GET /api/dsa/leaderboard/?timeframe=...`, `GET /api/dsa/user-stats/`, and CRUD `/api/dsa/coding-posts/`.
+  - Comprehensive unit test suite with 100% pass rate.
+
 ## [Product Unification & Design System Release] - 2026-09-15
 
 ### Added

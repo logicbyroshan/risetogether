@@ -106,6 +106,12 @@ All DRF API exceptions are caught and normalized by `config.exceptions.custom_ex
 │   ├── comments/<id>/like/    POST    Toggle like on comment
 │   └── saved/                 GET     List bookmarked posts for current user
 │
+├── dsa/
+│   ├── leaderboard/           GET     Get top-3 podium and overall/daily/weekly/monthly rankings
+│   ├── user-stats/            GET     Get authenticated user's daily/weekly/monthly ranks and streaks
+│   └── coding-posts/          GET/POST List coding problem solutions / submit problem (max 3/day)
+│       └── <id>/              GET/PUT/DEL Retrieve, update, or delete coding problem post
+│
 └── (public)/
     ├── contact/               POST    Submit contact inquiry
     ├── newsletter/subscribe/  POST    Subscribe email to newsletter
