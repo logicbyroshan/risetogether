@@ -8,6 +8,7 @@ import { publicApi } from '../api/public';
 import { communityApi } from '../api/community';
 import { Blog, Project, Activity } from '../types/community';
 import { SiteContentResponse } from '../types/public';
+import { ProjectCard } from '../components/community/ProjectCard';
 import {
   Sparkles,
   ArrowRight,
@@ -42,6 +43,9 @@ import {
   ShieldCheck,
   Briefcase,
   Target,
+  Star,
+  GitPullRequest,
+  Heart,
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -55,7 +59,6 @@ export const HomePage: React.FC = () => {
   const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(null);
   const [activeResourceCategory, setActiveResourceCategory] = useState<string>('all');
   const [activeQuarterMonth, setActiveQuarterMonth] = useState<number>(1);
-  const [activeWorkstationTab, setActiveWorkstationTab] = useState<'manifest' | 'engine' | 'matrix'>('manifest');
 
   // Contact Form state
   const [contactName, setContactName] = useState('');
@@ -67,7 +70,7 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     publicApi.getSiteContent().then(setSiteData).catch(console.error);
     communityApi.getBlogs({ page: 1 }).then((res) => setFeaturedBlogs(res.results.slice(0, 3))).catch(console.error);
-    communityApi.getProjects({ page: 1 }).then((res) => setFeaturedProjects(res.results.slice(0, 3))).catch(console.error);
+    communityApi.getProjects({ page: 1 }).then((res) => setFeaturedProjects(res.results.slice(0, 4))).catch(console.error);
     communityApi.getActivities({ page: 1 }).then((res) => setFeaturedActivities(res.results.slice(0, 3))).catch(console.error);
   }, []);
 
@@ -102,7 +105,7 @@ export const HomePage: React.FC = () => {
     activitiesCount: 12,
   };
 
-  const faqs = siteData?.faqs || [
+  const defaultFaqs = [
     {
       id: 1,
       question: 'What is RiseTogether?',
@@ -123,7 +126,154 @@ export const HomePage: React.FC = () => {
       question: 'Can I showcase my own projects and write blogs?',
       answer: 'Yes! Registered members can publish technical guides to the blog index, showcase GitHub repositories with live links, and share code snippets directly on the social feed.',
     },
+    {
+      id: 5,
+      question: 'Are there peer mentorship and campus collaboration programs?',
+      answer: 'Absolutely! RiseTogether connects senior students and industry alumni with beginners through weekly code reviews, mock technical interviews, and collaborative hackathon squads across 40+ engineering colleges.',
+    },
+    {
+      id: 6,
+      question: 'How do project sprint milestones work?',
+      answer: 'Community project squads form around open-source ideas, commit to 4-week build sprints, receive architectural guidance from community maintainers, and showcase their applications during National Demo Day.',
+    },
   ];
+
+  const faqs = (siteData?.faqs && siteData.faqs.length > 0) ? siteData.faqs : defaultFaqs;
+
+  const fallbackProjects: Project[] = [
+    {
+      id: 1,
+      title: 'Smart Study Assistant',
+      description: 'An AI-powered study companion that personalizes learning experiences, tracks student mastery, and provides automated coding solution recommendations.',
+      details: 'Full ML recommendation engine with vector search and interactive flashcards.',
+      category: { id: 1, name: 'AI / Machine Learning' },
+      thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80',
+      skills: [
+        { id: 1, name: 'Python', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 2, name: 'PyTorch', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 3, name: 'FastAPI', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 4, name: 'React', icon_type: 'icon', icon_class: null, icon_image: null },
+      ],
+      project_type: 'team',
+      project_type_display: 'Team Project',
+      leader: {
+        id: 101,
+        username: 'aarav_ai',
+        email: 'aarav@risetogether.dev',
+        role: 'member',
+        role_display: 'Core Member',
+        profile_pic: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+        activity_score: 420,
+        date_joined: '2024-01-01',
+      },
+      members: [],
+      special_highlight: 'Featured Project',
+      github_link: 'https://github.com',
+      live_link: 'https://example.com',
+      created_at: '2025-01-15T10:00:00Z',
+      images: [],
+    },
+    {
+      id: 2,
+      title: 'EcoTrack Mobile Platform',
+      description: 'A sustainability-focused mobile app helping college students calculate carbon footprints and discover eco-friendly transit and dining alternatives.',
+      details: 'Cross platform mobile application with real-time location mapping and student challenges.',
+      category: { id: 2, name: 'Mobile Development' },
+      thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80',
+      skills: [
+        { id: 5, name: 'React Native', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 6, name: 'Expo', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 7, name: 'Firebase', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 8, name: 'TailwindCSS', icon_type: 'icon', icon_class: null, icon_image: null },
+      ],
+      project_type: 'team',
+      project_type_display: 'Team Project',
+      leader: {
+        id: 102,
+        username: 'priya_dev',
+        email: 'priya@risetogether.dev',
+        role: 'member',
+        role_display: 'Core Member',
+        profile_pic: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+        activity_score: 380,
+        date_joined: '2024-01-15',
+      },
+      members: [],
+      special_highlight: 'Hackathon Winner',
+      github_link: 'https://github.com',
+      live_link: 'https://example.com',
+      created_at: '2025-02-01T14:30:00Z',
+      images: [],
+    },
+    {
+      id: 3,
+      title: 'DevPulse Open-Source Dashboard',
+      description: 'A unified developer metrics and contribution tracking dashboard designed to monitor GitHub sprint activities and developer scores.',
+      details: 'High-performance developer portal integrated with GitHub Webhooks and real-time activity timelines.',
+      category: { id: 3, name: 'Web Application' },
+      thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80',
+      skills: [
+        { id: 9, name: 'React 19', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 10, name: 'TypeScript', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 11, name: 'Django', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 12, name: 'PostgreSQL', icon_type: 'icon', icon_class: null, icon_image: null },
+      ],
+      project_type: 'team',
+      project_type_display: 'Team Project',
+      leader: {
+        id: 103,
+        username: 'rohan_code',
+        email: 'rohan@risetogether.dev',
+        role: 'member',
+        role_display: 'Core Member',
+        profile_pic: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
+        activity_score: 510,
+        date_joined: '2023-11-20',
+      },
+      members: [],
+      special_highlight: 'Open Source',
+      github_link: 'https://github.com',
+      live_link: 'https://example.com',
+      created_at: '2025-02-15T09:15:00Z',
+      images: [],
+    },
+    {
+      id: 4,
+      title: 'AlgoVisualizer 3D Platform',
+      description: 'Interactive canvas tool visualizing complex graph traversals, dynamic programming recursion trees, and sorting mechanics step-by-step.',
+      details: 'Educational tool built for Grind 500 learners to visually deconstruct difficult DSA patterns.',
+      category: { id: 4, name: 'Educational Tech' },
+      thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&auto=format&fit=crop&q=80',
+      skills: [
+        { id: 13, name: 'Canvas API', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 14, name: 'Algorithms', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 15, name: 'TypeScript', icon_type: 'icon', icon_class: null, icon_image: null },
+        { id: 16, name: 'TailwindCSS', icon_type: 'icon', icon_class: null, icon_image: null },
+      ],
+      project_type: 'individual',
+      project_type_display: 'Individual Project',
+      leader: {
+        id: 104,
+        username: 'sneha_algo',
+        email: 'sneha@risetogether.dev',
+        role: 'member',
+        role_display: 'Core Member',
+        profile_pic: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+        activity_score: 470,
+        date_joined: '2024-02-10',
+      },
+      members: [],
+      special_highlight: 'Community Spotlight',
+      github_link: 'https://github.com',
+      live_link: 'https://example.com',
+      created_at: '2025-02-28T16:45:00Z',
+      images: [],
+    },
+  ];
+
+  const displayProjects = featuredProjects.length >= 4
+    ? featuredProjects.slice(0, 4)
+    : [...featuredProjects, ...fallbackProjects.slice(featuredProjects.length, 4)];
 
   const resources = [
     {
@@ -299,58 +449,95 @@ export const HomePage: React.FC = () => {
     <div className="w-full space-y-28 sm:space-y-36 overflow-hidden text-gray-100 font-inter pb-24 bg-black">
       
       {/* ========================================================================= */}
-      {/* 1. HERO COMMAND CENTER (100VH / 100VW WITH LIVE RADAR & HUD)             */}
+      {/* ========================================================================= */}
+      {/* 1. COMMUNITY HERO SHOWCASE                                                */}
       {/* ========================================================================= */}
       <section
         id="home"
-        className="w-full h-screen min-h-[100dvh] flex flex-col justify-between pt-20 sm:pt-24 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden bg-black"
+        className="w-full min-h-[92vh] flex flex-col justify-between pt-20 sm:pt-24 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden bg-black"
       >
-        {/* BACKGROUND ACCENTS & GRID PATTERN */}
+        {/* WARM BACKGROUND GLOW & COMMUNITY AMBIENCE */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25 pointer-events-none"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 pointer-events-none"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')`,
+            backgroundImage: `url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')`,
           }}
         />
-        <div className="absolute inset-0 bg-black/85 backdrop-blur-[1px] pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/40 to-black pointer-events-none" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-orange-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black pointer-events-none" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
         {/* HERO TOP & CENTER CONTENT GRID */}
-        <div className="relative z-10 w-full flex-1 flex items-center">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
+        <div className="relative z-10 w-full flex-1 flex items-center py-6 sm:py-10">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center w-full">
             
-            {/* Left Column: Command & Vision */}
-            <div className="lg:col-span-7 text-left space-y-4 sm:space-y-5">
+            {/* Left Column: Community Vision & Action */}
+            <div className="lg:col-span-7 text-left space-y-5">
               
-              {/* Live Status Pill */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[3px] bg-neutral-950 border border-neutral-800 text-xs font-mono text-gray-300 shadow-sm">
-                <span className="w-2 h-2 rounded-[1px] bg-emerald-500 animate-ping" />
-                <span className="text-emerald-400 font-semibold">● SYSTEM ONLINE</span>
-                <span className="text-neutral-600">|</span>
-                <span className="text-gray-400">500+ Devs Active</span>
+              {/* Community Pulse Pill */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/25 text-xs font-semibold text-orange-400 shadow-sm backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span>Open-Source Student Developer Ecosystem</span>
+                <span className="text-orange-500/40">•</span>
+                <span className="text-gray-300 font-mono">500+ Active</span>
               </div>
 
               {/* Main Headline */}
               <div>
                 <h1 className="font-rajdhani text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-white leading-none">
-                  RISE <span className="text-orange-500">TOGETHER</span>
+                  LEARN. BUILD. <span className="text-orange-500">GROW TOGETHER.</span>
                 </h1>
-                <p className="text-base sm:text-xl lg:text-2xl font-rajdhani font-bold mt-2 tracking-wider text-gray-300">
-                  LEARN. <span className="text-orange-400">BUILD.</span> GROW.
+                <p className="text-base sm:text-xl lg:text-2xl font-rajdhani font-bold mt-2.5 tracking-wide text-gray-200">
+                  WHERE <span className="text-orange-400">STUDENT INNOVATORS</span> ASSEMBLE TO SHIP REAL SOFTWARE
                 </p>
               </div>
 
               {/* Description */}
               <p className="text-xs sm:text-sm lg:text-base text-gray-300 max-w-xl leading-relaxed font-normal">
-                India's premier student developer ecosystem. Master algorithmic problem solving in Grind 500, architect production software in collaborative sprints, and launch your engineering career.
+                Join India's most collaborative developer community. Team up for hackathons, build open-source products, master algorithms in Grind 500, and connect with peer mentors who help you thrive.
               </p>
+
+              {/* Social Proof Avatar Stack */}
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <div className="flex -space-x-2.5 overflow-hidden">
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-neutral-900 object-cover"
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                    alt="Community Member"
+                  />
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-neutral-900 object-cover"
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+                    alt="Community Member"
+                  />
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-neutral-900 object-cover"
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80"
+                    alt="Community Member"
+                  />
+                  <img
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-neutral-900 object-cover"
+                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80"
+                    alt="Community Member"
+                  />
+                  <div className="inline-flex h-8 w-8 items-center justify-center rounded-full ring-2 ring-neutral-900 bg-neutral-800 text-[10px] font-bold text-orange-400 font-mono">
+                    +500
+                  </div>
+                </div>
+                <div className="text-xs text-gray-300">
+                  <span className="font-semibold text-white">500+ builders</span> from 40+ engineering colleges & universities
+                </div>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link
                   to={isAuthenticated ? '/feed' : '/join'}
-                  className="h-11 px-6 rounded-[3px] text-xs sm:text-sm font-semibold tracking-wide bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+                  className="h-11 px-6 rounded-[3px] text-xs sm:text-sm font-semibold tracking-wide bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Users className="w-4 h-4" />
                   <span>{isAuthenticated ? 'Enter Community Feed' : 'Join Community Free'}</span>
@@ -358,7 +545,7 @@ export const HomePage: React.FC = () => {
 
                 <Link
                   to="/leaderboard"
-                  className="h-11 px-5 rounded-[3px] text-xs sm:text-sm font-semibold text-gray-200 hover:text-white border border-neutral-800 hover:border-neutral-700 bg-neutral-950 transition-all duration-200 flex items-center justify-center gap-2"
+                  className="h-11 px-5 rounded-[3px] text-xs sm:text-sm font-semibold text-gray-200 hover:text-white border border-neutral-800 hover:border-neutral-700 bg-neutral-950 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Trophy className="w-4 h-4 text-amber-400" />
                   <span>Grind 500 Arena</span>
@@ -366,71 +553,78 @@ export const HomePage: React.FC = () => {
 
                 <Link
                   to="/community/projects"
-                  className="h-11 px-4 rounded-[3px] text-xs sm:text-sm font-medium text-gray-400 hover:text-gray-200 border border-neutral-800 hover:border-neutral-700 bg-black transition-all duration-200 flex items-center justify-center gap-1.5"
+                  className="h-11 px-4 rounded-[3px] text-xs sm:text-sm font-medium text-gray-300 hover:text-white border border-neutral-800 hover:border-neutral-700 bg-neutral-900/60 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <FolderGit2 className="w-4 h-4" />
-                  <span>Projects</span>
+                  <FolderGit2 className="w-4 h-4 text-orange-400" />
+                  <span>Explore Projects</span>
                 </Link>
+              </div>
+
+              {/* Community Focus Tags */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1 text-[11px] text-gray-400">
+                <span className="text-gray-500 font-medium">Domains:</span>
+                <span className="px-2 py-0.5 rounded-[2px] bg-neutral-900/90 border border-neutral-800 text-gray-300">#OpenSource</span>
+                <span className="px-2 py-0.5 rounded-[2px] bg-neutral-900/90 border border-neutral-800 text-gray-300">#Grind500</span>
+                <span className="px-2 py-0.5 rounded-[2px] bg-neutral-900/90 border border-neutral-800 text-gray-300">#WebEngineering</span>
+                <span className="px-2 py-0.5 rounded-[2px] bg-neutral-900/90 border border-neutral-800 text-gray-300">#HackathonSquads</span>
+                <span className="px-2 py-0.5 rounded-[2px] bg-neutral-900/90 border border-neutral-800 text-gray-300">#PeerMentorship</span>
               </div>
 
             </div>
 
-            {/* Right Column: Live Developer Radar & Code Stream */}
+            {/* Right Column: 3D Community Architecture Visual */}
             <div className="lg:col-span-5 hidden md:block">
-              <div className="rounded-[3px] bg-neutral-950 border border-neutral-800 shadow-2xl overflow-hidden font-mono text-left">
-                {/* Radar Header */}
-                <div className="px-4 py-3 bg-neutral-900 border-b border-neutral-800 flex items-center justify-between">
+              <div className="rounded-[4px] bg-neutral-950/90 border border-neutral-800 shadow-2xl backdrop-blur-md overflow-hidden text-left relative group">
+                {/* Header Strip */}
+                <div className="px-4 py-3 bg-neutral-900/80 border-b border-neutral-800 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-[1px] bg-red-500" />
-                    <div className="w-2.5 h-2.5 rounded-[1px] bg-yellow-500" />
-                    <div className="w-2.5 h-2.5 rounded-[1px] bg-emerald-500" />
-                    <span className="text-xs text-gray-300 ml-2 font-semibold">live-radar.log</span>
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-rajdhani font-bold text-sm tracking-wide text-white uppercase">
+                      Community Architecture // 3D Hub
+                    </span>
                   </div>
-                  <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-[2px] border border-emerald-500/20">
-                    REALTIME STREAM
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-[2px] border border-emerald-500/20 font-semibold">
+                    REALTIME ECOSYSTEM
                   </span>
                 </div>
 
-                {/* Radar Body Stream */}
-                <div className="p-4 space-y-2.5 text-xs text-gray-300 bg-black/90">
-                  <div className="flex items-center justify-between text-[11px] text-gray-500 pb-1 border-b border-neutral-900">
-                    <span>TIMESTAMP</span>
-                    <span>ACTIVITY DISPATCH</span>
-                    <span>STATUS</span>
-                  </div>
+                {/* 3D Image Showcase Container */}
+                <div className="relative aspect-square w-full bg-black overflow-hidden flex items-center justify-center">
+                  <img
+                    src="/assets/images/community_3d_hero.jpg"
+                    alt="RiseTogether 3D Community Hub"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none" />
 
-                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
-                    <span className="text-gray-500">14:32:10</span>
-                    <span className="text-white"><span className="text-orange-400">@aarav</span> solved "LRU Cache"</span>
-                    <span className="text-emerald-400 font-semibold">+45 pts</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
-                    <span className="text-gray-500">14:30:45</span>
-                    <span className="text-white"><span className="text-purple-400">@team_alpha</span> merged PR #32</span>
-                    <span className="text-cyan-400 font-semibold">React 19</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
-                    <span className="text-gray-500">14:28:12</span>
-                    <span className="text-white"><span className="text-orange-400">@priya</span> solved "Two Sum"</span>
-                    <span className="text-emerald-400 font-semibold">0ms (100%)</span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
-                    <span className="text-gray-500">14:24:00</span>
-                    <span className="text-white"><span className="text-amber-400">@rohan</span> unlocked 30d Streak</span>
-                    <span className="text-amber-400 font-semibold">🔥 Diamond</span>
-                  </div>
-
-                  {/* System Metrics Strip */}
-                  <div className="pt-2 border-t border-neutral-900 flex items-center justify-between text-[10px] text-gray-400">
-                    <span className="flex items-center gap-1 text-emerald-400">
-                      <Cpu className="w-3 h-3" /> Latency: 4ms
+                  {/* Floating Tech Badges */}
+                  <div className="absolute top-3 left-3 flex flex-col gap-1.5 pointer-events-none">
+                    <span className="px-2.5 py-1 rounded-[2px] text-[10px] font-mono font-semibold bg-black/85 backdrop-blur-md border border-neutral-700 text-gray-200 flex items-center gap-1.5 shadow-lg">
+                      <Code2 className="w-3 h-3 text-cyan-400" />
+                      <span>Distributed Sprints</span>
                     </span>
-                    <span>Memory: 14.2 MB</span>
-                    <span>Uptime: 99.99%</span>
+                    <span className="px-2.5 py-1 rounded-[2px] text-[10px] font-mono font-semibold bg-black/85 backdrop-blur-md border border-neutral-700 text-gray-200 flex items-center gap-1.5 shadow-lg">
+                      <Trophy className="w-3 h-3 text-amber-400" />
+                      <span>Grind 500 Arena</span>
+                    </span>
                   </div>
+
+                  <div className="absolute bottom-3 left-3 right-3 p-3 rounded-[3px] bg-black/90 backdrop-blur-md border border-neutral-800 flex items-center justify-between text-xs shadow-xl pointer-events-none">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-orange-500" />
+                      <span className="font-semibold text-white">500+ Active Builders</span>
+                    </div>
+                    <span className="text-[11px] text-gray-400 font-mono">Open Source Matrix</span>
+                  </div>
+                </div>
+
+                {/* Bottom Stats Strip */}
+                <div className="px-4 py-2.5 bg-neutral-950 border-t border-neutral-900 flex items-center justify-between text-[11px] text-gray-400">
+                  <span className="text-emerald-400 font-mono flex items-center gap-1">
+                    ● 34 Live Repos
+                  </span>
+                  <span>100% Student-Driven</span>
+                  <span className="text-gray-300">Peer Reviewed</span>
                 </div>
               </div>
             </div>
@@ -438,9 +632,9 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* HERO ANCHORED HUD METRICS STRIP (FITS WITHIN 100VH) */}
-        <div className="relative z-10 w-full mt-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-3.5 rounded-[3px] bg-neutral-950/90 border border-neutral-800 backdrop-blur-md shadow-2xl">
+        {/* HERO ANCHORED COMMUNITY METRICS STRIP */}
+        <div className="relative z-10 w-full mt-auto pt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3.5 rounded-[3px] bg-neutral-950/90 border border-neutral-800 backdrop-blur-md shadow-2xl">
             <div className="text-center p-1.5">
               <div className="text-xl sm:text-2xl font-bold text-orange-500 font-rajdhani">{stats.membersCount}+</div>
               <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-medium">Active Members</div>
@@ -516,83 +710,42 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Workstation IDE Display Container (Equal Height) */}
-          <div className="lg:col-span-6 flex flex-col h-full rounded-[3px] bg-neutral-950 border border-neutral-800 shadow-2xl overflow-hidden font-mono text-left">
-            
-            {/* Monitor / Bezel Titlebar with Tabs */}
-            <div className="px-4 py-2.5 bg-neutral-900 border-b border-neutral-800 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-[1px] bg-red-500/80" />
-                  <div className="w-2.5 h-2.5 rounded-[1px] bg-yellow-500/80" />
-                  <div className="w-2.5 h-2.5 rounded-[1px] bg-green-500/80" />
-                </div>
-                {/* Tabs */}
-                <div className="flex items-center gap-1 ml-2">
-                  <button
-                    onClick={() => setActiveWorkstationTab('manifest')}
-                    className={`px-3 py-1 rounded-[2px] text-xs font-mono transition-colors cursor-pointer ${
-                      activeWorkstationTab === 'manifest'
-                        ? 'bg-black text-orange-400 border border-neutral-800'
-                        : 'text-gray-400 hover:text-gray-200'
-                    }`}
-                  >
-                    manifest.ts
-                  </button>
-                  <button
-                    onClick={() => setActiveWorkstationTab('engine')}
-                    className={`px-3 py-1 rounded-[2px] text-xs font-mono transition-colors cursor-pointer ${
-                      activeWorkstationTab === 'engine'
-                        ? 'bg-black text-orange-400 border border-neutral-800'
-                        : 'text-gray-400 hover:text-gray-200'
-                    }`}
-                  >
-                    dsa_engine.py
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
-                <Monitor className="w-3.5 h-3.5 text-gray-400" />
-                <span>DISPLAY // 60Hz</span>
-              </div>
-            </div>
+          {/* Right Column: Real Community Collaboration Photography Frame */}
+          <div className="lg:col-span-6 flex flex-col h-full rounded-[4px] bg-neutral-950 border border-neutral-800 shadow-2xl overflow-hidden relative group text-left">
+            {/* Image Container */}
+            <div className="relative w-full h-full min-h-[380px] bg-neutral-900 overflow-hidden flex items-center justify-center">
+              <img
+                src="/assets/images/community_real_photo.jpg"
+                alt="RiseTogether Community Hackathon and Collaboration"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
 
-            {/* Code Editor Pane */}
-            <div className="flex-1 p-5 text-xs sm:text-[13px] leading-relaxed overflow-x-auto text-gray-300 bg-black/95 flex flex-col justify-between">
-              {activeWorkstationTab === 'manifest' ? (
-                <div className="space-y-1">
-                  <p><span className="text-purple-400">export const</span> <span className="text-yellow-300">RiseTogether</span>: <span className="text-cyan-400">Community</span> = &#123;</p>
-                  <p className="pl-4"><span className="text-blue-300">name</span>: <span className="text-emerald-300">'RiseTogether Ecosystem'</span>,</p>
-                  <p className="pl-4"><span className="text-blue-300">established</span>: <span className="text-amber-300">2024</span>,</p>
-                  <p className="pl-4"><span className="text-blue-300">corePillars</span>: [<span className="text-emerald-300">'Learn'</span>, <span className="text-emerald-300">'Build'</span>, <span className="text-emerald-300">'Grow'</span>],</p>
-                  <p className="pl-4"><span className="text-blue-300">features</span>: &#123;</p>
-                  <p className="pl-8"><span className="text-blue-300">dsaGrindArena</span>: <span className="text-orange-400">true</span>,</p>
-                  <p className="pl-8"><span className="text-blue-300">collaborativeProjects</span>: <span className="text-orange-400">true</span>,</p>
-                  <p className="pl-8"><span className="text-blue-300">careerAccelerators</span>: <span className="text-orange-400">true</span>,</p>
-                  <p className="pl-4">&#125;,</p>
-                  <p className="pl-4"><span className="text-blue-300">isOpenSource</span>: <span className="text-orange-400">true</span>,</p>
-                  <p>&#125;;</p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <p><span className="text-purple-400">class</span> <span className="text-yellow-300">Grind500Engine</span>:</p>
-                  <p className="pl-4"><span className="text-purple-400">def</span> <span className="text-blue-300">calculate_score</span>(self, difficulty, complexity, streak):</p>
-                  <p className="pl-8">base_pts = &#123;<span className="text-emerald-300">'Easy'</span>: 10, <span className="text-emerald-300">'Medium'</span>: 25, <span className="text-emerald-300">'Hard'</span>: 50&#125;[difficulty]</p>
-                  <p className="pl-8">streak_mult = 1.5 <span className="text-purple-400">if</span> streak &gt; 7 <span className="text-purple-400">else</span> 1.0</p>
-                  <p className="pl-8"><span className="text-purple-400">return</span> int(base_pts * streak_mult)</p>
-                </div>
-              )}
-
-              {/* Status Console Footer */}
-              <div className="mt-6 pt-3 border-t border-neutral-800 flex items-center justify-between text-[11px] text-gray-400">
-                <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5" />
-                  Build Succeeded (0 errors)
+              {/* Top Floating Badge */}
+              <div className="absolute top-4 left-4 flex flex-wrap gap-2 pointer-events-none">
+                <span className="px-3 py-1 rounded-[3px] text-xs font-semibold bg-black/80 backdrop-blur-md border border-neutral-700 text-white flex items-center gap-1.5 shadow-lg">
+                  <Users className="w-3.5 h-3.5 text-orange-400" />
+                  <span>Campus Hackathon & Peer Sprint</span>
                 </span>
-                <span className="text-gray-500 font-mono">UTF-8 • TSX/Py</span>
+                <span className="px-2.5 py-1 rounded-[3px] text-xs font-mono font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">
+                  In-Person & Online
+                </span>
+              </div>
+
+              {/* Bottom Caption Overlay */}
+              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-[3px] bg-black/85 backdrop-blur-md border border-neutral-800 text-left shadow-xl pointer-events-none">
+                <h4 className="font-rajdhani font-bold text-lg text-white mb-1">
+                  Collaborative Coding, Zero Gatekeeping
+                </h4>
+                <p className="text-xs text-gray-300 leading-relaxed">
+                  Real students solving real problems together. From first-year beginners to hackathon grand champions, everyone builds and learns side by side.
+                </p>
+                <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-neutral-800 text-[11px] text-gray-400">
+                  <span className="font-medium text-gray-300">40+ College Chapters</span>
+                  <span className="text-emerald-400 font-mono">Weekly Hack Sprints</span>
+                </div>
               </div>
             </div>
-
           </div>
 
         </div>
@@ -999,84 +1152,10 @@ export const HomePage: React.FC = () => {
           </Link>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
-          
-          <div className="rounded-[3px] bg-neutral-950/80 border border-neutral-800 overflow-hidden shadow-md text-left flex flex-col justify-between">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex gap-2">
-                  <span className="px-2 py-0.5 rounded-[2px] text-[11px] font-medium bg-neutral-900 text-gray-300 border border-neutral-800">
-                    AI / ML
-                  </span>
-                  <span className="px-2 py-0.5 rounded-[2px] text-[11px] font-medium bg-neutral-900 text-gray-300 border border-neutral-800">
-                    Python
-                  </span>
-                  <span className="px-2 py-0.5 rounded-[2px] text-[11px] font-medium bg-neutral-900 text-gray-300 border border-neutral-800">
-                    TensorFlow
-                  </span>
-                </div>
-                <span className="text-xs text-amber-400 flex items-center gap-1 font-mono">
-                  <Medal className="w-3.5 h-3.5" />
-                  <span>Featured Project</span>
-                </span>
-              </div>
-              <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">
-                Smart Study Assistant
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-5">
-                An AI-powered study companion that personalizes learning experiences, tracks student mastery, and provides automated coding solution recommendations.
-              </p>
-            </div>
-            <div className="px-6 py-3.5 bg-neutral-900/60 border-t border-neutral-800 flex items-center justify-between text-xs">
-              <span className="text-gray-400">By Community Core Team</span>
-              <Link
-                to="/community/projects"
-                className="text-orange-400 hover:text-orange-300 font-semibold flex items-center gap-1"
-              >
-                <span>View Details</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="rounded-[3px] bg-neutral-950/80 border border-neutral-800 overflow-hidden shadow-md text-left flex flex-col justify-between">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex gap-2">
-                  <span className="px-2 py-0.5 rounded-[2px] text-[11px] font-medium bg-neutral-900 text-gray-300 border border-neutral-800">
-                    React Native
-                  </span>
-                  <span className="px-2 py-0.5 rounded-[2px] text-[11px] font-medium bg-neutral-900 text-gray-300 border border-neutral-800">
-                    Firebase
-                  </span>
-                  <span className="px-2 py-0.5 rounded-[2px] text-[11px] font-medium bg-neutral-900 text-gray-300 border border-neutral-800">
-                    Mobile
-                  </span>
-                </div>
-                <span className="text-xs text-purple-400 flex items-center gap-1 font-mono">
-                  <Award className="w-3.5 h-3.5" />
-                  <span>Hackathon Winner</span>
-                </span>
-              </div>
-              <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">
-                EcoTrack Mobile Platform
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-5">
-                A sustainability-focused mobile app helping college students calculate carbon footprints and discover eco-friendly transit and dining alternatives.
-              </p>
-            </div>
-            <div className="px-6 py-3.5 bg-neutral-900/60 border-t border-neutral-800 flex items-center justify-between text-xs">
-              <span className="text-gray-400">By Student Contributors</span>
-              <Link
-                to="/community/projects"
-                className="text-orange-400 hover:text-orange-300 font-semibold flex items-center gap-1"
-              >
-                <span>View Details</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {displayProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
         </div>
       </section>
 
@@ -1184,22 +1263,29 @@ export const HomePage: React.FC = () => {
             return (
               <div
                 key={faq.id}
-                className="rounded-[3px] border border-neutral-800 bg-neutral-950/80 overflow-hidden transition-colors"
+                className={`rounded-[3px] border transition-all duration-200 ${
+                  isOpen
+                    ? 'border-neutral-700 bg-neutral-900/90 shadow-lg'
+                    : 'border-neutral-800 bg-neutral-950/80 hover:border-neutral-700'
+                } overflow-hidden`}
               >
                 <button
                   type="button"
                   onClick={() => setActiveFaqIdx(isOpen ? null : idx)}
-                  className="w-full px-5 py-4 flex items-center justify-between text-left font-rajdhani font-semibold text-base text-white hover:text-orange-400 transition-colors cursor-pointer"
+                  className="w-full px-5 py-4 flex items-center justify-between text-left font-rajdhani font-bold text-base sm:text-lg text-white hover:text-gray-200 transition-colors cursor-pointer"
                 >
-                  <span>{faq.question}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-gray-400">0{idx + 1}.</span>
+                    <span>{faq.question}</span>
+                  </span>
                   <ChevronDown
                     className={`w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0 ${
-                      isOpen ? 'rotate-180 text-orange-400' : ''
+                      isOpen ? 'rotate-180 text-white' : ''
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-4 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-neutral-800/80 pt-3">
+                  <div className="px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-neutral-800/80 pt-3.5 bg-neutral-950/40">
                     {faq.answer}
                   </div>
                 )}

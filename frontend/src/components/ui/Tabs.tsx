@@ -42,7 +42,7 @@ export const Tabs: React.FC<TabsProps> = ({
               onClick={() => onChange(tab.id)}
               className={`flex items-center gap-2 pb-3 font-medium transition-colors cursor-pointer border-b-2 whitespace-nowrap text-sm ${
                 isActive
-                  ? 'border-orange-500 text-white font-semibold'
+                  ? 'border-white text-white font-semibold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >

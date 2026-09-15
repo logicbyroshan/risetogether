@@ -251,7 +251,7 @@ export const ProfilePage: React.FC = () => {
                 {posts.length}
               </sup>
               {activeTab === 'problems' && (
-                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-orange-500 shadow-glow-orange" />
+                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-white shadow-sm" />
               )}
             </button>
 
@@ -267,7 +267,7 @@ export const ProfilePage: React.FC = () => {
               <Trophy className="w-4 h-4" />
               <span>Leaderboard</span>
               {activeTab === 'leaderboard' && (
-                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-orange-500 shadow-glow-orange" />
+                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-white shadow-sm" />
               )}
             </button>
           </div>
@@ -333,7 +333,7 @@ export const ProfilePage: React.FC = () => {
                       key={entry.user_id}
                       className={`flex items-center justify-between p-4 rounded-[3px] border transition-all ${
                         isSelf
-                          ? 'bg-neutral-900 border-orange-500 shadow-lg ring-1 ring-orange-500/50'
+                          ? 'bg-neutral-900 border-neutral-700 shadow-lg ring-1 ring-neutral-700'
                           : 'bg-black border-neutral-800 hover:bg-neutral-900'
                       }`}
                     >
