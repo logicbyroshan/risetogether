@@ -1,21 +1,22 @@
 <div align="center">
-  <img src="screenshots/RiseThumb.png" alt="Rise Together Banner" width="100%" />
+  <img src="docs/screenshots/RiseThumb.png" alt="Rise Together Banner" width="100%" />
 </div>
 
-<h1 align="center">🚀 Rise Together</h1>
+<h1 align="center">🚀 RiseTogether</h1>
 
 <p align="center">
-  <strong>Learn. Build. Grow.</strong><br>
-  Empowering the next generation of tech leaders through collaborative learning and innovation.
+  <strong>Learn. Build. Share. Grow.</strong><br>
+  A unified community and social engagement platform for developers, learners, and tech innovators.
 </p>
 
 <div align="center">
 
-[![Django](https://img.shields.io/badge/Django-5.2.5-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![DRF](https://img.shields.io/badge/Django_REST-Framework-red?style=for-the-badge&logo=django&logoColor=white)](https://www.django-rest-framework.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-
-[🌐 Live Demo](https://risetogether.tech) • [🐛 Report Bug](https://github.com/logicbyroshan/social-community-platform/issues) • [✨ Request Feature](https://github.com/logicbyroshan/social-community-platform/issues)
 
 </div>
 
@@ -23,258 +24,107 @@
 
 ## 🌟 About The Project
 
-**Rise Together** is a vibrant community platform designed to bring together aspiring developers, tech enthusiasts, and innovators. Our mission is to create a collaborative ecosystem where members can learn new technologies, work on real-world projects, share resources, and grow together as a community.
+**RiseTogether** is a full-stack social and community ecosystem engineered to empower developers. It combines a **Django 5.2 + Django REST Framework** modular backend with a **React 19 + TypeScript + Vite** Single Page Application featuring 1:1 dark glassmorphic styling, responsive layout, interactive timelines, and gamified leaderboards.
+
+---
+
+## 🏗️ Architecture Overview
+
+```
+RiseTogether/
+├── backend/             # Django 5.2 & Django REST Framework (DRF)
+│   ├── config/          # Project settings, root URLs, custom exception normalization
+│   ├── common/          # Object permissions & pagination utilities
+│   ├── accounts/        # User identity, profile management, and auth API
+│   ├── community/       # Blogs, projects, activities, categories, and skills
+│   ├── feed/            # Social timeline, likes, bookmarks, and threaded comments
+│   └── riseapp/         # Landing page content, FAQs, testimonials, and contact
+│
+├── frontend/            # React 19 + TypeScript + Vite SPA
+│   ├── src/
+│   │   ├── api/         # Centralized Axios client & domain endpoints
+│   │   ├── components/  # Reusable UI primitives (components/ui/) & layouts
+│   │   ├── context/     # AuthContext & ToastContext providers
+│   │   ├── pages/       # Route pages (Home, Feed, Blogs, Projects, Profile...)
+│   │   └── types/       # Strict TypeScript interfaces
+│
+├── docs/                # Comprehensive 24-document engineering guide
+├── scripts/             # Cross-platform development, test, and build automation
+├── AGENTS.md            # Development & architectural governance rules
+└── CHANGELOG.md         # Full migration history & change record
+```
 
 ---
 
 ## ✨ Key Features
 
-- 🔐 **User Authentication & Profiles** - Secure login, customizable profiles, and password recovery
-- 📝 **Community Blog** - Rich text editor, categories, tags, and featured posts
-- 🛠️ **Projects Showcase** - Browse projects, tech tags, and live demo links
-- 🎯 **Activities & Events** - Track events, participation, and earn achievement badges
-- 📚 **Resource Library** - Curated learning materials with community ratings
-- 🎨 **Modern UI/UX** - Responsive design, dark theme, glassmorphism effects
+- 🔐 **Session-Based Authentication**: Seamless registration, login, logout, and password reset with automated CSRF protection.
+- 💬 **Interactive Social Feed**: Rich media posts (multi-image & video), project repository embeds, instant optimistic likes, bookmarks, and threaded comment replies.
+- 🏆 **Gamified Developer Profiles**: Dynamic activity score calculation awarded for projects, articles, discussions, and DSA solutions.
+- 📚 **Community Hub**: Published articles directory, open-source project showcases, live sprint calendars, and learning resources.
+- 🎨 **Unified Design System**: Controlled Orange brand hierarchy (`Brand + Action + Emphasis`), dark glassmorphism surfaces (`#111827`, `#1f2937`), and accessible UI primitives.
 
 ---
 
-## 📸 Screenshots
+## 🚀 Quick Start
 
-<div align="center">
+### 1. Prerequisites
+- **Python 3.10+**
+- **Node.js 18+** & **npm**
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/Home.png" alt="Homepage Hero Section" />
-      <p align="center"><em>Beautiful hero section with gradient effects</em></p>
-    </td>
-    <td width="50%">
-      <img src="screenshots/about.png" alt="About Section" />
-      <p align="center"><em>About section showcasing our mission</em></p>
-    </td>
-  </tr>
-</table>
+### 2. Start Full-Stack Dev Environment
+Launch both the Django backend (`127.0.0.1:8000`) and the Vite dev server (`localhost:5173`) with a single command:
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/mission.png" alt="Mission Section" />
-      <p align="center"><em>Our mission and values</em></p>
-    </td>
-    <td width="50%">
-      <img src="screenshots/projects.png" alt="Projects Showcase" />
-      <p align="center"><em>Community projects with tech tags</em></p>
-    </td>
-  </tr>
-</table>
+```powershell
+# Windows PowerShell
+powershell -ExecutionPolicy Bypass -File scripts/dev.ps1
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/activity.png" alt="Activities" />
-      <p align="center"><em>Track community events and activities</em></p>
-    </td>
-    <td width="50%">
-      <img src="screenshots/article.png" alt="Articles" />
-      <p align="center"><em>Read and share knowledge articles</em></p>
-    </td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/team.png" alt="Team Section" />
-      <p align="center"><em>Meet our amazing team members</em></p>
-    </td>
-    <td width="50%">
-      <img src="screenshots/leaderboard.png" alt="Leaderboard" />
-      <p align="center"><em>Community leaderboard and achievements</em></p>
-    </td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/achievements.png" alt="Achievements" />
-      <p align="center"><em>Track your progress and unlock badges</em></p>
-    </td>
-    <td width="50%">
-      <img src="screenshots/resources.png" alt="Resources Library" />
-      <p align="center"><em>Curated learning resources</em></p>
-    </td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/faq.png" alt="FAQ Section" />
-      <p align="center"><em>Frequently asked questions</em></p>
-    </td>
-    <td width="50%">
-      <img src="screenshots/feedback.png" alt="Feedback Form" />
-      <p align="center"><em>Share your feedback with us</em></p>
-    </td>
-  </tr>
-</table>
-
-</div>
-
----
-
-## 🛠️ Tech Stack
-
-| Category | Technology | Version |
-|----------|-----------|---------|
-| **Backend** | Django | 5.2.5 |
-| **Language** | Python | 3.8+ |
-| **Frontend** | TailwindCSS | - |
-| **Database** | SQLite3 | - |
-| **Editor** | TinyMCE | - |
-
-> See [TECH_STACK.md](TECH_STACK.md) for complete tech stack details and dependencies.
-
----
-
-## 🚀 Getting Started
-
-Follow these steps to get Rise Together running on your local machine.
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- **Python 3.8 or higher**
-  ```sh
-  python --version
-  ```
-
-- **pip** (Python package manager)
-  ```sh
-  pip --version
-  ```
-
-- **Git**
-  ```sh
-  git --version
-  ```
-
-### Installation
-
-1. **Clone the repository**
-   ```sh
-   git clone https://github.com/risetogethercommunity/rise-together-web.git
-   cd rise-together-web
-   ```
-
-2. **Create a virtual environment**
-   ```sh
-   # Windows
-   python -m venv venv
-   venv\Scripts\activate
-
-   # macOS/Linux
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies**
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-4. **Apply database migrations**
-   ```sh
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
-
-5. **Create a superuser (admin account)**
-   ```sh
-   python manage.py createsuperuser
-   ```
-
-6. **Collect static files**
-   ```sh
-   python manage.py collectstatic
-   ```
-
-7. **Run the development server**
-   ```sh
-   python manage.py runserver
-   ```
-
-8. **Open your browser**
-   
-   Navigate to `http://127.0.0.1:8000/` to view the application.
-   
-   Admin panel: `http://127.0.0.1:8000/admin/`
-
-### Environment Variables
-
-Create a `.env` file in the root directory for sensitive information:
-
-```env
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1,risetogether.tech
-
-# Email Configuration (for password reset)
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
-
-# Database (for production)
-DATABASE_URL=your-database-url
+# Linux / macOS Bash
+./scripts/dev.sh
 ```
 
----
-
-## 🗺️ Roadmap
-
-### Phase 1: Core Features ✅
-- [x] User authentication system
-- [x] Profile management
-- [x] Blog platform
-- [x] Projects showcase
-- [x] Resources library
-- [x] Contact form & newsletter
-
-### Phase 2: Enhanced Features 🚧
-- [ ] Real-time chat system
-- [ ] Video tutorials section
-- [ ] Project collaboration tools
-- [ ] Mentor-mentee matching
-- [ ] Skill assessment tests
-- [ ] Achievement system
-
-### Phase 3: Advanced Features 📋
-- [ ] Live coding sessions
-- [ ] Job board integration
-- [ ] Community marketplace
-- [ ] Mobile application
-- [ ] API for third-party integrations
-- [ ] Multi-language support
-
-See the [open issues](https://github.com/risetogethercommunity/rise-together-web/issues) for a full list of proposed features and known issues.
-
+- **Frontend SPA**: `http://localhost:5173`
+- **Backend REST API**: `http://127.0.0.1:8000/api/`
+- **Django Admin**: `http://127.0.0.1:8000/admin/`
 
 ---
 
-## 📞 Contact
+## 🧪 Automated Testing & Verification
 
-**Rise Together Community**
+Run the unified test runner to execute both the Django test suite and frontend type check/build:
 
-- 🌐 Website: [risetogether.tech](https://risetogether.tech)
-- 📧 Email: contact@risetogether.tech
-- 💬 Discord: [Join our server](https://discord.gg/risetogether)
-- 🐦 Twitter: [@risetogether](https://twitter.com/risetogether)
-- 📘 LinkedIn: [Rise Together](https://linkedin.com/company/risetogether)
+```powershell
+# Windows
+powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 
-**Project Link:** [https://github.com/risetogethercommunity/rise-together-web](https://github.com/risetogethercommunity/rise-together-web)
+# Linux / macOS
+./scripts/test.sh
+```
 
+- **Backend Test Suite**: `python backend/manage.py test accounts community feed riseapp` (28/28 tests passing)
+- **Frontend Verification**: `cd frontend && npm run build` (0 TypeScript errors)
+
+---
+
+## 📖 Comprehensive Documentation
+
+Explore the complete documentation in the [`docs/`](docs/README.md) directory:
+
+| Document | Topic |
+|---|---|
+| [**System Architecture**](docs/ARCHITECTURE.md) | High-level system design & modular monolith principles |
+| [**Frontend Architecture**](docs/FRONTEND_ARCHITECTURE.md) | React 19, TypeScript, routing, and state management |
+| [**Backend Architecture**](docs/BACKEND_ARCHITECTURE.md) | Django 5.2, DRF, domain boundaries, and selectors |
+| [**Design System**](docs/DESIGN_SYSTEM.md) | Color tokens, typography, spacing, and brand orange usage |
+| [**Component Library**](docs/COMPONENT_LIBRARY.md) | Reusable UI primitives catalog and prop specifications |
+| [**API Architecture**](docs/API_ARCHITECTURE.md) | REST standards, error normalization, and endpoint reference |
+| [**Authentication**](docs/AUTHENTICATION.md) | Session auth, CSRF token exchange, and credentials |
+| [**Data Model & ERD**](docs/DATA_MODEL.md) | Entity relationship diagrams and database schema |
+| [**Social Platform**](docs/SOCIAL_PLATFORM.md) | Timeline ordering, interactions, and activity scoring |
+| [**Architecture Decisions**](docs/DECISIONS.md) | Architecture Decision Records (ADRs 001–005) |
+
+---
+
+## 📜 Governance & Contribution
+
+Please review [`AGENTS.md`](AGENTS.md) and [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) before opening Pull Requests.
