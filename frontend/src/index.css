@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    background-color: #111827;
+    color: #f3f4f6;
+  }
+}
+
+.font-rajdhani {
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.35);
+}
+
+.glow-orange-strong {
+  box-shadow: 0 0 35px rgba(249, 115, 22, 0.6);
+}
+
+.text-glow {
+  text-shadow: 0 0 12px rgba(249, 115, 22, 0.6);
+}
+
+.glassmorphism {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid rgba(249, 115, 22, 0.22);
+}
+
+.glassmorphism-light {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(31, 41, 55, 0.7);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1f2937 100%);
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.15) 0%, rgba(17, 24, 39, 0.05) 60%, transparent 80%);
+}
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+  border-color: rgba(249, 115, 22, 0.5);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.45);
+}
+
+.btn-secondary {
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(249, 115, 22, 0.15);
+  border-color: rgba(249, 115, 22, 0.6);
+}
+
+.team-lead-special {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(234, 88, 12, 0.1) 100%);
+  border: 2px solid rgba(249, 115, 22, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.leaderboard-card {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.7) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  transition: all 0.3s ease;
+}
+
+.leaderboard-card:hover {
+  border-color: rgba(249, 115, 22, 0.6);
+  box-shadow: 0 0 25px rgba(249, 115, 22, 0.25);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
+}
