@@ -718,10 +718,10 @@ export const HomePage: React.FC = () => {
                 key={cat.key}
                 type="button"
                 onClick={() => setActiveResourceCategory(cat.key)}
-                className={`h-8 px-3.5 rounded-[3px] text-xs font-medium transition-colors cursor-pointer flex items-center justify-center ${
+                className={`h-8 px-3.5 rounded-[3px] text-xs font-medium transition-all cursor-pointer flex items-center justify-center ${
                   activeResourceCategory === cat.key
-                    ? 'bg-orange-500 text-white shadow-sm'
-                    : 'bg-neutral-900 text-gray-400 hover:text-white border border-neutral-800'
+                    ? 'bg-neutral-800 text-white border border-neutral-700 font-semibold shadow-sm'
+                    : 'bg-black text-gray-400 hover:text-white border border-neutral-800'
                 }`}
               >
                 {cat.label}
