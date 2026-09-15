@@ -1,130 +1,228 @@
 <div align="center">
-  <img src="docs/screenshots/RiseThumb.png" alt="Rise Together Banner" width="100%" />
+  <img src="docs/screenshots/logo.png" alt="RiseTogether Logo" width="140" style="margin-bottom: 12px;" />
+  <h1 align="center" style="font-size: 2.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px;">RiseTogether</h1>
+  <p align="center" style="font-size: 1.15rem; color: #a3a3a3; max-width: 650px;">
+    <strong>Learn. Build. Share. Grow.</strong><br>
+    The next-generation collaborative developer ecosystem, open-source project matrix, and algorithmic problem arena.
+  </p>
+
+  <p align="center">
+    <a href="https://www.djangoproject.com/"><img src="https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django 5.2" /></a>
+    <a href="https://www.django-rest-framework.org/"><img src="https://img.shields.io/badge/DRF-REST_APIs-red?style=for-the-badge&logo=django&logoColor=white" alt="DRF" /></a>
+    <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React 19" /></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript 5.8" /></a>
+    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 8.3" /></a>
+    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/TailwindCSS-v4_Ready-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS" /></a>
+  </p>
+
+  <p align="center">
+    <img src="https://img.shields.io/badge/Tests-28%2F28_Passing-emerald?style=flat-square&logo=githubactions&logoColor=white" alt="Tests" />
+    <img src="https://img.shields.io/badge/TypeScript-0_Errors-blue?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Smooth_Scroll-Lenis_Inertial-neutral?style=flat-square" alt="Lenis" />
+    <img src="https://img.shields.io/badge/Theme-Pure_Jet_Black-000000?style=flat-square" alt="Jet Black" />
+    <img src="https://img.shields.io/badge/License-MIT-amber?style=flat-square" alt="License" />
+  </p>
 </div>
 
-<h1 align="center">🚀 RiseTogether</h1>
+---
 
-<p align="center">
-  <strong>Learn. Build. Share. Grow.</strong><br>
-  A unified community and social engagement platform for developers, learners, and tech innovators.
-</p>
+## 🌟 Visual Showcase
 
 <div align="center">
-
-[![Django](https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![DRF](https://img.shields.io/badge/Django_REST-Framework-red?style=for-the-badge&logo=django&logoColor=white)](https://www.django-rest-framework.org/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-
+  <table>
+    <tr>
+      <td width="50%" align="center">
+        <strong>🌐 3D Isometric Community Hub</strong><br><br>
+        <img src="docs/screenshots/community_3d_hero.jpg" alt="3D Isometric Community Hub" width="100%" />
+        <br>
+        <em>Interactive developer network, distributed sprint telemetry & live DSA activity matrix.</em>
+      </td>
+      <td width="50%" align="center">
+        <strong>🤝 Collaborative Hacker Community</strong><br><br>
+        <img src="docs/screenshots/community_real_photo.jpg" alt="Collaborative Hackathon Community" width="100%" />
+        <br>
+        <em>40+ university chapters, weekly build sprints, and peer mentorship with zero gatekeeping.</em>
+      </td>
+    </tr>
+  </table>
 </div>
 
 ---
 
-## 🌟 About The Project
+## 💡 What is RiseTogether?
 
-**RiseTogether** is a full-stack social and community ecosystem engineered to empower developers. It combines a **Django 5.2 + Django REST Framework** modular backend with a **React 19 + TypeScript + Vite** Single Page Application featuring 1:1 dark glassmorphic styling, responsive layout, interactive timelines, and gamified leaderboards.
+**RiseTogether** is a full-stack developer community and social platform engineered with a strict **Domain-Driven Modular Monolith** architecture:
+
+- **Frontend Tier**: Single Page Application built on **React 19**, **TypeScript 5.8**, and **Vite 8.3**. Features hardware-accelerated **Lenis inertial smooth scrolling**, pure jet black glassmorphic surfaces, and a strictly enforced brand color hierarchy.
+- **Backend Tier**: **Django 5.2** and **Django REST Framework (DRF)** structured into encapsulated domain apps (`accounts`, `community`, `feed`, `riseapp`, `dsa`) with clear layering: **Models ➔ Serializers ➔ Services (Mutations) ➔ Selectors (Queries) ➔ API Views**.
+- **User Experience**: Live interactive social feed with optimistic interactions, threaded discussions, open-source project showcases, technical blogs, gamified leaderboards, and an integrated DSA problem hub.
 
 ---
 
-## 🏗️ Architecture Overview
+## 🏗️ System Architecture & Directory Topology
 
 ```
 RiseTogether/
-├── backend/             # Django 5.2 & Django REST Framework (DRF)
-│   ├── config/          # Project settings, root URLs, custom exception normalization
-│   ├── common/          # Object permissions & pagination utilities
-│   ├── accounts/        # User identity, profile management, and auth API
-│   ├── community/       # Blogs, projects, activities, categories, and skills
-│   ├── feed/            # Social timeline, likes, bookmarks, and threaded comments
-│   └── riseapp/         # Landing page content, FAQs, testimonials, and contact
+├── backend/                  # Django 5.2 + Django REST Framework
+│   ├── config/               # Settings, root API routing, exception handlers
+│   ├── common/               # Object permissions, pagination, and shared utilities
+│   ├── accounts/             # Identity, session auth, profiles, activity scoring
+│   ├── community/            # Blogs, showcases, activities, skills, categories
+│   ├── feed/                 # Social timeline, likes, bookmarks, threaded comments
+│   ├── riseapp/              # Public API, FAQs, testimonials, contacts, newsletter
+│   ├── dsa/                  # Algorithmic challenges, code execution telemetry
+│   └── manage.py             # Django CLI management executable
 │
-├── frontend/            # React 19 + TypeScript + Vite SPA
+├── frontend/                 # React 19 + TypeScript + Vite Single Page Application
 │   ├── src/
-│   │   ├── api/         # Centralized Axios client & domain endpoints
-│   │   ├── components/  # Reusable UI primitives (components/ui/) & layouts
-│   │   ├── context/     # AuthContext & ToastContext providers
-│   │   ├── pages/       # Route pages (Home, Feed, Blogs, Projects, Profile...)
-│   │   └── types/       # Strict TypeScript interfaces
+│   │   ├── api/              # Centralized Axios client with automatic CSRF
+│   │   ├── components/
+│   │   │   ├── ui/           # 24 reusable UI primitives (Button, Modal, Tabs...)
+│   │   │   ├── layout/       # AppLayout, Navbar, Footer, Route guards
+│   │   │   ├── community/    # ProjectCard, BlogCard, ActivityCard
+│   │   │   ├── feed/         # PostCard, CommentSection, CreatePostModal
+│   │   │   └── common/       # SmoothScroll (Lenis), ErrorBoundary, Toast
+│   │   ├── context/          # AuthContext, ToastContext, LenisContext
+│   │   ├── pages/            # Route views (Home, Feed, Blogs, Projects, Profile...)
+│   │   ├── types/            # Strict TypeScript interfaces across all domains
+│   │   └── index.css         # Jet black design system, Lenis rules, glassmorphism
+│   ├── public/               # High-res logos, 3D community visuals, icons
+│   └── package.json          # Vite + React 19 dependencies
 │
-├── docs/                # Comprehensive 24-document engineering guide
-├── scripts/             # Cross-platform development, test, and build automation
-├── AGENTS.md            # Development & architectural governance rules
-└── CHANGELOG.md         # Full migration history & change record
+├── docs/                     # 24 authoritative engineering specifications
+│   ├── screenshots/          # High-resolution platform preview assets
+│   └── README.md             # Documentation index and navigation matrix
+│
+├── scripts/                  # Cross-platform developer automation (dev & test)
+│   ├── dev.ps1 / dev.sh      # Concurrent dev servers launcher
+│   └── test.ps1 / test.sh    # Unified dual-tier test suite runner
+│
+├── AGENTS.md                 # Architectural principles & coding governance
+└── CHANGELOG.md              # Historical release notes & migration records
 ```
 
 ---
 
-## ✨ Key Features
+## ⚡ Key Highlights & Capabilities
 
-- 🔐 **Session-Based Authentication**: Seamless registration, login, logout, and password reset with automated CSRF protection.
-- 💬 **Interactive Social Feed**: Rich media posts (multi-image & video), project repository embeds, instant optimistic likes, bookmarks, and threaded comment replies.
-- 🏆 **Gamified Developer Profiles**: Dynamic activity score calculation awarded for projects, articles, discussions, and DSA solutions.
-- 📚 **Community Hub**: Published articles directory, open-source project showcases, live sprint calendars, and learning resources.
-- 🎨 **Unified Design System**: Controlled Orange brand hierarchy (`Brand + Action + Emphasis`), dark glassmorphism surfaces (`#111827`, `#1f2937`), and accessible UI primitives.
+| Feature Domain | Capability Highlights |
+|---|---|
+| 🚀 **Hero Command Center** | Full-viewport dark aesthetic featuring 3D isometric community visuals, online telemetry, instant onboarding CTAs, and active sprint chips. |
+| 🌊 **Deep Lenis Smooth Scroll** | Native-feeling momentum scrolling with custom damping (`lerp: 0.09`), sticky navbar anchor offset delegation, and zero-jitter layout. |
+| 💬 **Rich Social Timeline** | Multi-media posts (image grids & video embeds), code snippet previews, optimistic likes, bookmarks, and threaded nested replies. |
+| 🏆 **Gamified Leaderboards** | Real-time dynamic activity score calculation awarded for project contributions, technical tutorials, and algorithmic solutions. |
+| 🧩 **4-Project Showcase Grid** | Responsive 2x2 grid displaying curated open-source projects with live GitHub and demo links, tech stack badges, and creator metadata. |
+| 🔐 **Session & CSRF Security** | Django session-based authentication with `HttpOnly` and `SameSite=Lax` cookies, with automatic CSRF token negotiation on mutating requests. |
+| 🎨 **Brand Color Hierarchy** | Strict design token enforcement: Brand Orange (`#f97316`) strictly reserved for Brand, Action, and Focus/Emphasis. All surfaces remain pure neutral dark. |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start Guide
 
-### 1. Prerequisites
+### Prerequisites
 - **Python 3.10+**
 - **Node.js 18+** & **npm**
 
-### 2. Start Full-Stack Dev Environment
-Launch both the Django backend (`127.0.0.1:8000`) and the Vite dev server (`localhost:5173`) with a single command:
+### Option A: One-Command Developer Runner (Recommended)
+
+Launch both the Django backend (`127.0.0.1:8000`) and Vite dev server (`localhost:5173`) simultaneously:
 
 ```powershell
 # Windows PowerShell
 powershell -ExecutionPolicy Bypass -File scripts/dev.ps1
 
 # Linux / macOS Bash
+chmod +x scripts/dev.sh
 ./scripts/dev.sh
 ```
 
-- **Frontend SPA**: `http://localhost:5173`
-- **Backend REST API**: `http://127.0.0.1:8000/api/`
-- **Django Admin**: `http://127.0.0.1:8000/admin/`
+### Option B: Manual Setup
+
+#### 1. Backend Setup
+```bash
+# Navigate to project root and create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows:
+.\.venv\Scripts\Activate.ps1
+# Linux/macOS:
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r backend/requirements.txt
+
+# Run migrations
+python backend/manage.py migrate
+
+# Start backend server (runs on http://127.0.0.1:8000)
+python backend/manage.py runserver 127.0.0.1:8000
+```
+
+#### 2. Frontend Setup
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start Vite dev server (runs on http://localhost:5173)
+npm run dev
+```
 
 ---
 
 ## 🧪 Automated Testing & Verification
 
-Run the unified test runner to execute both the Django test suite and frontend type check/build:
+RiseTogether maintains strict dual-tier test coverage:
 
 ```powershell
-# Windows
+# Run complete test suite (both backend tests and frontend TypeScript build)
 powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 
-# Linux / macOS
-./scripts/test.sh
+# Or run backend test suite individually (28/28 tests passing)
+python backend/manage.py test accounts community feed riseapp
+
+# Or verify frontend TypeScript compilation
+cd frontend && npm run build
 ```
 
-- **Backend Test Suite**: `python backend/manage.py test accounts community feed riseapp` (28/28 tests passing)
-- **Frontend Verification**: `cd frontend && npm run build` (0 TypeScript errors)
-
 ---
 
-## 📖 Comprehensive Documentation
+## 📖 Comprehensive Engineering Documentation
 
-Explore the complete documentation in the [`docs/`](docs/README.md) directory:
+Explore the complete authoritative guide suite located in the [`docs/`](docs/README.md) directory:
 
-| Document | Topic |
+| Specification | Focus Area |
 |---|---|
-| [**System Architecture**](docs/ARCHITECTURE.md) | High-level system design & modular monolith principles |
-| [**Frontend Architecture**](docs/FRONTEND_ARCHITECTURE.md) | React 19, TypeScript, routing, and state management |
-| [**Backend Architecture**](docs/BACKEND_ARCHITECTURE.md) | Django 5.2, DRF, domain boundaries, and selectors |
-| [**Design System**](docs/DESIGN_SYSTEM.md) | Color tokens, typography, spacing, and brand orange usage |
-| [**Component Library**](docs/COMPONENT_LIBRARY.md) | Reusable UI primitives catalog and prop specifications |
-| [**API Architecture**](docs/API_ARCHITECTURE.md) | REST standards, error normalization, and endpoint reference |
-| [**Authentication**](docs/AUTHENTICATION.md) | Session auth, CSRF token exchange, and credentials |
-| [**Data Model & ERD**](docs/DATA_MODEL.md) | Entity relationship diagrams and database schema |
-| [**Social Platform**](docs/SOCIAL_PLATFORM.md) | Timeline ordering, interactions, and activity scoring |
-| [**Architecture Decisions**](docs/DECISIONS.md) | Architecture Decision Records (ADRs 001–005) |
+| [**Architecture Overview**](docs/ARCHITECTURE.md) | Multi-tier domain-driven modular monolith topology and request lifecycles |
+| [**Frontend Architecture**](docs/FRONTEND_ARCHITECTURE.md) | React 19 SPA patterns, client-side routing, hooks, and state management |
+| [**Backend Architecture**](docs/BACKEND_ARCHITECTURE.md) | Django 5.2 domain apps, services, selectors, and API views |
+| [**Design System & Tokens**](docs/DESIGN_SYSTEM.md) | Pure jet black color tokens, typography (`Rajdhani` + `Inter`), and spacing |
+| [**Component Library**](docs/COMPONENT_LIBRARY.md) | Catalog of 24 shared UI primitives with strict TypeScript interfaces |
+| [**API Architecture & Conventions**](docs/API_ARCHITECTURE.md) | RESTful standards, error envelope normalization, and pagination |
+| [**API Reference Guide**](docs/API_REFERENCE.md) | Full endpoint contracts, request payloads, and response structures |
+| [**Authentication Guide**](docs/AUTHENTICATION.md) | Session auth, CSRF cookie exchange, login, register, and reset flows |
+| [**Authorization & RBAC**](docs/AUTHORIZATION.md) | Server-side permission classes (`IsOwnerOrReadOnly`) and access controls |
+| [**Data Model & Schema (ERD)**](docs/DATA_MODEL.md) | Database models, relational constraints, foreign keys, and indexes |
+| [**Social Platform Mechanics**](docs/SOCIAL_PLATFORM.md) | Feed algorithms, optimistic state updates, threaded comment trees |
+| [**Architecture Decisions (ADRs)**](docs/DECISIONS.md) | Record of architectural decisions (ADRs 001–005) |
+| [**Testing Strategy**](docs/TESTING.md) | Backend unit/integration tests and frontend type-checking standards |
+| [**Deployment Guide**](docs/DEPLOYMENT.md) | Production build generation, static collection, and hosting strategies |
 
 ---
 
-## 📜 Governance & Contribution
+## 🤝 Contributing & Governance
 
-Please review [`AGENTS.md`](AGENTS.md) and [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) before opening Pull Requests.
+We welcome contributions from developers of all skill levels! Before contributing:
+1. Please read our architectural rules in [`AGENTS.md`](AGENTS.md).
+2. Follow the commit conventions outlined in [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+3. Ensure all tests pass (`scripts/test.ps1`) before submitting a Pull Request.
+
+---
+
+<div align="center">
+  <p>Built with ❤️ by the <strong>RiseTogether Community Core Team</strong>.</p>
+  <p><sub>Licensed under the <a href="LICENSE">MIT License</a>.</sub></p>
+</div>

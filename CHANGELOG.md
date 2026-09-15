@@ -2,6 +2,27 @@
 
 All notable changes to RiseTogether are documented in this file.
 
+## [Community Visuals, 4 Projects Grid, Lenis Smooth Scroll & Active State Neutralization] - 2026-09-16
+
+### Added
+- **3D Isometric Community Hero (`frontend/public/assets/images/community_3d_hero.jpg`)**: Replaced text pulse box with an authentic 3D isometric community hub visual featuring status indicators, real-time activity chip, and college chapters metric.
+- **Authentic Student Community Photograph (`frontend/public/assets/images/community_real_photo.jpg`)**: Replaced workstation code editor in `Who We Are` (`#about`) with an authentic collaborative student hackathon photo and community overlay card.
+- **4 Projects Grid Display (`HomePage.tsx`)**: Sliced and rendered 4 community projects in a clean 2x2 grid using the shared `ProjectCard` UI primitive, complete with rich fallback projects.
+- **Deep Lenis Smooth Scrolling (`SmoothScroll.tsx`, `index.css`)**: Added `useLenis()` hook, `window.lenis` attachment, global anchor `a[href^="#"]` smooth scroll delegation with navbar offset, and official Lenis CSS rules.
+- **Modern README.md Redesign**: Comprehensive overhaul with modern GitHub shields, 3D community & real hackathon photo showcases, system architecture ASCII topology, and documentation matrix.
+
+### Removed
+- **Deprecated Server-Rendered HTML Templates**: Completely purged legacy `backend/templates/` (`Pages/`, `accounts/`, `feed/`, `home.html`, `base.html`, etc.) and `backend/accounts/views_backup.py`.
+- **Obsolete Pre-Migration Documentation**: Removed dated logs (`BASELINE_TEST_RESULTS.md`, `MIGRATION_AUDIT.md`, `MIGRATION_STATUS.md`, `INDEX.md`).
+
+### Fixed
+- **FAQ Accordion Visibility**: Fixed bug where an empty API response (`faqs: []`) evaluated as truthy, preventing default FAQ cards from rendering.
+- **Active Element Color Toning**: Strict enforcement of brand color rules across `Tabs.tsx`, `Pagination.tsx`, FAQ accordion, and `ProfilePage.tsx`—replacing heavy solid orange surfaces and borders with elegant dark neutral elevated surfaces (`bg-neutral-800`, `border-neutral-700`).
+- **Git Hygiene**: Added `.venv/` and `.venv*/` to `.gitignore` to prevent local virtual environments from being committed.
+- **Root API Status**: Configured backend `GET /` to return a clean JSON health response instead of looking for legacy `home.html`.
+
+---
+
 ## [Homepage UI/UX Overhaul, Workstation IDE & Lenis Smooth Scroll] - 2026-09-15
 
 ### Added
