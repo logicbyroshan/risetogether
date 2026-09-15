@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Search, BookOpen, PenSquare } from 'lucide-react';
+import { BookOpen, PenSquare } from 'lucide-react';
 import { Blog } from '../types/community';
 import { communityApi } from '../api/community';
 import { BlogCard } from '../components/community/BlogCard';
-import { Spinner } from '../components/ui/Spinner';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { SearchBar } from '../components/ui/SearchBar';
+import { Pagination } from '../components/ui/Pagination';
+import { LoadingState } from '../components/ui/LoadingState';
+import { EmptyState } from '../components/ui/EmptyState';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,6 +18,7 @@ export const BlogsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   const { isAuthenticated } = useAuth();
 
@@ -23,6 +27,7 @@ export const BlogsPage: React.FC = () => {
       setLoading(true);
       const res = await communityApi.getBlogs({ page, search: search.trim() || undefined });
       setBlogs(res.results);
+      setTotalCount(res.count);
       setTotalPages(Math.ceil(res.count / 9) || 1);
     } catch (err) {
       console.error(err);
@@ -35,8 +40,8 @@ export const BlogsPage: React.FC = () => {
     fetchBlogs();
   }, [page]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = (query: string) => {
+    setSearch(query);
     setPage(1);
     fetchBlogs();
   };
@@ -50,7 +55,7 @@ export const BlogsPage: React.FC = () => {
           <h1 className="font-rajdhani font-bold text-4xl sm:text-5xl text-white tracking-tight">
             COMMUNITY BLOGS & GUIDES
           </h1>
-          <p className="text-sm text-gray-400 mt-2 max-w-xl">
+          <p className="text-sm text-gray-400 mt-2 max-w-xl leading-relaxed">
             Read high-quality articles, architecture deep-dives, and tutorials contributed by developers worldwide.
           </p>
         </div>
@@ -65,33 +70,32 @@ export const BlogsPage: React.FC = () => {
       </div>
 
       {/* Search Bar */}
-      <form onSubmit={handleSearchSubmit} className="max-w-md flex gap-2">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search articles by title or keyword..."
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-          />
-        </div>
-        <Button type="submit" variant="secondary" size="md">
-          Search
-        </Button>
-      </form>
+      <div className="max-w-md">
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          onSearch={handleSearch}
+          placeholder="Search articles by title or keyword..."
+        />
+      </div>
 
       {/* Content */}
       {loading ? (
-        <Spinner size="lg" className="py-20" />
+        <LoadingState
+          title="Loading Community Articles"
+          message="Fetching latest tutorials and guides..."
+          className="py-16"
+        />
       ) : blogs.length === 0 ? (
-        <div className="text-center py-20 border border-gray-800 rounded-2xl glassmorphism">
-          <BookOpen className="w-12 h-12 text-orange-400 mx-auto mb-3 opacity-60" />
-          <h3 className="font-rajdhani font-bold text-xl text-gray-200">No Articles Found</h3>
-          <p className="text-xs text-gray-400 mt-1">
-            {search ? `No articles matching "${search}"` : 'Be the first to publish a technical blog!'}
-          </p>
-        </div>
+        <EmptyState
+          icon={<BookOpen className="w-8 h-8" />}
+          title="No Articles Found"
+          description={search ? `No articles matching "${search}"` : 'Be the first to publish a technical blog!'}
+          actionLabel={isAuthenticated ? 'Publish Article' : 'Join to Write'}
+          onAction={() => {
+            window.location.href = isAuthenticated ? '/feed' : '/join';
+          }}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
@@ -101,29 +105,12 @@ export const BlogsPage: React.FC = () => {
       )}
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-3 pt-8">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            Previous
-          </Button>
-          <span className="text-xs text-gray-400 font-medium">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={totalCount}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 };
