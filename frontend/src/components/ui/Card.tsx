@@ -15,7 +15,7 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`glassmorphism rounded-2xl p-6 relative overflow-hidden ${
+      className={`glassmorphism rounded-[3px] p-6 relative overflow-hidden ${
         hover ? 'card-hover' : ''
       } ${glow ? 'glow-orange' : ''} ${className}`}
     >

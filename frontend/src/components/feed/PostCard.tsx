@@ -100,7 +100,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
   const isOwner = user && (user.username === post.author.username || user.is_staff);
 
   return (
-    <Card className="border border-gray-800/90 hover:border-orange-500/40 transition-all">
+    <Card className="border border-neutral-800 hover:border-orange-500/40 transition-all bg-neutral-950/80">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
@@ -156,7 +156,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
           {isOwner && (
             <button
               onClick={handleDelete}
-              className="p-1.5 rounded-lg text-gray-500 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
+              className="p-1.5 rounded-[3px] text-gray-500 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
               title="Delete post"
             >
               <Trash2 className="w-4 h-4" />
@@ -186,7 +186,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
               <img
                 src={post.blog_thumbnail}
                 alt={post.blog_title || 'Blog thumbnail'}
-                className="w-full h-64 object-cover rounded-xl border border-gray-800 my-2"
+                className="w-full h-64 object-cover rounded-[3px] border border-neutral-800 my-2"
               />
             )}
             <RichTextViewer content={post.blog_content} />
@@ -212,7 +212,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-800/90 border border-orange-500/30 text-xs font-semibold text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 transition-all"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[3px] bg-neutral-900 border border-orange-500/30 text-xs font-semibold text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 transition-all"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     <span>{link.title}</span>
@@ -225,7 +225,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
 
         {/* Media Carousel / Grid */}
         {post.media_files && post.media_files.length > 0 && (
-          <div className="relative rounded-xl overflow-hidden border border-gray-800 bg-gray-950 mt-3">
+          <div className="relative rounded-[3px] overflow-hidden border border-neutral-800 bg-black mt-3">
             {post.media_files[currentMediaIdx].media_type === 'video' ? (
               <video
                 src={post.media_files[currentMediaIdx].file}
@@ -249,7 +249,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
                       prev === 0 ? post.media_files.length - 1 : prev - 1
                     )
                   }
-                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-[3px] bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -259,11 +259,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
                       prev === post.media_files.length - 1 ? 0 : prev + 1
                     )
                   }
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-[3px] bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-full bg-black/70 text-xs text-gray-200">
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-[3px] bg-black/70 text-xs text-gray-200">
                   {currentMediaIdx + 1} / {post.media_files.length}
                 </div>
               </>
@@ -273,7 +273,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
       </div>
 
       {/* Footer Metrics and Actions */}
-      <div className="border-t border-gray-800/80 pt-3 flex items-center justify-between text-xs text-gray-400">
+      <div className="border-t border-neutral-800 pt-3 flex items-center justify-between text-xs text-gray-400">
         <div className="flex items-center gap-5">
           {/* Like */}
           <button
@@ -312,7 +312,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
           {/* Save / Bookmark */}
           <button
             onClick={handleSave}
-            className={`p-1.5 rounded-lg hover:text-orange-400 transition-colors cursor-pointer ${
+            className={`p-1.5 rounded-[3px] hover:text-orange-400 transition-colors cursor-pointer ${
               saved ? 'text-orange-400' : 'text-gray-400'
             }`}
             title={saved ? 'Remove Bookmark' : 'Save Post'}
@@ -323,7 +323,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
           {/* Share */}
           <button
             onClick={handleShare}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-[3px] text-gray-400 hover:text-white transition-colors cursor-pointer"
             title="Share Post Link"
           >
             <Share2 className="w-4 h-4" />
