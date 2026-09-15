@@ -50,14 +50,14 @@ erDiagram
 - **`PostComment`** (`feed_postcomment`): Threaded discussion comments supporting nested child replies via `parent = models.ForeignKey('self')`.
 - **`PostLikeNew`** (`feed_postlikenew`): Unique `(post, user)` like toggles.
 - **`CommentLikeNew`** (`feed_commentlikenew`): Unique `(comment, user)` like toggles.
-- **`SavedPostNew`** (`feed_savedpostnew`): Unique `(post, user)` bookmarks.
-
 ### Community Domain
 - **`Blog`** (`community_blog`): Articles with unique `slug`, `content` (HTML), `thumbnail`, `status` (`draft`, `published`), and `author`.
 - **`Project`** (`community_project`): Showcase projects with `title`, `category`, `thumbnail`, `skills` M2M, `leader`, `members` M2M, `github_link`, and `live_link`.
 - **`Activity`** (`community_activity`): Community sessions with `occurrence` (`once`, `weekly`, `monthly`), `date`, and `thumbnail`.
-- **`DSAActivity`** (`community_dsaactivity`): Algorithm problem logs with `difficulty`, `complexity`, and `points_earned`.
-- **`Leaderboard`** (`community_leaderboard`): Ranked standings across `daily`, `weekly`, `monthly`, and `all_time` periods.
+
+### DSA Domain
+- **`Leaderboard`** (`dsa_leaderboard`): OneToOne user standings storing `daily_points`, `weekly_points`, `monthly_points`, `total_points`, `last_post_date`, `consecutive_post_days` (streaks), and timestamp-based reset trackers.
+- **`CodingProblemPost`** (`dsa_codingproblempost`): Problem solution posts with `title`, `code_snippet` (formatted IDE block), `language` (`PYTHON`, `CPP`, `JAVA`, `JAVASCRIPT`, `TYPESCRIPT`), `time_complexity` (`O(1)` to `O(n!)`), `difficulty` (`EASY`, `MEDIUM`, `HARD`), and `points_earned`.
 
 ### RiseApp Domain
 - **`Contact`** (`riseapp_contact`): Public contact form submissions.
