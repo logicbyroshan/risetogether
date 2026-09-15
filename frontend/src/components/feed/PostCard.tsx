@@ -20,6 +20,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
+import { Avatar } from '../ui/Avatar';
 import { RichTextViewer } from '../ui/RichTextViewer';
 import { CommentSection } from './CommentSection';
 
@@ -104,13 +105,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <Link to={`/profile/${post.author.username}`}>
-            <img
-              src={
-                post.author.profile_pic ||
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-              }
-              alt={post.author.username}
-              className="w-11 h-11 rounded-full object-cover border-2 border-orange-500/40 hover:border-orange-500 transition-colors"
+            <Avatar
+              src={post.author.profile_pic}
+              name={post.author.username}
+              size="md"
+              className="hover:scale-105 transition-transform"
             />
           </Link>
           <div>
@@ -144,7 +143,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
             </Badge>
           )}
           {post.post_type === 'project' && (
-            <Badge variant="purple" size="sm" className="gap-1">
+            <Badge variant="orange" size="sm" className="gap-1">
               <FolderGit2 className="w-3 h-3" /> Project
             </Badge>
           )}
@@ -250,7 +249,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
                       prev === 0 ? post.media_files.length - 1 : prev - 1
                     )
                   }
-                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -260,7 +259,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
                       prev === post.media_files.length - 1 ? 0 : prev + 1
                     )
                   }
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
