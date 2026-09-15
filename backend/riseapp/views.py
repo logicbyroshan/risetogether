@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.contrib import messages
 from .models import Contact, Newsletter
 from django.db import IntegrityError
@@ -15,20 +16,34 @@ def home(request):
         if name and email and message:
             try:
                 Contact.objects.create(name=name, email=email, message=message)
-                messages.success(
-                    request, "Thank you for your message! We will get back to you soon."
+                return JsonResponse(
+                    {"status": "success", "message": "Thank you for your message!"},
+                    status=201
                 )
             except Exception as e:
-                messages.error(
-                    request, "Sorry, something went wrong. Please try again later."
+                return JsonResponse(
+                    {"status": "error", "message": "Sorry, something went wrong."},
+                    status=500
                 )
         else:
-            messages.error(request, "Please fill in all fields.")
+            return JsonResponse(
+                {"status": "error", "message": "Please fill in all fields."},
+                status=400
+            )
 
-        # Redirect to contact section with hash
-        return redirect("home" + "#contact")
-
-    return render(request, "home.html")
+    return JsonResponse(
+        {
+            "status": "online",
+            "service": "RiseTogether Modular Monolith API",
+            "version": "1.0.0",
+            "endpoints": {
+                "api": "/api/",
+                "admin": "/admin/",
+                "dsa": "/api/dsa/",
+                "site_content": "/api/site-content/",
+            },
+        }
+    )
 
 
 def newsletter_subscribe(request):

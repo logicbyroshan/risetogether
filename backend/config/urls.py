@@ -14,11 +14,8 @@ urlpatterns = [
     path("api/", include("riseapp.api_urls", namespace="api_riseapp")),
     path("api/dsa/", include("dsa.urls", namespace="dsa")),
 
-    # Legacy server-rendered templates (preserved for fallback & admin)
+    # Root API status & newsletter fallback
     path("", include("riseapp.urls")),
-    path("accounts/", include("accounts.urls", namespace="accounts")),
-    path("community/", include("community.urls", namespace="community")),
-    path("feed/", include("feed.urls", namespace="feed")),
 ]
 
 if settings.DEBUG:
