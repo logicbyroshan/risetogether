@@ -1,12 +1,13 @@
 import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Loader2 } from 'lucide-react';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  fullWidth?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -16,11 +17,12 @@ export const Button: React.FC<ButtonProps> = ({
   isLoading = false,
   leftIcon,
   rightIcon,
+  fullWidth = false,
   className = '',
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-xs gap-1.5',
@@ -31,14 +33,16 @@ export const Button: React.FC<ButtonProps> = ({
   const variantStyles = {
     primary: 'btn-primary text-white shadow-lg shadow-orange-500/20 active:scale-[0.98]',
     secondary: 'btn-secondary text-gray-200 hover:text-white active:scale-[0.98]',
-    outline: 'border border-gray-700 hover:border-orange-500/60 text-gray-300 hover:text-orange-400 bg-gray-800/40 active:scale-[0.98]',
+    outline: 'border border-gray-700/80 hover:border-orange-500/60 text-gray-300 hover:text-orange-400 bg-gray-800/40 active:scale-[0.98]',
     danger: 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/20 active:scale-[0.98]',
     ghost: 'text-gray-400 hover:text-gray-100 hover:bg-gray-800/60 active:scale-[0.98]',
   };
 
+  const widthStyle = fullWidth ? 'w-full' : '';
+
   return (
     <button
-      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
+      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${widthStyle} ${className}`}
       disabled={disabled || isLoading}
       {...props}
     >
