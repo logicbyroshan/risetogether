@@ -1,495 +1,382 @@
-import React, { useState, useEffect } from 'react';
+// frontend/src/pages/HomePage.tsx
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Sparkles,
-  ArrowRight,
-  Code2,
-  Users,
-  Trophy,
-  Rocket,
-  CheckCircle2,
-  ChevronDown,
-  Star,
-  Send,
-  BookOpen,
-  FolderGit2,
-  Calendar,
-  MessageSquare,
-  ShieldCheck,
-  Zap,
-} from 'lucide-react';
-import { publicApi } from '../api/public';
-import { communityApi } from '../api/community';
-import { SiteContentResponse } from '../types/public';
-import { Blog, Project, Activity } from '../types/community';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import { BlogCard } from '../components/community/BlogCard';
-import { ProjectCard } from '../components/community/ProjectCard';
-import { ActivityCard } from '../components/community/ActivityCard';
+import { dsaApi } from '../api/dsaApi';
+import { LeaderboardEntry, LeaderboardResponse } from '../types/dsa';
+import { Spinner } from '../components/ui/Spinner';
+
+type TimeframeType = 'overall' | 'daily' | 'weekly' | 'monthly';
 
 export const HomePage: React.FC = () => {
-  const [siteData, setSiteData] = useState<SiteContentResponse | null>(null);
-  const [featuredBlogs, setFeaturedBlogs] = useState<Blog[]>([]);
-  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
-  const [featuredActivities, setFeaturedActivities] = useState<Activity[]>([]);
-  const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(null);
+  const { user, isAuthenticated } = useAuth();
+  const [timeframe, setTimeframe] = useState<TimeframeType>('overall');
+  const [data, setData] = useState<LeaderboardResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Contact Form State
-  const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactMessage, setContactMessage] = useState('');
-  const [submittingContact, setSubmittingContact] = useState(false);
-
-  const { isAuthenticated } = useAuth();
-  const { success, error: toastError } = useToast();
-
-  useEffect(() => {
-    // Load Site Content, Blogs, Projects, Activities
-    publicApi.getSiteContent().then(setSiteData).catch(console.error);
-    communityApi.getBlogs({ page: 1 }).then((res) => setFeaturedBlogs(res.results.slice(0, 3))).catch(console.error);
-    communityApi.getProjects({ page: 1 }).then((res) => setFeaturedProjects(res.results.slice(0, 3))).catch(console.error);
-    communityApi.getActivities({ page: 1 }).then((res) => setFeaturedActivities(res.results.slice(0, 3))).catch(console.error);
+  const fetchLeaderboard = useCallback(async (selectedTimeframe: TimeframeType) => {
+    try {
+      setLoading(true);
+      const res = await dsaApi.getLeaderboard(selectedTimeframe);
+      setData(res);
+    } catch (err) {
+      console.error('Failed to load leaderboard data:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!contactName || !contactEmail || !contactMessage) return;
+  useEffect(() => {
+    fetchLeaderboard(timeframe);
+  }, [timeframe, fetchLeaderboard]);
 
-    try {
-      setSubmittingContact(true);
-      const res = await publicApi.submitContact({
-        name: contactName,
-        email: contactEmail,
-        message: contactMessage,
-      });
-      success(res.message);
-      setContactName('');
-      setContactEmail('');
-      setContactMessage('');
-    } catch (err: any) {
-      toastError(err.customMessage || 'Failed to submit contact message.');
-    } finally {
-      setSubmittingContact(false);
-    }
-  };
+  const defaultAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';
+  const userAvatar = user?.profile?.profile_pic || defaultAvatar;
 
-  const stats = siteData?.stats || {
-    membersCount: 500,
-    projectsCount: 50,
-    sessionsCount: 120,
-    blogsCount: 25,
-    activitiesCount: 15,
-  };
+  // Fallback top players if database has empty/partial entries
+  const topUsers: LeaderboardEntry[] = data?.top_users || [];
+  const otherUsers: LeaderboardEntry[] = data?.other_users || [];
+  const totalCount = data?.total_user_count || 0;
+  const currentRank = data?.current_user_rank || '-';
 
-  const faqs = siteData?.faqs || [
-    {
-      id: 1,
-      question: 'What is RiseTogether?',
-      answer: 'RiseTogether is an open-source, collaborative tech ecosystem where developers build projects, share technical blogs, solve DSA challenges, and grow together.',
-    },
-    {
-      id: 2,
-      question: 'Is it free to join the community?',
-      answer: 'Yes! RiseTogether is 100% free and open for developers, students, and mentors worldwide.',
-    },
-    {
-      id: 3,
-      question: 'How do activity scores and leaderboard ranking work?',
-      answer: 'You earn points for contributing projects (10 pts), publishing blogs (10 pts), sharing feed posts (2-5 pts), and receiving likes and comments from peers.',
-    },
-    {
-      id: 4,
-      question: 'Can I showcase my own projects or write blogs?',
-      answer: 'Absolutely. Once registered, you can publish articles to our blog index, showcase your GitHub repositories, and post directly to the community feed.',
-    },
-  ];
+  const player1 = topUsers[0] || null;
+  const player2 = topUsers[1] || null;
+  const player3 = topUsers[2] || null;
 
   return (
-    <div className="space-y-28 overflow-hidden">
-      {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[85vh] flex items-center justify-center hero-gradient pt-12 pb-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          {/* Top Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glassmorphism text-xs font-semibold text-orange-400 mb-8 border border-orange-500/40 shadow-glow-orange animate-float">
-            <Sparkles className="w-4 h-4 text-orange-400" />
-            <span>The Premier Collaborative Developer Platform</span>
-          </div>
-
-          {/* Heading */}
-          <h1 className="font-rajdhani font-extrabold text-4xl sm:text-6xl md:text-7xl text-white tracking-tight uppercase leading-none mb-6">
-            EMPOWER YOUR CODE. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-orange-600 text-glow">
-              RISE TOGETHER.
+    <div className="w-full flex justify-center items-start min-h-[90vh] py-4 px-2 sm:px-4 font-poppins text-gray-200">
+      <div className="w-full max-w-[1200px] bg-[#1c212c] rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
+        
+        {/* ================= NAVBAR ================= */}
+        <header className="flex flex-wrap justify-between items-center px-6 sm:px-8 py-4 bg-[#151a24] border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <img
+              src="/assets/images/rt.png"
+              alt="Nexrise / Grind 500 Logo"
+              className="h-10 w-auto rounded-lg shadow-md object-contain"
+              onError={(e) => {
+                (e.target as HTMLElement).style.display = 'none';
+              }}
+            />
+            <span className="text-xl font-bold tracking-tight text-white font-rajdhani uppercase">
+              Grind 500
             </span>
-          </h1>
-
-          {/* Subheading */}
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-gray-300 leading-relaxed mb-10">
-            Join thousands of developers building real-world open-source software, publishing tutorials, solving algorithmic challenges, and networking.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to={isAuthenticated ? '/feed' : '/join'}>
-              <Button size="lg" variant="primary" rightIcon={<ArrowRight className="w-5 h-5" />}>
-                {isAuthenticated ? 'Go to Feed' : 'Join the Community'}
-              </Button>
-            </Link>
-            <Link to="/community/projects">
-              <Button size="lg" variant="secondary" leftIcon={<FolderGit2 className="w-5 h-5 text-orange-400" />}>
-                Explore Projects
-              </Button>
-            </Link>
           </div>
 
-          {/* Stats Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-16 pt-10 border-t border-gray-800/80">
-            <div className="p-4 rounded-2xl glassmorphism-light text-center">
-              <div className="font-rajdhani font-bold text-3xl sm:text-4xl text-orange-400">
-                {stats.membersCount}+
-              </div>
-              <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold mt-1">
-                Active Members
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl glassmorphism-light text-center">
-              <div className="font-rajdhani font-bold text-3xl sm:text-4xl text-amber-400">
-                {stats.projectsCount}+
-              </div>
-              <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold mt-1">
-                Open Projects
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl glassmorphism-light text-center">
-              <div className="font-rajdhani font-bold text-3xl sm:text-4xl text-orange-400">
-                {stats.sessionsCount}+
-              </div>
-              <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold mt-1">
-                Tech Workshops
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl glassmorphism-light text-center">
-              <div className="font-rajdhani font-bold text-3xl sm:text-4xl text-emerald-400">
-                {stats.blogsCount}+
-              </div>
-              <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold mt-1">
-                Tech Articles
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= PILLARS / MISSION ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <Badge variant="orange" size="md" className="mb-3">OUR MISSION</Badge>
-          <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white tracking-wide">
-            BUILT BY DEVELOPERS, FOR DEVELOPERS
-          </h2>
-          <p className="text-sm text-gray-400 mt-3">
-            Four pillars that define our supportive developer culture.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border border-gray-800 hover:border-orange-500/50">
-            <div className="w-12 h-12 rounded-xl bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-orange-400 mb-5">
-              <Code2 className="w-6 h-6" />
-            </div>
-            <h3 className="font-rajdhani font-bold text-xl text-white mb-2">Collaborative Code</h3>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Pair program, contribute to production repos, and receive actionable code reviews from senior developers.
-            </p>
-          </Card>
-
-          <Card className="border border-gray-800 hover:border-orange-500/50">
-            <div className="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-5">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <h3 className="font-rajdhani font-bold text-xl text-white mb-2">Knowledge Sharing</h3>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Write rich blog posts and technical guides to solidify your learning and build your personal brand.
-            </p>
-          </Card>
-
-          <Card className="border border-gray-800 hover:border-orange-500/50">
-            <div className="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400 mb-5">
-              <Zap className="w-6 h-6" />
-            </div>
-            <h3 className="font-rajdhani font-bold text-xl text-white mb-2">DSA & Problem Solving</h3>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Sharpen your algorithmic thinking with weekly coding challenges and competitive rankings.
-            </p>
-          </Card>
-
-          <Card className="border border-gray-800 hover:border-orange-500/50">
-            <div className="w-12 h-12 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mb-5">
-              <Trophy className="w-6 h-6" />
-            </div>
-            <h3 className="font-rajdhani font-bold text-xl text-white mb-2">Gamified Growth</h3>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Earn activity scores and climb the community leaderboard as you build and engage with others.
-            </p>
-          </Card>
-        </div>
-      </section>
-
-      {/* ================= FEATURED PROJECTS ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
-          <div>
-            <Badge variant="purple" size="md" className="mb-2">OPEN SOURCE</Badge>
-            <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white">
-              COMMUNITY PROJECTS
-            </h2>
-            <p className="text-sm text-gray-400 mt-1">Explore applications built collaboratively by members.</p>
-          </div>
-          <Link to="/community/projects">
-            <Button variant="outline" size="sm" rightIcon={<ArrowRight className="w-4 h-4" />}>
-              View All Projects
-            </Button>
-          </Link>
-        </div>
-
-        {featuredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProjects.map((p) => (
-              <ProjectCard key={p.id} project={p} />
-            ))}
-          </div>
-        ) : (
-          <Card className="text-center py-12">
-            <FolderGit2 className="w-10 h-10 text-orange-400 mx-auto mb-3" />
-            <p className="text-sm text-gray-400">Projects showcase is being updated. Be the first to share your project!</p>
-          </Card>
-        )}
-      </section>
-
-      {/* ================= FEATURED BLOGS ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
-          <div>
-            <Badge variant="orange" size="md" className="mb-2">LATEST ARTICLES</Badge>
-            <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white">
-              FROM THE TECH BLOG
-            </h2>
-            <p className="text-sm text-gray-400 mt-1">Tutorials, engineering deep dives, and career insights.</p>
-          </div>
-          <Link to="/community/blogs">
-            <Button variant="outline" size="sm" rightIcon={<ArrowRight className="w-4 h-4" />}>
-              Read All Articles
-            </Button>
-          </Link>
-        </div>
-
-        {featuredBlogs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredBlogs.map((blog) => (
-              <BlogCard key={blog.id} blog={blog} />
-            ))}
-          </div>
-        ) : (
-          <Card className="text-center py-12">
-            <BookOpen className="w-10 h-10 text-orange-400 mx-auto mb-3" />
-            <p className="text-sm text-gray-400">No published articles found. Start drafting your first tutorial today!</p>
-          </Card>
-        )}
-      </section>
-
-      {/* ================= ACTIVITIES & EVENTS ================= */}
-      {featuredActivities.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
-            <div>
-              <Badge variant="emerald" size="md" className="mb-2">EVENTS & WORKSHOPS</Badge>
-              <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white">
-                COMMUNITY ACTIVITIES
-              </h2>
-              <p className="text-sm text-gray-400 mt-1">Live hackathons, pair programming sprints, and talks.</p>
-            </div>
-            <Link to="/community/activities">
-              <Button variant="outline" size="sm" rightIcon={<ArrowRight className="w-4 h-4" />}>
-                View Calendar
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredActivities.map((act) => (
-              <ActivityCard key={act.id} activity={act} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ================= TESTIMONIALS ================= */}
-      {siteData?.testimonials && siteData.testimonials.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <Badge variant="orange" size="md" className="mb-2">COMMUNITY LOVE</Badge>
-            <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white">
-              WHAT DEVELOPERS SAY
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {siteData.testimonials.slice(0, 3).map((t) => (
-              <Card key={t.id} className="border border-gray-800 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-1 text-amber-400 mb-4">
-                    {Array.from({ length: t.stars }).map((_, idx) => (
-                      <Star key={idx} className="w-4 h-4 fill-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-gray-300 leading-relaxed italic mb-6">
-                    "{t.message}"
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 border-t border-gray-800 pt-4">
-                  <img
-                    src={
-                      t.user?.profile_pic ||
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-                    }
-                    alt={t.name || t.user?.username || 'Member'}
-                    className="w-9 h-9 rounded-full object-cover border border-orange-500/40"
-                  />
-                  <div>
-                    <div className="text-sm font-bold text-white">
-                      {t.name || t.user?.username || 'Community Member'}
-                    </div>
-                    <div className="text-xs text-orange-400 font-mono">Contributor</div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ================= FAQ ACCORDION ================= */}
-      <section id="faq" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
-        <div className="text-center mb-12">
-          <Badge variant="orange" size="md" className="mb-2">FAQ</Badge>
-          <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white">
-            FREQUENTLY ASKED QUESTIONS
-          </h2>
-        </div>
-
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => {
-            const isOpen = activeFaqIdx === idx;
-            return (
-              <div
-                key={faq.id}
-                className="glassmorphism rounded-2xl border border-gray-800/80 overflow-hidden transition-all"
-              >
+          <nav className="order-3 sm:order-2 w-full sm:w-auto mt-3 sm:mt-0">
+            <ul className="flex justify-center items-center gap-6 text-sm font-medium">
+              <li className="relative">
                 <button
                   type="button"
-                  onClick={() => setActiveFaqIdx(isOpen ? null : idx)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left font-rajdhani font-bold text-lg text-white hover:text-orange-400 transition-colors cursor-pointer"
+                  className="text-white font-semibold pb-1 relative transition-colors focus:outline-none"
                 >
-                  <span>{faq.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0 ${
-                      isOpen ? 'rotate-180 text-orange-400' : ''
-                    }`}
-                  />
+                  Leaderboard
+                  <span className="absolute bottom-[-10px] left-0 w-full h-[3px] bg-[#ca651d] rounded-full shadow-[0_0_10px_#ca651d]" />
                 </button>
-                {isOpen && (
-                  <div className="px-6 pb-5 text-sm text-gray-300 leading-relaxed border-t border-gray-800/60 pt-3">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
+              </li>
+              <li>
+                <Link
+                  to="/feed"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Social Feed
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/community/blogs"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Tech Blogs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/community/projects"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Projects
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
-      {/* ================= CONTACT FORM ================= */}
-      <section id="contact" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
-        <Card className="border border-orange-500/30 p-8 sm:p-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="order-2 sm:order-3 flex items-center gap-4">
+            <Link
+              to="/feed"
+              aria-label="Notifications"
+              className="text-gray-400 hover:text-white transition-colors text-lg"
+            >
+              <i className="fas fa-bell" />
+            </Link>
 
-          <div className="text-center max-w-xl mx-auto mb-8 relative z-10">
-            <Badge variant="orange" size="md" className="mb-2">GET IN TOUCH</Badge>
-            <h2 className="font-rajdhani font-bold text-3xl sm:text-4xl text-white">
-              CONTACT OUR LEADERSHIP TEAM
-            </h2>
-            <p className="text-sm text-gray-400 mt-2">
-              Have questions about organizing a workshop, sponsoring an event, or becoming a community lead? Send us a message.
-            </p>
+            {isAuthenticated ? (
+              <Link to="/profile" className="flex items-center">
+                <img
+                  src={userAvatar}
+                  alt={user?.username || 'User Avatar'}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-[#ca651d] shadow-sm hover:scale-105 transition-transform"
+                />
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg bg-[#ca651d] hover:bg-[#b05315] text-white transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
+        </header>
+
+        {/* ================= LEADERBOARD CONTENT ================= */}
+        <main className="p-4 sm:p-8 bg-gradient-to-b from-[#0d111b]/90 to-[#1c212c]/95 backdrop-blur-md">
+          
+          {/* TIMEFRAME TABS */}
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex bg-[#2d3442] p-1.5 rounded-full shadow-inner border border-white/5 gap-1">
+              {(['overall', 'daily', 'weekly', 'monthly'] as TimeframeType[]).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTimeframe(t)}
+                  className={`px-6 py-2 rounded-full text-sm font-semibold capitalize transition-all duration-200 cursor-pointer ${
+                    timeframe === t
+                      ? 'bg-[#ca651d] text-white shadow-[0_4px_15px_rgba(202,101,29,0.45)]'
+                      : 'text-gray-400 hover:text-gray-200 bg-transparent'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <form onSubmit={handleContactSubmit} className="space-y-4 relative z-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                  Your Full Name
-                </label>
-                <input
-                  type="text"
-                  value={contactName}
-                  onChange={(e) => setContactName(e.target.value)}
-                  placeholder="e.g. Alex Johnson"
-                  required
-                  className="w-full px-4 py-3 bg-gray-950 border border-gray-700 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-                />
+          {loading ? (
+            <div className="py-24 flex flex-col items-center justify-center gap-3">
+              <Spinner size="lg" />
+              <p className="text-sm text-gray-400">Loading live rankings...</p>
+            </div>
+          ) : (
+            <>
+              {/* ================= TOP PLAYERS SHOWCASE ================= */}
+              <div className="flex flex-col lg:flex-row justify-center items-center lg:items-end gap-16 lg:gap-8 mt-28 mb-14">
+                
+                {/* #2 PLAYER CARD */}
+                {player2 ? (
+                  <div className="w-full max-w-[280px] min-h-[255px] bg-[#1a202c] rounded-2xl p-6 text-center flex flex-col justify-end items-center relative shadow-[0_8px_25px_rgba(0,0,0,0.4)] border border-white/10 order-2 lg:order-1">
+                    <img
+                      src={player2.profile_pic || defaultAvatar}
+                      alt={player2.full_name || player2.username}
+                      className="w-[120px] h-[120px] rounded-full object-cover border-4 border-[#ca651d] absolute -top-[60px] left-1/2 -translate-x-1/2 shadow-lg"
+                    />
+                    <h3 className="text-lg font-bold text-white mt-16 mb-2 truncate max-w-[230px]">
+                      {player2.full_name || player2.username}
+                    </h3>
+                    <div className="flex items-center gap-2 text-gray-300 text-xs mb-3 bg-[#4c51bf]/20 px-3 py-1 rounded-full border border-purple-500/20">
+                      <i className="fas fa-trophy text-[#f7cd57]" />
+                      <span>Rank #2</span>
+                    </div>
+                    <div className="flex flex-col items-center text-[#f7cd57] font-bold">
+                      <i className="fas fa-gem text-cyan-400 text-2xl mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
+                      <span className="text-2xl font-rajdhani">
+                        {timeframe === 'daily'
+                          ? player2.daily_points
+                          : timeframe === 'weekly'
+                          ? player2.weekly_points
+                          : timeframe === 'monthly'
+                          ? player2.monthly_points
+                          : player2.total_points}
+                      </span>
+                      <p className="text-xs text-gray-400 font-normal mt-0.5">Total Points</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full max-w-[280px] min-h-[240px] bg-[#1a202c]/50 rounded-2xl p-6 text-center flex flex-col justify-center items-center border border-dashed border-gray-700 order-2 lg:order-1">
+                    <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 mb-3">
+                      #2
+                    </div>
+                    <p className="text-xs text-gray-400">Position Open</p>
+                  </div>
+                )}
+
+                {/* #1 MAIN PLAYER CARD */}
+                {player1 ? (
+                  <div className="w-full max-w-[300px] min-h-[290px] bg-gradient-to-br from-[#2d3748] to-[#1a202c] rounded-2xl p-6 text-center flex flex-col justify-end items-center relative shadow-[0_15px_40px_rgba(202,101,29,0.5)] border-3 border-[#ca651d] lg:-translate-y-5 lg:scale-105 order-1 lg:order-2">
+                    <img
+                      src={player1.profile_pic || defaultAvatar}
+                      alt={player1.full_name || player1.username}
+                      className="w-[145px] h-[145px] rounded-full object-cover border-4 border-[#ca651d] absolute -top-[72px] left-1/2 -translate-x-1/2 shadow-[0_0_0_5px_rgba(202,101,29,0.4)]"
+                    />
+                    <h3 className="text-xl font-bold text-white mt-20 mb-2 truncate max-w-[250px]">
+                      {player1.full_name || player1.username}
+                    </h3>
+                    <div className="flex items-center gap-2 text-white text-xs mb-3 bg-white/10 px-3.5 py-1 rounded-full border border-yellow-500/30">
+                      <i className="fas fa-trophy text-[#f7cd57]" />
+                      <span className="font-semibold">Top Rank #1</span>
+                    </div>
+                    <div className="flex flex-col items-center text-white font-bold">
+                      <i className="fas fa-gem text-cyan-400 text-3xl mb-1 drop-shadow-[0_0_12px_rgba(0,188,212,0.8)] animate-pulse" />
+                      <span className="text-3xl font-rajdhani text-yellow-300">
+                        {timeframe === 'daily'
+                          ? player1.daily_points
+                          : timeframe === 'weekly'
+                          ? player1.weekly_points
+                          : timeframe === 'monthly'
+                          ? player1.monthly_points
+                          : player1.total_points}
+                      </span>
+                      <p className="text-xs text-gray-300 font-normal mt-0.5">Total Points</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full max-w-[300px] min-h-[270px] bg-gradient-to-br from-[#2d3748]/50 to-[#1a202c]/50 rounded-2xl p-6 text-center flex flex-col justify-center items-center border-2 border-dashed border-[#ca651d]/40 order-1 lg:order-2">
+                    <div className="w-20 h-20 rounded-full bg-[#ca651d]/20 border border-[#ca651d] flex items-center justify-center text-[#ca651d] font-bold text-xl mb-3">
+                      #1
+                    </div>
+                    <p className="text-sm text-gray-300 font-semibold">Top Rank Open</p>
+                    <p className="text-xs text-gray-400 mt-1">Be the first to solve DSA problems!</p>
+                  </div>
+                )}
+
+                {/* #3 PLAYER CARD */}
+                {player3 ? (
+                  <div className="w-full max-w-[280px] min-h-[255px] bg-[#1a202c] rounded-2xl p-6 text-center flex flex-col justify-end items-center relative shadow-[0_8px_25px_rgba(0,0,0,0.4)] border border-white/10 order-3">
+                    <img
+                      src={player3.profile_pic || defaultAvatar}
+                      alt={player3.full_name || player3.username}
+                      className="w-[120px] h-[120px] rounded-full object-cover border-4 border-[#ca651d] absolute -top-[60px] left-1/2 -translate-x-1/2 shadow-lg"
+                    />
+                    <h3 className="text-lg font-bold text-white mt-16 mb-2 truncate max-w-[230px]">
+                      {player3.full_name || player3.username}
+                    </h3>
+                    <div className="flex items-center gap-2 text-gray-300 text-xs mb-3 bg-[#4c51bf]/20 px-3 py-1 rounded-full border border-purple-500/20">
+                      <i className="fas fa-trophy text-[#cd7f32]" />
+                      <span>Rank #3</span>
+                    </div>
+                    <div className="flex flex-col items-center text-[#f7cd57] font-bold">
+                      <i className="fas fa-gem text-cyan-400 text-2xl mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
+                      <span className="text-2xl font-rajdhani">
+                        {timeframe === 'daily'
+                          ? player3.daily_points
+                          : timeframe === 'weekly'
+                          ? player3.weekly_points
+                          : timeframe === 'monthly'
+                          ? player3.monthly_points
+                          : player3.total_points}
+                      </span>
+                      <p className="text-xs text-gray-400 font-normal mt-0.5">Total Points</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full max-w-[280px] min-h-[240px] bg-[#1a202c]/50 rounded-2xl p-6 text-center flex flex-col justify-center items-center border border-dashed border-gray-700 order-3">
+                    <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 mb-3">
+                      #3
+                    </div>
+                    <p className="text-xs text-gray-400">Position Open</p>
+                  </div>
+                )}
+
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={contactEmail}
-                  onChange={(e) => setContactEmail(e.target.value)}
-                  placeholder="alex@example.com"
-                  required
-                  className="w-full px-4 py-3 bg-gray-950 border border-gray-700 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-                />
+              {/* USER STATS BANNER */}
+              <div className="text-center text-sm text-gray-400 mb-10 py-3 px-6 rounded-xl bg-[#1a202c]/80 border border-white/5 max-w-xl mx-auto">
+                {isAuthenticated ? (
+                  <span>
+                    You are ranked{' '}
+                    <strong className="text-orange-400 font-bold text-base px-1">
+                      {currentRank}
+                    </strong>{' '}
+                    out of <span className="text-white font-semibold">{totalCount} users</span>
+                  </span>
+                ) : (
+                  <span>
+                    <Link to="/join" className="text-orange-400 hover:underline font-semibold">
+                      Create an account
+                    </Link>{' '}
+                    to climb the leaderboard and track your daily coding rank!
+                  </span>
+                )}
               </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                Your Message
-              </label>
-              <textarea
-                rows={4}
-                value={contactMessage}
-                onChange={(e) => setContactMessage(e.target.value)}
-                placeholder="How can we help or collaborate with you?"
-                required
-                className="w-full px-4 py-3 bg-gray-950 border border-gray-700 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-              />
-            </div>
+              {/* ================= LEADERBOARD TABLE ================= */}
+              <div className="w-full overflow-x-auto rounded-xl shadow-lg border border-white/10 bg-[#1a202c]">
+                <table className="w-full text-left border-collapse min-w-[550px]">
+                  <thead>
+                    <tr className="bg-[#2d3442] text-gray-300 text-xs font-semibold uppercase tracking-wider">
+                      <th className="py-4 px-6 text-center w-24">Rank</th>
+                      <th className="py-4 px-6">User Name</th>
+                      <th className="py-4 px-6 text-right">Total Points</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {otherUsers.length > 0 ? (
+                      otherUsers.map((player, idx) => {
+                        const rankNumber = idx + 4;
+                        const isSelf = isAuthenticated && user && player.user_id === user.id;
+                        const points =
+                          timeframe === 'daily'
+                            ? player.daily_points
+                            : timeframe === 'weekly'
+                            ? player.weekly_points
+                            : timeframe === 'monthly'
+                            ? player.monthly_points
+                            : player.total_points;
 
-            <div className="text-center pt-2">
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                isLoading={submittingContact}
-                rightIcon={<Send className="w-4 h-4" />}
-                className="w-full sm:w-auto px-10"
-              >
-                Send Message
-              </Button>
-            </div>
-          </form>
-        </Card>
-      </section>
+                        return (
+                          <tr
+                            key={player.user_id}
+                            className={`transition-colors hover:bg-[#262c3a] ${
+                              isSelf ? 'bg-[#ca651d]/15 border-l-4 border-[#ca651d]' : ''
+                            }`}
+                          >
+                            <td className="py-4 px-6 text-center font-bold text-base text-gray-300">
+                              {rankNumber}
+                            </td>
+                            <td className="py-4 px-6">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={player.profile_pic || defaultAvatar}
+                                  alt={player.full_name || player.username}
+                                  className="w-11 h-11 rounded-full object-cover border-2 border-[#ca651d]"
+                                />
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-white text-sm">
+                                    {player.full_name || player.username}{' '}
+                                    {isSelf && (
+                                      <span className="text-xs text-orange-400 font-normal">(You)</span>
+                                    )}
+                                  </span>
+                                  <span className="text-xs text-gray-400">@{player.username}</span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-4 px-6 text-right font-rajdhani font-bold text-xl text-cyan-400">
+                              <div className="inline-flex items-center gap-2 justify-end">
+                                <i className="fas fa-gem text-sm" />
+                                <span>{points}</span>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="py-12 text-center text-sm text-gray-500">
+                          {topUsers.length === 0
+                            ? 'No players ranked yet. Solve problems to claim the top spot!'
+                            : 'All current ranked players are shown in the top podium.'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
