@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+:root {
+  /* Brand Tokens */
+  --color-brand-primary: #f97316;
+  --color-brand-hover: #ea580c;
+  --color-brand-active: #c2410c;
+  --color-brand-soft: rgba(249, 115, 22, 0.12);
+  --color-brand-glow: rgba(249, 115, 22, 0.35);
+
+  /* Surface & Background Tokens */
+  --color-bg-base: #111827;
+  --color-bg-deep: #0b0f19;
+  --color-surface: rgba(17, 24, 39, 0.85);
+  --color-surface-elevated: rgba(31, 41, 55, 0.7);
+  --color-surface-hover: rgba(55, 65, 81, 0.5);
+
+  /* Border Tokens */
+  --color-border-brand: rgba(249, 115, 22, 0.25);
+  --color-border-subtle: rgba(75, 85, 99, 0.4);
+  --color-border-focus: rgba(249, 115, 22, 0.8);
+
+  /* Typography Tokens */
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
+  --color-text-disabled: #6b7280;
+
+  /* Semantic Feedback */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #f43f5e;
+  --color-info: #3b82f6;
+}
+
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
