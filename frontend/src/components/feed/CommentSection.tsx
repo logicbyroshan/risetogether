@@ -5,6 +5,7 @@ import { feedApi } from '../../api/feed';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { Spinner } from '../ui/Spinner';
+import { Avatar } from '../ui/Avatar';
 
 interface CommentSectionProps {
   postId: number;
@@ -134,17 +135,17 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
       {/* New Comment Input */}
       {isAuthenticated ? (
         <form onSubmit={handleCreateComment} className="flex gap-2 items-center">
-          <img
-            src={user?.profile.profile_pic || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-            alt={user?.username}
-            className="w-8 h-8 rounded-full object-cover border border-orange-500/40 shrink-0"
+          <Avatar
+            src={user?.profile.profile_pic}
+            name={user?.username}
+            size="sm"
           />
           <input
             type="text"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Write a supportive comment or question..."
-            className="flex-1 px-4 py-2 bg-gray-900/90 border border-gray-700/80 rounded-xl text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/80"
+            className="flex-1 px-4 py-2.5 bg-gray-900/90 border border-gray-700/80 rounded-xl text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/80"
           />
           <button
             type="submit"
@@ -173,10 +174,11 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
           {comments.map((comment) => (
             <div key={comment.id} className="space-y-2">
               <div className="flex items-start gap-2.5 p-3 rounded-xl bg-gray-900/60 border border-gray-800/60">
-                <img
-                  src={comment.author.profile_pic || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-                  alt={comment.author.username}
-                  className="w-7 h-7 rounded-full object-cover border border-orange-500/30 shrink-0"
+                <Avatar
+                  src={comment.author.profile_pic}
+                  name={comment.author.username}
+                  size="xs"
+                  className="mt-0.5"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
@@ -250,10 +252,10 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
                       className="flex items-start gap-2.5 p-2.5 rounded-xl bg-gray-950/70 border border-gray-800/80"
                     >
                       <CornerDownRight className="w-3.5 h-3.5 text-orange-400 mt-1 shrink-0" />
-                      <img
-                        src={reply.author.profile_pic || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-                        alt={reply.author.username}
-                        className="w-6 h-6 rounded-full object-cover border border-orange-500/30 shrink-0"
+                      <Avatar
+                        src={reply.author.profile_pic}
+                        name={reply.author.username}
+                        size="xs"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">

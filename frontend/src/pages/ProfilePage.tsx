@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Trophy,
   BookOpen,
   FolderGit2,
-  Sparkles,
   ExternalLink,
   Edit3,
   Calendar,
-  Layers,
   Rss,
 } from 'lucide-react';
 import { UserDetail } from '../types/user';
@@ -22,10 +20,13 @@ import { PostCard } from '../components/feed/PostCard';
 import { BlogCard } from '../components/community/BlogCard';
 import { ProjectCard } from '../components/community/ProjectCard';
 import { EditProfileModal } from '../components/profile/EditProfileModal';
-import { Spinner } from '../components/ui/Spinner';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { Avatar } from '../components/ui/Avatar';
+import { Tabs, TabItem } from '../components/ui/Tabs';
+import { LoadingState } from '../components/ui/LoadingState';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export const ProfilePage: React.FC = () => {
   const { username } = useParams<{ username?: string }>();
@@ -33,7 +34,7 @@ export const ProfilePage: React.FC = () => {
 
   const [profileUser, setProfileUser] = useState<UserDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'posts' | 'blogs' | 'projects'>('posts');
+  const [activeTab, setActiveTab] = useState<string>('posts');
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -78,17 +79,27 @@ export const ProfilePage: React.FC = () => {
   };
 
   if (loading) {
-    return <Spinner size="lg" className="min-h-[70vh]" />;
+    return <LoadingState title="Loading Profile" message="Retrieving user statistics and contributions..." className="min-h-[70vh]" />;
   }
 
   if (!profileUser) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h2 className="font-rajdhani font-bold text-2xl text-white">Profile Not Found</h2>
-        <p className="text-sm text-gray-400 mt-2">The user profile could not be loaded.</p>
+      <div className="max-w-4xl mx-auto px-4 py-20">
+        <EmptyState
+          title="Profile Not Found"
+          description="The requested user profile does not exist or could not be loaded."
+          actionLabel="Return to Feed"
+          onAction={() => { window.location.href = '/feed'; }}
+        />
       </div>
     );
   }
+
+  const profileTabs: TabItem[] = [
+    { id: 'posts', label: 'Feed Posts', icon: <Rss className="w-4 h-4" />, count: posts.length },
+    { id: 'blogs', label: 'Blogs & Articles', icon: <BookOpen className="w-4 h-4" />, count: blogs.length },
+    { id: 'projects', label: 'Projects', icon: <FolderGit2 className="w-4 h-4" />, count: projects.length },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -99,17 +110,13 @@ export const ProfilePage: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="relative">
-              <img
-                src={
-                  profileUser.profile.profile_pic ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-                }
-                alt={profileUser.username}
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-orange-500/60 shadow-glow-orange-strong"
-              />
-              <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-gray-900" />
-            </div>
+            <Avatar
+              src={profileUser.profile.profile_pic}
+              name={profileUser.username}
+              size="2xl"
+              isOnline={true}
+              className="shadow-glow-orange-strong"
+            />
 
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-3">
@@ -173,7 +180,7 @@ export const ProfilePage: React.FC = () => {
           </div>
 
           <div className="p-3 rounded-xl bg-gray-950/70 border border-gray-800 text-center">
-            <div className="flex items-center justify-center gap-1 text-purple-400 mb-1">
+            <div className="flex items-center justify-center gap-1 text-orange-400 mb-1">
               <FolderGit2 className="w-4 h-4" />
               <span className="text-xs uppercase font-semibold">Projects</span>
             </div>
@@ -213,52 +220,24 @@ export const ProfilePage: React.FC = () => {
       </Card>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-gray-800 pb-3">
-        <button
-          onClick={() => setActiveTab('posts')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'posts'
-              ? 'bg-orange-600 text-white shadow-lg'
-              : 'text-gray-400 hover:text-white bg-gray-900/60'
-          }`}
-        >
-          <Rss className="w-4 h-4" />
-          <span>Feed Posts ({posts.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('blogs')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'blogs'
-              ? 'bg-orange-600 text-white shadow-lg'
-              : 'text-gray-400 hover:text-white bg-gray-900/60'
-          }`}
-        >
-          <BookOpen className="w-4 h-4" />
-          <span>Blogs ({blogs.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('projects')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'projects'
-              ? 'bg-orange-600 text-white shadow-lg'
-              : 'text-gray-400 hover:text-white bg-gray-900/60'
-          }`}
-        >
-          <FolderGit2 className="w-4 h-4" />
-          <span>Projects ({projects.length})</span>
-        </button>
-      </div>
+      <Tabs
+        tabs={profileTabs}
+        activeTab={activeTab}
+        onChange={(tabId) => setActiveTab(tabId)}
+        variant="pills"
+        size="md"
+      />
 
       {/* Tab Content */}
       <div className="space-y-6">
         {activeTab === 'posts' && (
           <div>
             {posts.length === 0 ? (
-              <p className="text-center text-sm text-gray-400 py-12 glassmorphism rounded-2xl">
-                No feed posts shared yet.
-              </p>
+              <EmptyState
+                icon={<Rss className="w-8 h-8" />}
+                title="No Posts Shared Yet"
+                description={`@${profileUser.username} has not shared any timeline updates yet.`}
+              />
             ) : (
               <div className="space-y-6">
                 {posts.map((post) => (
@@ -276,9 +255,11 @@ export const ProfilePage: React.FC = () => {
         {activeTab === 'blogs' && (
           <div>
             {blogs.length === 0 ? (
-              <p className="text-center text-sm text-gray-400 py-12 glassmorphism rounded-2xl">
-                No blog articles published yet.
-              </p>
+              <EmptyState
+                icon={<BookOpen className="w-8 h-8" />}
+                title="No Articles Published"
+                description={`@${profileUser.username} has not published any technical blog articles yet.`}
+              />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {blogs.map((blog) => (
@@ -292,9 +273,11 @@ export const ProfilePage: React.FC = () => {
         {activeTab === 'projects' && (
           <div>
             {projects.length === 0 ? (
-              <p className="text-center text-sm text-gray-400 py-12 glassmorphism rounded-2xl">
-                No project contributions listed yet.
-              </p>
+              <EmptyState
+                icon={<FolderGit2 className="w-8 h-8" />}
+                title="No Projects Listed"
+                description={`@${profileUser.username} has not contributed to any showcase projects yet.`}
+              />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects.map((project) => (
