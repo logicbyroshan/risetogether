@@ -2,6 +2,21 @@
 
 All notable changes to RiseTogether are documented in this file.
 
+## [Official RiseTogether 3D Embossed Logo Rebranding] - 2026-09-15
+
+### Added
+- **Official Brand Logo Assets**:
+  - Moved official logo into `frontend/public/assets/images/logo.png`, `frontend/public/logo.png`, and `frontend/public/favicon.png`.
+  - Removed raw unorganized `logo.png` from project root.
+
+### Changed
+- **Cross-Application Brand Integration**:
+  - Updated browser favicon and Apple Touch icon in `frontend/index.html` to display the official high-resolution logo.
+  - Replaced legacy text-only placeholders with the official embossed logo in top navigation (`Navbar.tsx`) and application footer (`Footer.tsx`).
+  - Integrated official brand logo across all authentication & user onboarding flows: `LoginPage.tsx`, `JoinPage.tsx`, `PasswordResetPage.tsx`, `PasswordResetConfirmPage.tsx`, and `NotFoundPage.tsx`.
+
+---
+
 ## [Elimination of Dark Blue Strips & Refined Active States] - 2026-09-15
 
 ### Fixed
