@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
 import { HomePage } from './pages/HomePage';
+import { LeaderboardPage } from './pages/LeaderboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { JoinPage } from './pages/JoinPage';
 import { PasswordResetPage } from './pages/PasswordResetPage';
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
       { path: 'feed', element: <FeedPage /> },
       { path: 'feed/posts/:id', element: <PostDetailPage /> },
       { path: 'feed/saved', element: <SavedPostsPage /> },
+      { path: 'leaderboard', element: <LeaderboardPage /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'profile/:username', element: <ProfilePage /> },
       { path: 'settings', element: <SettingsPage /> },

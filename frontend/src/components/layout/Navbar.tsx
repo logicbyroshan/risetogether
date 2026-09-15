@@ -14,6 +14,7 @@ import {
   Calendar,
   Layers,
   Rss,
+  Trophy,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
@@ -53,6 +54,7 @@ export const Navbar: React.FC = () => {
     { name: 'Blogs', path: '/community/blogs', desc: 'Read insights & tutorials', icon: <BookOpen className="w-4 h-4 text-orange-400" /> },
     { name: 'Projects', path: '/community/projects', desc: 'Explore community builds', icon: <FolderGit2 className="w-4 h-4 text-orange-400" /> },
     { name: 'Activities', path: '/community/activities', desc: 'Workshops & events', icon: <Calendar className="w-4 h-4 text-orange-400" /> },
+    { name: 'Grind 500 Leaderboard', path: '/leaderboard', desc: 'DSA rankings & streaks', icon: <Trophy className="w-4 h-4 text-orange-400" /> },
   ];
 
   return (
