@@ -37,4 +37,3 @@ Welcome to the official technical documentation for **RiseTogether**, a modern c
 - [DEPLOYMENT.md](DEPLOYMENT.md) — Production build generation, static asset collection, and deployment architecture.
 - [ENVIRONMENT.md](ENVIRONMENT.md) — Configuration settings and environment variables reference.
 - [CONTRIBUTING.md](CONTRIBUTING.md) — Code style guidelines, branch naming, and pull request checklist.
-- [MIGRATION_STATUS.md](MIGRATION_STATUS.md) — Historical migration phases, verification logs, and changelog records.
