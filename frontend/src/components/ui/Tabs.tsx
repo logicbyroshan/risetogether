@@ -32,7 +32,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
   if (variant === 'underline') {
     return (
-      <div className={`flex border-b border-gray-800 space-x-6 overflow-x-auto ${className}`}>
+      <div className={`flex border-b border-neutral-800 space-x-6 overflow-x-auto ${className}`}>
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
@@ -42,14 +42,14 @@ export const Tabs: React.FC<TabsProps> = ({
               onClick={() => onChange(tab.id)}
               className={`flex items-center gap-2 pb-3 font-medium transition-colors cursor-pointer border-b-2 whitespace-nowrap text-sm ${
                 isActive
-                  ? 'border-orange-500 text-orange-400 font-semibold'
+                  ? 'border-orange-500 text-white font-semibold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
               }`}
             >
               {tab.icon}
               <span>{tab.label}</span>
               {typeof tab.count === 'number' && (
-                <span className={`px-1.5 py-0.5 rounded-md text-xs ${isActive ? 'bg-orange-500/20 text-orange-300' : 'bg-gray-800 text-gray-400'}`}>
+                <span className={`px-1.5 py-0.5 rounded-[2px] text-xs ${isActive ? 'bg-neutral-800 text-white border border-neutral-700' : 'bg-neutral-900 text-gray-400'}`}>
                   {tab.count}
                 </span>
               )}
@@ -61,7 +61,7 @@ export const Tabs: React.FC<TabsProps> = ({
   }
 
   return (
-    <div className={`flex flex-wrap gap-2 p-1 bg-neutral-950/80 rounded-[3px] border border-neutral-800 ${className}`}>
+    <div className={`flex flex-wrap gap-2 p-1 bg-black rounded-[3px] border border-neutral-800 ${className}`}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
@@ -71,14 +71,14 @@ export const Tabs: React.FC<TabsProps> = ({
             onClick={() => onChange(tab.id)}
             className={`flex items-center rounded-[3px] font-medium transition-all cursor-pointer ${sizeStyles[size]} ${
               isActive
-                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20 font-semibold'
+                ? 'bg-neutral-800 text-white border border-neutral-700 font-semibold shadow-sm'
                 : 'text-gray-400 hover:text-gray-200 hover:bg-neutral-900'
             }`}
           >
             {tab.icon}
             <span>{tab.label}</span>
             {typeof tab.count === 'number' && (
-              <span className={`ml-1.5 px-1.5 py-0.2 rounded-[2px] text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-neutral-800 text-gray-400'}`}>
+              <span className={`ml-1.5 px-1.5 py-0.2 rounded-[2px] text-xs ${isActive ? 'bg-neutral-700 text-white' : 'bg-neutral-900 text-gray-400'}`}>
                 {tab.count}
               </span>
             )}

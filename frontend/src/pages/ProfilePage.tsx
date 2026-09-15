@@ -18,7 +18,7 @@ type ProfileTab = 'problems' | 'leaderboard';
 
 export const ProfilePage: React.FC = () => {
   const { username } = useParams<{ username?: string }>();
-  const { user: currentUser, logout, isAuthenticated } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const { success: toastSuccess, error: toastError } = useToast();
   const navigate = useNavigate();
 
@@ -115,7 +115,7 @@ export const ProfilePage: React.FC = () => {
 
   if (loading && !profileUser) {
     return (
-      <div className="py-32 flex flex-col items-center justify-center gap-4">
+      <div className="py-32 flex flex-col items-center justify-center gap-4 bg-black">
         <Spinner size="lg" />
         <p className="text-sm text-gray-400 font-mono">Loading Coder Profile...</p>
       </div>
@@ -123,16 +123,16 @@ export const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="w-full flex justify-center items-center min-h-[90vh] py-6 px-2 sm:px-4 font-inter text-[#c0caf5]">
+    <div className="w-full flex justify-center items-center min-h-[90vh] py-6 px-2 sm:px-4 font-inter text-gray-100 bg-black">
       
       {/* ================= TABLET CONTAINER ================= */}
-      <div className="w-full max-w-[1280px] bg-[#24283b] border border-[#414868] rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col">
+      <div className="w-full max-w-[1280px] bg-neutral-950 border border-neutral-800 rounded-[3px] shadow-2xl overflow-hidden flex flex-col">
         
         {/* ================= PROFILE HEADER ================= */}
-        <header className="relative p-6 sm:p-12 pb-6 border-b border-[#414868]/60">
+        <header className="relative p-6 sm:p-12 pb-6 border-b border-neutral-800 bg-black">
           
           {/* COVER GRADIENT */}
-          <div className="w-full h-44 sm:h-48 bg-gradient-to-r from-[#bb9af7]/40 via-[#7dcfff]/30 to-[#bb9af7]/40 absolute top-0 left-0 right-0" />
+          <div className="w-full h-44 sm:h-48 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 absolute top-0 left-0 right-0 border-b border-neutral-800" />
 
           {/* PROFILE INFO ROW */}
           <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mt-16 sm:mt-20">
@@ -142,14 +142,14 @@ export const ProfilePage: React.FC = () => {
               <img
                 src={displayPic}
                 alt={displayName}
-                className="w-36 h-36 sm:w-48 sm:h-48 rounded-3xl object-cover border-[8px] sm:border-[10px] border-[#24283b] shadow-2xl flex-shrink-0 bg-[#1a1b26]"
+                className="w-36 h-36 sm:w-48 sm:h-48 rounded-[3px] object-cover border-[6px] border-neutral-950 shadow-2xl flex-shrink-0 bg-neutral-900"
               />
 
               <div className="flex flex-col justify-end gap-2.5 pb-2">
                 <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                   {displayName}
                 </h1>
-                <p className="text-sm text-[#a9b1d6] max-w-md">
+                <p className="text-sm text-gray-400 max-w-md">
                   {profileData?.bio || 'Full-Stack Developer & Problem Solver | Rising Together'}
                 </p>
 
@@ -162,7 +162,7 @@ export const ProfilePage: React.FC = () => {
                         setEditingPost(null);
                         setIsCreateModalOpen(true);
                       }}
-                      className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#bb9af7] hover:bg-[#a982f5] text-[#1a1b26] shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="h-10 px-5 rounded-[3px] text-xs font-bold uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                       Post Now
@@ -171,7 +171,7 @@ export const ProfilePage: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white bg-transparent hover:bg-[#31354b] border border-[#414868] transition-colors flex items-center gap-1.5 cursor-pointer"
+                      className="h-10 px-4 rounded-[3px] text-xs font-semibold text-gray-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
                       <LogOut className="w-3.5 h-3.5" />
                       Logout
@@ -182,27 +182,27 @@ export const ProfilePage: React.FC = () => {
             </div>
 
             {/* STATS & SECONDARY ACTIONS */}
-            <div className="flex flex-col sm:flex-row lg:flex-col items-center sm:items-end justify-between w-full lg:w-auto gap-4 pb-2 border-t lg:border-t-0 border-[#414868]/40 pt-4 lg:pt-0">
+            <div className="flex flex-col sm:flex-row lg:flex-col items-center sm:items-end justify-between w-full lg:w-auto gap-4 pb-2 border-t lg:border-t-0 border-neutral-800 pt-4 lg:pt-0">
               
               {/* RANK STATS */}
               <div className="flex gap-6 sm:gap-8 justify-center sm:justify-end w-full">
                 <div className="flex flex-col items-center sm:items-end">
-                  <span className="text-xs text-[#a9b1d6] uppercase tracking-wider font-medium">M Rank</span>
-                  <strong className="text-2xl font-bold text-[#7dcfff] font-rajdhani">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">M Rank</span>
+                  <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
                     {userStats?.monthly_rank || '-'}
                   </strong>
                 </div>
 
                 <div className="flex flex-col items-center sm:items-end">
-                  <span className="text-xs text-[#a9b1d6] uppercase tracking-wider font-medium">W Rank</span>
-                  <strong className="text-2xl font-bold text-[#7dcfff] font-rajdhani">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">W Rank</span>
+                  <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
                     {userStats?.weekly_rank || '-'}
                   </strong>
                 </div>
 
                 <div className="flex flex-col items-center sm:items-end">
-                  <span className="text-xs text-[#a9b1d6] uppercase tracking-wider font-medium">D Rank</span>
-                  <strong className="text-2xl font-bold text-[#7dcfff] font-rajdhani">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">D Rank</span>
+                  <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
                     {userStats?.daily_rank || '-'}
                   </strong>
                 </div>
@@ -212,7 +212,7 @@ export const ProfilePage: React.FC = () => {
               <div className="flex gap-2.5">
                 <Link
                   to="/"
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white bg-transparent hover:bg-[#31354b] border border-[#414868] transition-colors flex items-center gap-1.5"
+                  className="h-9 px-4 rounded-[3px] text-xs font-semibold text-gray-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors flex items-center gap-1.5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Back Home
@@ -222,7 +222,7 @@ export const ProfilePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsEditProfileOpen(true)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white bg-transparent hover:bg-[#31354b] border border-[#414868] transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="h-9 px-4 rounded-[3px] text-xs font-semibold text-gray-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
                     Edit Profile
@@ -235,23 +235,23 @@ export const ProfilePage: React.FC = () => {
           </div>
 
           {/* NAVIGATION TABS */}
-          <div className="flex gap-6 mt-8 border-b border-[#414868]">
+          <div className="flex gap-6 mt-8 border-b border-neutral-800">
             <button
               type="button"
               onClick={() => setActiveTab('problems')}
               className={`pb-3 text-sm font-semibold tracking-wide transition-all relative flex items-center gap-2 cursor-pointer ${
                 activeTab === 'problems'
-                  ? 'text-[#bb9af7]'
-                  : 'text-[#a9b1d6] hover:text-white'
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-gray-200'
               }`}
             >
               <Code2 className="w-4 h-4" />
               <span>Problems</span>
-              <sup className="text-xs bg-[#1a1b26] border border-[#414868] px-2 py-0.5 rounded-full font-mono">
+              <sup className="text-xs bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded-[2px] font-mono text-gray-300">
                 {posts.length}
               </sup>
               {activeTab === 'problems' && (
-                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-[#bb9af7] shadow-[0_0_8px_#bb9af7]" />
+                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-orange-500 shadow-glow-orange" />
               )}
             </button>
 
@@ -260,14 +260,14 @@ export const ProfilePage: React.FC = () => {
               onClick={() => setActiveTab('leaderboard')}
               className={`pb-3 text-sm font-semibold tracking-wide transition-all relative flex items-center gap-2 cursor-pointer ${
                 activeTab === 'leaderboard'
-                  ? 'text-[#bb9af7]'
-                  : 'text-[#a9b1d6] hover:text-white'
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-gray-200'
               }`}
             >
               <Trophy className="w-4 h-4" />
               <span>Leaderboard</span>
               {activeTab === 'leaderboard' && (
-                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-[#bb9af7] shadow-[0_0_8px_#bb9af7]" />
+                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-orange-500 shadow-glow-orange" />
               )}
             </button>
           </div>
@@ -275,7 +275,7 @@ export const ProfilePage: React.FC = () => {
         </header>
 
         {/* ================= CONTENT BODY ================= */}
-        <main className="p-6 sm:p-12 overflow-y-auto min-h-[400px]">
+        <main className="p-6 sm:p-12 overflow-y-auto min-h-[400px] bg-neutral-950">
           
           {/* PROBLEMS TAB */}
           {activeTab === 'problems' && (
@@ -294,11 +294,11 @@ export const ProfilePage: React.FC = () => {
                 </div>
               ) : (
                 <div className="py-20 text-center flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 rounded-2xl bg-[#1a1b26] border border-[#414868] flex items-center justify-center text-[#bb9af7] mb-4 shadow-inner">
+                  <div className="w-16 h-16 rounded-[3px] bg-neutral-900 border border-neutral-800 flex items-center justify-center text-orange-400 mb-4 shadow-inner">
                     <Code2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-1">No coding problems shared yet</h3>
-                  <p className="text-xs text-[#a9b1d6] max-w-sm mb-6">
+                  <p className="text-xs text-gray-400 max-w-sm mb-6">
                     {isOwnProfile
                       ? 'Share your algorithmic solutions, earn ranking points, and build your developer portfolio.'
                       : 'This user has not shared any coding solutions yet.'}
@@ -310,7 +310,7 @@ export const ProfilePage: React.FC = () => {
                         setEditingPost(null);
                         setIsCreateModalOpen(true);
                       }}
-                      className="px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#bb9af7] hover:bg-[#a982f5] text-[#1a1b26] shadow-lg transition-transform active:scale-95 cursor-pointer"
+                      className="h-10 px-6 rounded-[3px] font-bold text-xs uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white shadow-lg transition-transform active:scale-95 cursor-pointer"
                     >
                       Post Your First Solution
                     </button>
@@ -331,42 +331,42 @@ export const ProfilePage: React.FC = () => {
                   return (
                     <div
                       key={entry.user_id}
-                      className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
+                      className={`flex items-center justify-between p-4 rounded-[3px] border transition-all ${
                         isSelf
-                          ? 'bg-[#24283b] border-[#bb9af7] shadow-[0_0_15px_rgba(187,154,247,0.35)] ring-1 ring-[#bb9af7]'
-                          : 'bg-[#1a1b26] border-[#414868] hover:bg-[#31354b]'
+                          ? 'bg-neutral-900 border-orange-500 shadow-lg ring-1 ring-orange-500/50'
+                          : 'bg-black border-neutral-800 hover:bg-neutral-900'
                       }`}
                     >
                       <div className="flex items-center gap-4">
-                        <span className="font-bold text-base text-[#a9b1d6] w-8 text-center font-rajdhani">
+                        <span className="font-bold text-base text-gray-400 w-8 text-center font-rajdhani">
                           #{rank}
                         </span>
 
                         <img
                           src={entry.profile_pic || defaultAvatar}
                           alt={entry.full_name || entry.username}
-                          className="w-10 h-10 rounded-full object-cover border border-[#414868]"
+                          className="w-10 h-10 rounded-[3px] object-cover border border-neutral-700"
                         />
 
                         <div className="flex flex-col">
                           <span className="font-semibold text-white text-sm">
                             {entry.full_name || entry.username}{' '}
                             {isSelf && (
-                              <span className="text-xs text-[#bb9af7] font-normal">(You)</span>
+                              <span className="text-xs text-orange-400 font-normal">(You)</span>
                             )}
                           </span>
                           <span className="text-xs text-gray-400">@{entry.username}</span>
                         </div>
                       </div>
 
-                      <div className="text-right font-mono text-sm font-semibold text-[#9ece6a]">
+                      <div className="text-right font-mono text-sm font-semibold text-emerald-400">
                         {entry.total_points} pts
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <div className="py-16 text-center text-sm text-[#a9b1d6]">
+                <div className="py-16 text-center text-sm text-gray-400">
                   No leaderboard rankings available yet.
                 </div>
               )}

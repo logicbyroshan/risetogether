@@ -86,10 +86,10 @@ export const Navbar: React.FC = () => {
           <nav className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className={`px-4 py-2 rounded-[3px] text-sm font-medium transition-colors ${
+              className={`px-3.5 py-2 rounded-[3px] text-sm transition-all ${
                 location.pathname === '/'
-                  ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-gray-300 hover:text-white hover:bg-neutral-900'
+                  ? 'text-white bg-neutral-900 border border-neutral-800 font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-neutral-900/60 font-medium'
               }`}
             >
               Home
@@ -100,10 +100,10 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setCommunityDropdownOpen(!communityDropdownOpen)}
                 onBlur={() => setTimeout(() => setCommunityDropdownOpen(false), 200)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-[3px] text-sm font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-[3px] text-sm transition-all cursor-pointer ${
                   location.pathname.startsWith('/community') && location.pathname !== '/community/resources'
-                    ? 'text-orange-400 bg-orange-500/10'
-                    : 'text-gray-300 hover:text-white hover:bg-neutral-900'
+                    ? 'text-white bg-neutral-900 border border-neutral-800 font-semibold shadow-sm'
+                    : 'text-gray-400 hover:text-white hover:bg-neutral-900/60 font-medium'
                 }`}
               >
                 <span>Community</span>
@@ -133,10 +133,10 @@ export const Navbar: React.FC = () => {
 
             <Link
               to="/feed"
-              className={`px-4 py-2 rounded-[3px] text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 rounded-[3px] text-sm transition-all flex items-center gap-1.5 ${
                 location.pathname.startsWith('/feed')
-                  ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-gray-300 hover:text-white hover:bg-neutral-900'
+                  ? 'text-white bg-neutral-900 border border-neutral-800 font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-neutral-900/60 font-medium'
               }`}
             >
               <Rss className="w-3.5 h-3.5" />
@@ -145,10 +145,10 @@ export const Navbar: React.FC = () => {
 
             <Link
               to="/community/resources"
-              className={`px-4 py-2 rounded-[3px] text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 rounded-[3px] text-sm transition-all flex items-center gap-1.5 ${
                 location.pathname === '/community/resources'
-                  ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-gray-300 hover:text-white hover:bg-neutral-900'
+                  ? 'text-white bg-neutral-900 border border-neutral-800 font-semibold shadow-sm'
+                  : 'text-gray-400 hover:text-white hover:bg-neutral-900/60 font-medium'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -300,7 +300,7 @@ export const Navbar: React.FC = () => {
               <div className="space-y-2">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-[3px] text-sm font-medium text-orange-400 bg-orange-500/10"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-[3px] text-sm font-medium text-white bg-neutral-900 border border-neutral-800"
                 >
                   <Avatar src={user.profile.profile_pic} name={user.username} size="xs" />
                   <span>My Profile (@{user.username})</span>
