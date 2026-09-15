@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { dsaApi } from '../api/dsaApi';
 import { LeaderboardEntry, LeaderboardResponse } from '../types/dsa';
 import { Spinner } from '../components/ui/Spinner';
+import { Bell, Trophy, Sparkles, Gem } from 'lucide-react';
 
 type TimeframeType = 'overall' | 'daily' | 'weekly' | 'monthly';
 
@@ -31,11 +32,11 @@ export const LeaderboardPage: React.FC = () => {
     fetchLeaderboard(timeframe);
   }, [timeframe, fetchLeaderboard]);
 
-  const defaultAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';
+  const defaultAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
   const userAvatar = user?.profile?.profile_pic || defaultAvatar;
 
   const topUsers: LeaderboardEntry[] = data?.top_users || [];
-  const otherUsers: LeaderboardEntry[] = data?.other_users || [];
+  const otherUsers: LeaderboardEntry[] = data?.other_users || topUsers.slice(3);
   const totalCount = data?.total_user_count || 0;
   const currentRank = data?.current_user_rank || '-';
 
@@ -44,35 +45,34 @@ export const LeaderboardPage: React.FC = () => {
   const player3 = topUsers[2] || null;
 
   return (
-    <div className="w-full flex justify-center items-start min-h-[90vh] py-6 px-2 sm:px-4 font-poppins text-gray-200">
-      <div className="w-full max-w-[1200px] bg-[#1c212c] rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
-        
-        {/* ================= HEADER ================= */}
-        <header className="flex flex-wrap justify-between items-center px-6 sm:px-8 py-4 bg-[#151a24] border-b border-white/10">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-[#0d111b] text-gray-100 font-inter pb-20">
+      
+      {/* ================= HEADER ================= */}
+      <header className="border-b border-gray-800 bg-[#0d111b]/80 backdrop-blur-md sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link to="/leaderboard" className="flex items-center gap-3">
             <img
               src="/assets/images/rt.png"
               alt="Grind 500 Logo"
-              className="h-10 w-auto rounded-lg shadow-md object-contain"
+              className="w-8 h-8 object-contain"
               onError={(e) => {
                 (e.target as HTMLElement).style.display = 'none';
               }}
             />
-            <span className="text-xl font-bold tracking-tight text-white font-rajdhani uppercase">
-              Grind 500 Leaderboard
+            <span className="font-rajdhani font-bold text-2xl tracking-wider text-white">
+              GRIND <span className="text-[#ca651d]">500</span>
             </span>
-          </div>
+          </Link>
 
-          <nav className="order-3 sm:order-2 w-full sm:w-auto mt-3 sm:mt-0">
-            <ul className="flex justify-center items-center gap-6 text-sm font-medium">
-              <li className="relative">
-                <button
-                  type="button"
-                  className="text-white font-semibold pb-1 relative transition-colors focus:outline-none"
+          <nav className="order-3 sm:order-2 w-full sm:w-auto mt-4 sm:mt-0 flex justify-center">
+            <ul className="flex items-center gap-2 sm:gap-6 text-sm font-medium">
+              <li>
+                <Link
+                  to="/leaderboard"
+                  className="text-white border-b-2 border-[#ca651d] pb-1 font-semibold"
                 >
                   Leaderboard
-                  <span className="absolute bottom-[-10px] left-0 w-full h-[3px] bg-[#ca651d] rounded-full shadow-[0_0_10px_#ca651d]" />
-                </button>
+                </Link>
               </li>
               <li>
                 <Link
@@ -107,7 +107,7 @@ export const LeaderboardPage: React.FC = () => {
               aria-label="Notifications"
               className="text-gray-400 hover:text-white transition-colors text-lg"
             >
-              <i className="fas fa-bell" />
+              <Bell className="w-5 h-5" />
             </Link>
 
             {isAuthenticated ? (
@@ -120,47 +120,48 @@ export const LeaderboardPage: React.FC = () => {
               </Link>
             ) : (
               <Link
-                to="/login"
-                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg bg-[#ca651d] hover:bg-[#b05315] text-white transition-colors"
+                to="/join"
+                className="px-5 py-2 rounded-lg bg-[#ca651d] hover:bg-[#b55817] text-white text-sm font-semibold tracking-wider transition-colors shadow-md uppercase"
               >
                 Sign In
               </Link>
             )}
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* ================= CONTENT ================= */}
-        <main className="p-4 sm:p-8 bg-gradient-to-b from-[#0d111b]/90 to-[#1c212c]/95 backdrop-blur-md">
-          
-          {/* TIMEFRAME TABS */}
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex bg-[#2d3442] p-1.5 rounded-full shadow-inner border border-white/5 gap-1">
-              {(['overall', 'daily', 'weekly', 'monthly'] as TimeframeType[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setTimeframe(t)}
-                  className={`px-6 py-2 rounded-full text-sm font-semibold capitalize transition-all duration-200 cursor-pointer ${
-                    timeframe === t
-                      ? 'bg-[#ca651d] text-white shadow-[0_4px_15px_rgba(202,101,29,0.45)]'
-                      : 'text-gray-400 hover:text-gray-200 bg-transparent'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
+      {/* ================= CONTENT ================= */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        {/* TIMEFRAME TABS */}
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex bg-[#1a202c] p-1.5 rounded-full border border-gray-800 shadow-inner">
+            {(['overall', 'daily', 'weekly', 'monthly'] as TimeframeType[]).map((tf) => (
+              <button
+                key={tf}
+                type="button"
+                onClick={() => setTimeframe(tf)}
+                className={`px-6 py-2 rounded-full text-sm font-semibold capitalize transition-all cursor-pointer ${
+                  timeframe === tf
+                    ? 'bg-[#ca651d] text-white shadow-md'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {tf}
+              </button>
+            ))}
           </div>
+        </div>
 
-          {loading ? (
-            <div className="py-24 flex flex-col items-center justify-center gap-3">
-              <Spinner size="lg" />
-              <p className="text-sm text-gray-400">Loading live rankings...</p>
-            </div>
-          ) : (
-            <>
-              {/* TOP PLAYERS SHOWCASE */}
-              <div className="flex flex-col lg:flex-row justify-center items-center lg:items-end gap-16 lg:gap-8 mt-28 mb-14">
+        {loading ? (
+          <div className="py-24 flex justify-center items-center">
+            <Spinner size="lg" />
+          </div>
+        ) : (
+          <>
+            {/* TOP PLAYERS SHOWCASE */}
+            <div className="mb-16">
+              <div className="flex flex-col lg:flex-row justify-center items-center lg:items-end gap-8 pt-16">
                 
                 {/* #2 PLAYER CARD */}
                 {player2 ? (
@@ -174,11 +175,11 @@ export const LeaderboardPage: React.FC = () => {
                       {player2.full_name || player2.username}
                     </h3>
                     <div className="flex items-center gap-2 text-gray-300 text-xs mb-3 bg-[#4c51bf]/20 px-3 py-1 rounded-full border border-purple-500/20">
-                      <i className="fas fa-trophy text-[#f7cd57]" />
+                      <Trophy className="w-3.5 h-3.5 text-[#f7cd57]" />
                       <span>Rank #2</span>
                     </div>
                     <div className="flex flex-col items-center text-[#f7cd57] font-bold">
-                      <i className="fas fa-gem text-cyan-400 text-2xl mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
+                      <Gem className="w-6 h-6 text-cyan-400 mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
                       <span className="text-2xl font-rajdhani">
                         {timeframe === 'daily'
                           ? player2.daily_points
@@ -212,11 +213,11 @@ export const LeaderboardPage: React.FC = () => {
                       {player1.full_name || player1.username}
                     </h3>
                     <div className="flex items-center gap-2 text-white text-xs mb-3 bg-white/10 px-3.5 py-1 rounded-full border border-yellow-500/30">
-                      <i className="fas fa-trophy text-[#f7cd57]" />
+                      <Trophy className="w-3.5 h-3.5 text-[#f7cd57]" />
                       <span className="font-semibold">Top Rank #1</span>
                     </div>
                     <div className="flex flex-col items-center text-white font-bold">
-                      <i className="fas fa-gem text-cyan-400 text-3xl mb-1 drop-shadow-[0_0_12px_rgba(0,188,212,0.8)] animate-pulse" />
+                      <Gem className="w-7 h-7 text-cyan-400 mb-1 drop-shadow-[0_0_12px_rgba(0,188,212,0.8)] animate-pulse" />
                       <span className="text-3xl font-rajdhani text-yellow-300">
                         {timeframe === 'daily'
                           ? player1.daily_points
@@ -251,11 +252,11 @@ export const LeaderboardPage: React.FC = () => {
                       {player3.full_name || player3.username}
                     </h3>
                     <div className="flex items-center gap-2 text-gray-300 text-xs mb-3 bg-[#4c51bf]/20 px-3 py-1 rounded-full border border-purple-500/20">
-                      <i className="fas fa-trophy text-[#cd7f32]" />
+                      <Trophy className="w-3.5 h-3.5 text-[#cd7f32]" />
                       <span>Rank #3</span>
                     </div>
                     <div className="flex flex-col items-center text-[#f7cd57] font-bold">
-                      <i className="fas fa-gem text-cyan-400 text-2xl mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
+                      <Gem className="w-6 h-6 text-cyan-400 mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
                       <span className="text-2xl font-rajdhani">
                         {timeframe === 'daily'
                           ? player3.daily_points
@@ -278,8 +279,9 @@ export const LeaderboardPage: React.FC = () => {
                 )}
 
               </div>
+            </div>
 
-              {/* USER STATS BANNER */}
+            {/* USER STATS BANNER */}
               <div className="text-center text-sm text-gray-400 mb-10 py-3 px-6 rounded-xl bg-[#1a202c]/80 border border-white/5 max-w-xl mx-auto">
                 {isAuthenticated ? (
                   <span>
@@ -353,7 +355,7 @@ export const LeaderboardPage: React.FC = () => {
                             </td>
                             <td className="py-4 px-6 text-right font-rajdhani font-bold text-xl text-cyan-400">
                               <div className="inline-flex items-center gap-2 justify-end">
-                                <i className="fas fa-gem text-sm" />
+                                <Gem className="w-4 h-4" />
                                 <span>{points}</span>
                               </div>
                             </td>
@@ -375,7 +377,6 @@ export const LeaderboardPage: React.FC = () => {
             </>
           )}
         </main>
-      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { CodingProblemPost } from '../../../types/dsa';
-import { MoreVertical, Star, Edit, Trash2 } from 'lucide-react';
+import { MoreVertical, Star, Edit, Trash2, Code2, Terminal, FileCode } from 'lucide-react';
 
 interface CodingPostCardProps {
   post: CodingProblemPost;
@@ -35,16 +35,16 @@ export const CodingPostCard: React.FC<CodingPostCardProps> = ({
   const getLanguageIcon = (lang: string) => {
     switch (lang) {
       case 'PYTHON':
-        return <i className="fab fa-python text-[#4B8BBE] text-base" />;
+        return <Terminal className="w-4 h-4 text-[#4B8BBE]" />;
       case 'JAVA':
-        return <i className="fab fa-java text-[#f89820] text-base" />;
+        return <Code2 className="w-4 h-4 text-[#f89820]" />;
       case 'CPP':
-        return <i className="fab fa-cuttlefish text-[#004482] text-base" />;
+        return <Code2 className="w-4 h-4 text-[#38bdf8]" />;
       case 'TYPESCRIPT':
       case 'JAVASCRIPT':
-        return <i className="fab fa-js text-[#f7df1e] text-base" />;
+        return <FileCode className="w-4 h-4 text-[#f7df1e]" />;
       default:
-        return <i className="fas fa-code text-cyan-400 text-base" />;
+        return <Code2 className="w-4 h-4 text-cyan-400" />;
     }
   };
 
