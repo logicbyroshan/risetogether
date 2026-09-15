@@ -1,0 +1,29 @@
+# Django Core
+Django==5.2.5
+asgiref==3.8.1
+sqlparse==0.5.3
+
+# Image Processing
+Pillow==11.0.0
+
+# Rich Text Editor
+django-tinymce==4.1.0
+
+# Environment Variables
+python-dotenv==1.0.1
+
+# Database (PostgreSQL for production)
+psycopg2-binary==2.9.10
+
+# Security & API
+django-cors-headers==4.6.0
+djangorestframework==3.18.1
+
+# Static Files (for production)
+whitenoise==6.8.2
+
+# Development Tools
+django-debug-toolbar==4.4.6
+
+# Testing & Coverage
+coverage==7.6.9
