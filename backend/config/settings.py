@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "accounts",
     "community",
     "feed",
+    "dsa",
 ]
 
 MIDDLEWARE = [

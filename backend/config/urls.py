@@ -12,6 +12,7 @@ urlpatterns = [
     path("api/", include("community.api_urls", namespace="api_community")),
     path("api/", include("feed.api_urls", namespace="api_feed")),
     path("api/", include("riseapp.api_urls", namespace="api_riseapp")),
+    path("api/dsa/", include("dsa.urls", namespace="dsa")),
 
     # Legacy server-rendered templates (preserved for fallback & admin)
     path("", include("riseapp.urls")),
