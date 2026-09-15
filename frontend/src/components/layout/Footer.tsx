@@ -31,10 +31,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand Col */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-[3px] bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
+            <Link to="/" className="flex items-center gap-3 group">
+              <img
+                src="/assets/images/logo.png"
+                alt="RiseTogether Logo"
+                className="w-9 h-9 rounded-[3px] object-cover border border-orange-500/40 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform"
+              />
               <span className="font-rajdhani font-bold text-2xl tracking-wider text-white">
                 RISE<span className="text-orange-500">TOGETHER</span>
               </span>

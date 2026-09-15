@@ -7,9 +7,13 @@ export const NotFoundPage: React.FC = () => {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-20 text-center">
       <div className="max-w-md space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-orange-600/20 border border-orange-500/40 flex items-center justify-center mx-auto text-orange-400">
-          <Sparkles className="w-8 h-8" />
-        </div>
+        <Link to="/" className="inline-block">
+          <img
+            src="/assets/images/logo.png"
+            alt="RiseTogether Logo"
+            className="w-16 h-16 rounded-[3px] object-cover border border-orange-500/40 mx-auto shadow-2xl shadow-orange-500/20 hover:scale-105 transition-transform"
+          />
+        </Link>
         <h1 className="font-rajdhani font-bold text-6xl text-white">404</h1>
         <h2 className="font-rajdhani font-bold text-2xl text-gray-200">PAGE NOT FOUND</h2>
         <p className="text-sm text-gray-400">
