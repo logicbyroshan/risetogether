@@ -76,8 +76,36 @@
   background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1f2937 100%);
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.1);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 5s ease-in-out infinite;
+}
+
 .hero-gradient {
-  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.15) 0%, rgba(17, 24, 39, 0.05) 60%, transparent 80%);
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.18) 0%, rgba(17, 24, 39, 0.08) 55%, transparent 75%);
 }
 
 .card-hover {
