@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
+import { Avatar } from '../ui/Avatar';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,12 +48,6 @@ export const Navbar: React.FC = () => {
     await logout();
     navigate('/');
   };
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Feed', path: '/feed', icon: <Rss className="w-4 h-4" /> },
-    { name: 'Resources', path: '/community/resources', icon: <Layers className="w-4 h-4" /> },
-  ];
 
   const communityLinks = [
     { name: 'Blogs', path: '/community/blogs', desc: 'Read insights & tutorials', icon: <BookOpen className="w-4 h-4 text-orange-400" /> },
@@ -103,7 +98,7 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => setCommunityDropdownOpen(!communityDropdownOpen)}
                 onBlur={() => setTimeout(() => setCommunityDropdownOpen(false), 200)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
                   location.pathname.startsWith('/community') && location.pathname !== '/community/resources'
                     ? 'text-orange-400 bg-orange-500/10'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
@@ -136,24 +131,26 @@ export const Navbar: React.FC = () => {
 
             <Link
               to="/feed"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 location.pathname.startsWith('/feed')
                   ? 'text-orange-400 bg-orange-500/10'
                   : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
               }`}
             >
-              Feed
+              <Rss className="w-3.5 h-3.5" />
+              <span>Feed</span>
             </Link>
 
             <Link
               to="/community/resources"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 location.pathname === '/community/resources'
                   ? 'text-orange-400 bg-orange-500/10'
                   : 'text-gray-300 hover:text-white hover:bg-gray-800/60'
               }`}
             >
-              Resources
+              <Layers className="w-3.5 h-3.5" />
+              <span>Resources</span>
             </Link>
           </nav>
 
@@ -166,12 +163,13 @@ export const Navbar: React.FC = () => {
                   onBlur={() => setTimeout(() => setUserDropdownOpen(false), 200)}
                   className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-gray-800/80 border border-orange-500/30 hover:border-orange-500/60 transition-all cursor-pointer"
                 >
-                  <img
-                    src={user.profile.profile_pic || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-                    alt={user.username}
-                    className="w-8 h-8 rounded-full object-cover border border-orange-500/50"
+                  <Avatar
+                    src={user.profile.profile_pic}
+                    name={user.username}
+                    size="sm"
+                    isOnline={true}
                   />
-                  <span className="text-sm font-semibold text-gray-200">{user.username}</span>
+                  <span className="text-sm font-semibold text-gray-200">@{user.username}</span>
                   <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
                 </button>
 
@@ -242,7 +240,7 @@ export const Navbar: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/80 focus:outline-none"
+              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/80 focus:outline-none cursor-pointer"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -300,10 +298,10 @@ export const Navbar: React.FC = () => {
               <div className="space-y-2">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-orange-400 bg-orange-500/10"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-orange-400 bg-orange-500/10"
                 >
-                  <UserIcon className="w-4 h-4" />
-                  <span>My Profile ({user.username})</span>
+                  <Avatar src={user.profile.profile_pic} name={user.username} size="xs" />
+                  <span>My Profile (@{user.username})</span>
                 </Link>
                 <Link
                   to="/settings"
@@ -314,7 +312,7 @@ export const Navbar: React.FC = () => {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-950/40"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-950/40 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Log Out</span>
