@@ -70,8 +70,10 @@ htmlcov/
 .directory
 Thumbs.db
 
-# Node modules (if using any JS tools)
+# Node modules & frontend build artifacts
 node_modules/
+dist/
+*.tsbuildinfo
 
 # Backup files
 *.bak
