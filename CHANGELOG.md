@@ -2,6 +2,22 @@
 
 All notable changes to RiseTogether are documented in this file.
 
+## [Homepage UI/UX Overhaul, Workstation IDE & Lenis Smooth Scroll] - 2026-09-15
+
+### Added
+- **Lenis Smooth Inertial Scrolling (`frontend/src/components/common/SmoothScroll.tsx`)**: Full project momentum-based inertial scrolling with custom damping curve and RAF loop.
+- **Hero Command Center (100vh / 100vw)**: Full viewport hero layout with live DSA radar & activity log stream (`@aarav solved LRU Cache`, `@priya solved Two Sum`, real-time memory & latency HUD), high-contrast action CTAs, and anchored metric chips.
+- **Realistic IDE Workstation Display (`Who We Are`)**: Equal-height narrative and hardware monitor display with interactive tabs (`manifest.ts`, `dsa_engine.py`), syntax-highlighted code editor pane, and live execution status console.
+- **Interactive 3-Stage Mission Pipeline (`Our Mission`)**: Replaced generic 3 cards with an integrated 3-stage capability flywheel (`Stage 01: LEARN`, `Stage 02: BUILD`, `Stage 03: GROW`) with progress track accents and capability badges.
+- **Quarterly 3-Month Community Roadmap (`Community Calendar`)**: 3-month quarter timeline (`Month 01: Foundation & Algorithmic Sprint`, `Month 02: Production Systems`, `Month 03: National Demo Day & Summit`) with month switcher tabs and event action buttons.
+- **Verified Developer Student Stories**: Cleaned up testimonials by removing 5-star ratings and introducing verified cohort badges (`✓ Cohort of '24`, `Placed @ Microsoft`, `Top 1% Grind 500`).
+- **Equal-Height Contact Hub**: Balanced left contact info hub and right message form cards with inquiry category selector (`General Inquiry`, `Workshop Collaboration`, `Campus Ambassador`, `Grind 500 Feedback`, `Partnership`).
+
+### Changed
+- **Crisp Logo Branding**: Removed orange glow drop shadows and harsh borders on `logo.png` across `Navbar`, `Footer`, `LoginPage`, `JoinPage`, `PasswordResetPage`, `PasswordResetConfirmPage`, and `NotFoundPage`.
+
+---
+
 ## [Official RiseTogether 3D Embossed Logo Rebranding] - 2026-09-15
 
 ### Added
