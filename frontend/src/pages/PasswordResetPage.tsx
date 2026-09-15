@@ -38,7 +38,7 @@ export const PasswordResetPage: React.FC = () => {
             <img
               src="/assets/images/logo.png"
               alt="RiseTogether Logo"
-              className="w-14 h-14 rounded-[3px] object-cover border border-orange-500/40 mx-auto mb-4 shadow-xl shadow-orange-500/20 hover:scale-105 transition-transform"
+              className="w-14 h-14 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-4 hover:border-neutral-700 transition-colors"
             />
           </Link>
           <h2 className="font-rajdhani font-bold text-3xl text-white tracking-wide">

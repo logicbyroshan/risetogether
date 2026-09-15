@@ -72,7 +72,7 @@ export const Navbar: React.FC = () => {
             <img
               src="/assets/images/logo.png"
               alt="RiseTogether Logo"
-              className="w-10 h-10 rounded-[3px] object-cover border border-orange-500/40 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform"
+              className="w-10 h-10 rounded-[3px] object-cover border border-neutral-800 group-hover:border-neutral-700 transition-colors"
             />
             <div className="flex flex-col">
               <span className="font-rajdhani font-bold text-2xl tracking-wider text-white group-hover:text-orange-400 transition-colors">

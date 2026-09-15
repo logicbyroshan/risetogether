@@ -18,7 +18,6 @@ import {
   FolderGit2,
   Calendar,
   Send,
-  Star,
   ChevronDown,
   Hammer,
   Medal,
@@ -35,6 +34,14 @@ import {
   Clock,
   Layers,
   Zap,
+  Code2,
+  GitBranch,
+  Cpu,
+  Monitor,
+  Check,
+  ShieldCheck,
+  Briefcase,
+  Target,
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -47,10 +54,13 @@ export const HomePage: React.FC = () => {
   const [featuredActivities, setFeaturedActivities] = useState<Activity[]>([]);
   const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(null);
   const [activeResourceCategory, setActiveResourceCategory] = useState<string>('all');
+  const [activeQuarterMonth, setActiveQuarterMonth] = useState<number>(1);
+  const [activeWorkstationTab, setActiveWorkstationTab] = useState<'manifest' | 'engine' | 'matrix'>('manifest');
 
   // Contact Form state
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
+  const [contactSubject, setContactSubject] = useState('General Inquiry');
   const [contactMessage, setContactMessage] = useState('');
   const [submittingContact, setSubmittingContact] = useState(false);
 
@@ -70,11 +80,12 @@ export const HomePage: React.FC = () => {
       const res = await publicApi.submitContact({
         name: contactName,
         email: contactEmail,
-        message: contactMessage,
+        message: `[${contactSubject}] ${contactMessage}`,
       });
       toastSuccess(res.message || 'Thank you for reaching out! We will be in touch shortly.');
       setContactName('');
       setContactEmail('');
+      setContactSubject('General Inquiry');
       setContactMessage('');
     } catch (err: any) {
       toastError(err.customMessage || 'Failed to submit contact message.');
@@ -188,287 +199,509 @@ export const HomePage: React.FC = () => {
       ? resources
       : resources.filter((r) => r.category === activeResourceCategory);
 
+  // 3-Month Quarterly Schedule Data
+  const quarterlyRoadmap = [
+    {
+      monthIndex: 1,
+      monthName: 'Month 01',
+      monthTitle: 'Foundation & Algorithmic Sprint',
+      period: 'Weeks 1 – 4',
+      events: [
+        {
+          id: 'q1-e1',
+          tag: 'LIVE WORKSHOP',
+          tagColor: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+          title: 'Advanced DSA Patterns & Complexity Analysis',
+          description: 'Master sliding windows, two pointers, dynamic programming memos, and tree traversals for high-frequency interview patterns.',
+          timing: 'Every Saturday • 18:00 IST',
+          lead: 'DSA Lead • Grind 500 Core',
+          link: '/community/activities',
+          actionText: 'RSVP Workshop',
+        },
+        {
+          id: 'q1-e2',
+          tag: 'HACK SPRINT',
+          tagColor: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+          title: '24-Hour Beginner Open-Source Hackathon',
+          description: 'First-time contributor sprint fixing issues, authoring documentation, and shipping feature PRs across community repos.',
+          timing: 'Weekend 3 • 48H Nonstop',
+          lead: 'Open Source Mentors',
+          link: '/community/projects',
+          actionText: 'Join Sprint',
+        },
+      ],
+    },
+    {
+      monthIndex: 2,
+      monthName: 'Month 02',
+      monthTitle: 'Production Systems & Full Stack Mastery',
+      period: 'Weeks 5 – 8',
+      events: [
+        {
+          id: 'q2-e1',
+          tag: 'SYSTEM DESIGN',
+          tagColor: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+          title: 'Scalable Microservices, Redis Caching & Celery',
+          description: 'Hands-on architectural masterclass on rate limiters, message brokers, caching strategies, and database sharding.',
+          timing: 'Alternate Thursdays • 19:30 IST',
+          lead: 'Backend Architect',
+          link: '/community/activities',
+          actionText: 'Register Free',
+        },
+        {
+          id: 'q2-e2',
+          tag: 'COMMUNITY DEMO',
+          tagColor: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+          title: 'Mid-Quarter Full-Stack Project Milestone Reviews',
+          description: 'Live code review and architecture evaluations for student teams building AI tools, developer utilities, and web apps.',
+          timing: 'Week 8 Sunday • 16:00 IST',
+          lead: 'Student Project Leads',
+          link: '/community/projects',
+          actionText: 'Submit Project',
+        },
+      ],
+    },
+    {
+      monthIndex: 3,
+      monthName: 'Month 03',
+      monthTitle: 'National Demo Day & Career Placement Summit',
+      period: 'Weeks 9 – 12',
+      events: [
+        {
+          id: 'q3-e1',
+          tag: 'NATIONAL SUMMIT',
+          tagColor: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+          title: 'RiseTogether National Demo Day & Tech Summit',
+          description: 'Top student teams pitch their software to industry leaders, alumni SWEs, and founders with cash prizes & trophy awards.',
+          timing: 'Week 11 Finale • All-Day Event',
+          lead: 'RiseTogether Leadership',
+          link: '/community/activities',
+          actionText: 'Attend Summit',
+        },
+        {
+          id: 'q3-e2',
+          tag: 'CAREER ACCELERATOR',
+          tagColor: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+          title: 'Senior SWE Mock Interviews & Referral Drive',
+          description: '1-on-1 technical mock interviews, resume teardowns, and direct referral distribution to top tech companies.',
+          timing: 'Week 12 • Scheduled Slots',
+          lead: 'Alumni Network',
+          link: '/feed',
+          actionText: 'Book Slot',
+        },
+      ],
+    },
+  ];
+
+  const currentMonthData = quarterlyRoadmap.find((m) => m.monthIndex === activeQuarterMonth) || quarterlyRoadmap[0];
+
   return (
     <div className="w-full space-y-28 sm:space-y-36 overflow-hidden text-gray-100 font-inter pb-24 bg-black">
       
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION (ATMOSPHERIC BACKGROUND WITH METRIC CHIPS)                */}
+      {/* 1. HERO COMMAND CENTER (100VH / 100VW WITH LIVE RADAR & HUD)             */}
       {/* ========================================================================= */}
       <section
         id="home"
-        className="min-h-[88vh] md:min-h-[92vh] flex items-center justify-center relative overflow-hidden pt-8 pb-16 bg-black"
+        className="w-full h-screen min-h-[100dvh] flex flex-col justify-between pt-20 sm:pt-24 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden bg-black"
       >
-        {/* BACKGROUND IMAGE */}
+        {/* BACKGROUND ACCENTS & GRID PATTERN */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-102 opacity-35"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25 pointer-events-none"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')`,
           }}
         />
-
-        {/* JET PURE BLACK OVERLAYS */}
-        <div className="absolute inset-0 bg-black/85 backdrop-blur-[1px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/50 to-black pointer-events-none" />
+        <div className="absolute inset-0 bg-black/85 backdrop-blur-[1px] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/40 to-black pointer-events-none" />
         <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none" />
 
-        {/* HERO CONTENT */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 w-full">
-          <div className="max-w-3xl mx-auto">
+        {/* HERO TOP & CENTER CONTENT GRID */}
+        <div className="relative z-10 w-full flex-1 flex items-center">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full">
             
-            {/* TOP ANNOUNCEMENT PILL */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[3px] bg-neutral-900/90 backdrop-blur-md text-xs font-medium text-gray-300 mb-6 border border-neutral-800 shadow-sm">
-              <span className="w-2 h-2 rounded-[1px] bg-orange-500 animate-pulse" />
-              <span>Empowering India's Premier Student Tech Movement</span>
+            {/* Left Column: Command & Vision */}
+            <div className="lg:col-span-7 text-left space-y-4 sm:space-y-5">
+              
+              {/* Live Status Pill */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[3px] bg-neutral-950 border border-neutral-800 text-xs font-mono text-gray-300 shadow-sm">
+                <span className="w-2 h-2 rounded-[1px] bg-emerald-500 animate-ping" />
+                <span className="text-emerald-400 font-semibold">● SYSTEM ONLINE</span>
+                <span className="text-neutral-600">|</span>
+                <span className="text-gray-400">500+ Devs Active</span>
+              </div>
+
+              {/* Main Headline */}
+              <div>
+                <h1 className="font-rajdhani text-4xl sm:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-white leading-none">
+                  RISE <span className="text-orange-500">TOGETHER</span>
+                </h1>
+                <p className="text-base sm:text-xl lg:text-2xl font-rajdhani font-bold mt-2 tracking-wider text-gray-300">
+                  LEARN. <span className="text-orange-400">BUILD.</span> GROW.
+                </p>
+              </div>
+
+              {/* Description */}
+              <p className="text-xs sm:text-sm lg:text-base text-gray-300 max-w-xl leading-relaxed font-normal">
+                India's premier student developer ecosystem. Master algorithmic problem solving in Grind 500, architect production software in collaborative sprints, and launch your engineering career.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Link
+                  to={isAuthenticated ? '/feed' : '/join'}
+                  className="h-11 px-6 rounded-[3px] text-xs sm:text-sm font-semibold tracking-wide bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>{isAuthenticated ? 'Enter Community Feed' : 'Join Community Free'}</span>
+                </Link>
+
+                <Link
+                  to="/leaderboard"
+                  className="h-11 px-5 rounded-[3px] text-xs sm:text-sm font-semibold text-gray-200 hover:text-white border border-neutral-800 hover:border-neutral-700 bg-neutral-950 transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Trophy className="w-4 h-4 text-amber-400" />
+                  <span>Grind 500 Arena</span>
+                </Link>
+
+                <Link
+                  to="/community/projects"
+                  className="h-11 px-4 rounded-[3px] text-xs sm:text-sm font-medium text-gray-400 hover:text-gray-200 border border-neutral-800 hover:border-neutral-700 bg-black transition-all duration-200 flex items-center justify-center gap-1.5"
+                >
+                  <FolderGit2 className="w-4 h-4" />
+                  <span>Projects</span>
+                </Link>
+              </div>
+
             </div>
 
-            {/* MAIN HEADING */}
-            <h1 className="font-rajdhani text-5xl sm:text-6xl md:text-7xl font-extrabold uppercase tracking-wide text-white mb-3">
-              RISE TOGETHER
-            </h1>
+            {/* Right Column: Live Developer Radar & Code Stream */}
+            <div className="lg:col-span-5 hidden md:block">
+              <div className="rounded-[3px] bg-neutral-950 border border-neutral-800 shadow-2xl overflow-hidden font-mono text-left">
+                {/* Radar Header */}
+                <div className="px-4 py-3 bg-neutral-900 border-b border-neutral-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-[1px] bg-red-500" />
+                    <div className="w-2.5 h-2.5 rounded-[1px] bg-yellow-500" />
+                    <div className="w-2.5 h-2.5 rounded-[1px] bg-emerald-500" />
+                    <span className="text-xs text-gray-300 ml-2 font-semibold">live-radar.log</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-[2px] border border-emerald-500/20">
+                    REALTIME STREAM
+                  </span>
+                </div>
 
-            {/* TAGLINE */}
-            <p className="text-lg sm:text-2xl font-rajdhani font-bold mb-4 tracking-widest text-orange-400">
-              LEARN. BUILD. GROW.
-            </p>
+                {/* Radar Body Stream */}
+                <div className="p-4 space-y-2.5 text-xs text-gray-300 bg-black/90">
+                  <div className="flex items-center justify-between text-[11px] text-gray-500 pb-1 border-b border-neutral-900">
+                    <span>TIMESTAMP</span>
+                    <span>ACTIVITY DISPATCH</span>
+                    <span>STATUS</span>
+                  </div>
 
-            {/* DESCRIPTION */}
-            <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed mb-8 font-normal">
-              Join India's most innovative student tech community where future developers, designers, and innovators come together to create extraordinary solutions and build the next generation of technology.
-            </p>
+                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
+                    <span className="text-gray-500">14:32:10</span>
+                    <span className="text-white"><span className="text-orange-400">@aarav</span> solved "LRU Cache"</span>
+                    <span className="text-emerald-400 font-semibold">+45 pts</span>
+                  </div>
 
-            {/* REFINED CTA BUTTONS (HEIGHT STANDARDIZED h-11) */}
-            <div className="flex flex-col sm:flex-row gap-3.5 justify-center items-center">
-              <Link
-                to={isAuthenticated ? '/feed' : '/join'}
-                className="w-full sm:w-auto h-11 px-6 rounded-[3px] text-sm font-semibold tracking-wide bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                <Users className="w-4 h-4" />
-                <span>{isAuthenticated ? 'Go to Social Feed' : 'Join the Community'}</span>
-              </Link>
+                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
+                    <span className="text-gray-500">14:30:45</span>
+                    <span className="text-white"><span className="text-purple-400">@team_alpha</span> merged PR #32</span>
+                    <span className="text-cyan-400 font-semibold">React 19</span>
+                  </div>
 
-              <Link
-                to="/community/projects"
-                className="w-full sm:w-auto h-11 px-6 rounded-[3px] text-sm font-medium text-gray-200 hover:text-white border border-neutral-800 hover:border-neutral-700 bg-neutral-950 hover:bg-neutral-900 transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                <FolderGit2 className="w-4 h-4 text-gray-400" />
-                <span>Explore Projects</span>
-              </Link>
+                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
+                    <span className="text-gray-500">14:28:12</span>
+                    <span className="text-white"><span className="text-orange-400">@priya</span> solved "Two Sum"</span>
+                    <span className="text-emerald-400 font-semibold">0ms (100%)</span>
+                  </div>
 
-              <Link
-                to="/leaderboard"
-                className="w-full sm:w-auto h-11 px-6 rounded-[3px] text-sm font-medium text-gray-300 hover:text-orange-400 border border-neutral-800 hover:border-neutral-700 bg-neutral-950 hover:bg-neutral-900 transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                <Trophy className="w-4 h-4 text-amber-400" />
-                <span>Grind 500 Arena</span>
-              </Link>
-            </div>
+                  <div className="flex items-center justify-between text-[11px] hover:bg-neutral-900/40 p-1 rounded-[2px] transition-colors">
+                    <span className="text-gray-500">14:24:00</span>
+                    <span className="text-white"><span className="text-amber-400">@rohan</span> unlocked 30d Streak</span>
+                    <span className="text-amber-400 font-semibold">🔥 Diamond</span>
+                  </div>
 
-            {/* HERO METRIC CHIPS STRIP */}
-            <div className="mt-12 max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3.5 sm:p-4 rounded-[3px] bg-neutral-950/90 border border-neutral-800 backdrop-blur-md shadow-2xl">
-              <div className="text-center p-2">
-                <div className="text-2xl sm:text-3xl font-bold text-orange-500 font-rajdhani">{stats.membersCount}+</div>
-                <div className="text-[11px] text-gray-400 uppercase tracking-wider font-medium mt-0.5">Active Members</div>
-              </div>
-              <div className="text-center p-2 border-l border-neutral-800">
-                <div className="text-2xl sm:text-3xl font-bold text-orange-500 font-rajdhani">{stats.sessionsCount}+</div>
-                <div className="text-[11px] text-gray-400 uppercase tracking-wider font-medium mt-0.5">Tech Sessions</div>
-              </div>
-              <div className="text-center p-2 border-t sm:border-t-0 sm:border-l border-neutral-800">
-                <div className="text-2xl sm:text-3xl font-bold text-orange-500 font-rajdhani">{stats.projectsCount}+</div>
-                <div className="text-[11px] text-gray-400 uppercase tracking-wider font-medium mt-0.5">Projects Built</div>
-              </div>
-              <div className="text-center p-2 border-t sm:border-t-0 border-l border-neutral-800">
-                <div className="text-2xl sm:text-3xl font-bold text-orange-500 font-rajdhani">25+</div>
-                <div className="text-[11px] text-gray-400 uppercase tracking-wider font-medium mt-0.5">Hackathon Wins</div>
+                  {/* System Metrics Strip */}
+                  <div className="pt-2 border-t border-neutral-900 flex items-center justify-between text-[10px] text-gray-400">
+                    <span className="flex items-center gap-1 text-emerald-400">
+                      <Cpu className="w-3 h-3" /> Latency: 4ms
+                    </span>
+                    <span>Memory: 14.2 MB</span>
+                    <span>Uptime: 99.99%</span>
+                  </div>
+                </div>
               </div>
             </div>
 
           </div>
         </div>
 
-        {/* SCROLL DOWN INDICATOR */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none opacity-60">
-          <div className="w-5 h-8 border border-neutral-700 rounded-[3px] flex justify-center">
-            <div className="w-1 h-2 bg-orange-400 rounded-[1px] mt-1.5 animate-pulse" />
+        {/* HERO ANCHORED HUD METRICS STRIP (FITS WITHIN 100VH) */}
+        <div className="relative z-10 w-full mt-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-3.5 rounded-[3px] bg-neutral-950/90 border border-neutral-800 backdrop-blur-md shadow-2xl">
+            <div className="text-center p-1.5">
+              <div className="text-xl sm:text-2xl font-bold text-orange-500 font-rajdhani">{stats.membersCount}+</div>
+              <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-medium">Active Members</div>
+            </div>
+            <div className="text-center p-1.5 border-l border-neutral-800">
+              <div className="text-xl sm:text-2xl font-bold text-orange-500 font-rajdhani">{stats.sessionsCount}+</div>
+              <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-medium">Tech Sessions</div>
+            </div>
+            <div className="text-center p-1.5 border-t sm:border-t-0 sm:border-l border-neutral-800">
+              <div className="text-xl sm:text-2xl font-bold text-orange-500 font-rajdhani">{stats.projectsCount}+</div>
+              <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-medium">Projects Built</div>
+            </div>
+            <div className="text-center p-1.5 border-t sm:border-t-0 border-l border-neutral-800">
+              <div className="text-xl sm:text-2xl font-bold text-orange-500 font-rajdhani">25+</div>
+              <div className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-medium">Hackathon Wins</div>
+            </div>
           </div>
         </div>
+
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. ABOUT US SECTION (STORYTELLING + INTERACTIVE TERMINAL CODE MANIFESTO)   */}
+      {/* 2. WHO WE ARE (EQUAL HEIGHT + REALISTIC IDE WORKSTATION DISPLAY)          */}
       {/* ========================================================================= */}
       <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-10 items-center">
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Left Narrative Column */}
-          <div className="lg:col-span-6 space-y-5 text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Who We Are</span>
-            </div>
-            <h2 className="font-rajdhani text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white">
-              BUILDING THE FUTURE OF <span className="text-orange-500">STUDENT TECH</span>
-            </h2>
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Rise Together is a movement of passionate students who believe in the power of open collaboration, continuous skill enhancement, and real-world engineering. Founded by students for students, we bridge the gap between academic theory and production software engineering.
-            </p>
+          <div className="lg:col-span-6 p-6 sm:p-8 rounded-[3px] bg-neutral-950/80 border border-neutral-800 text-left flex flex-col justify-between h-full shadow-md">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-semibold uppercase tracking-wider mb-3">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Who We Are</span>
+              </div>
+              <h2 className="font-rajdhani text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white mb-3">
+                BUILDING THE FUTURE OF <span className="text-orange-500">STUDENT TECH</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-5">
+                Rise Together is a student-founded engineering movement engineered to eliminate the gap between textbook theory and modern production software development. We provide free collaborative environments, algorithmic rigor, and peer review standards.
+              </p>
 
-            {/* Checklist Highlights */}
-            <div className="space-y-2.5 pt-1">
-              <div className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>100% Free & Open-Source Community with No Paywalls</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Hands-on Collaborative Real-World Projects with Git CI/CD</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Senior Student Mentorship, Mock Technical Interviews & Referrals</span>
+              {/* Feature Checklist */}
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>100% Free & Open-Source Community with No Hidden Paywalls</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Collaborative Real-World Engineering with Git Pull Requests</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Senior Student Mentorship, Resume Reviews & Referral Directs</span>
+                </div>
               </div>
             </div>
 
-            {/* Compact Metric Strip */}
-            <div className="grid grid-cols-3 gap-3 pt-3">
-              <div className="p-3 rounded-[3px] bg-neutral-950/80 border border-neutral-800">
+            {/* Bottom Metric Strip */}
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-neutral-800">
+              <div className="p-3 rounded-[3px] bg-black border border-neutral-800">
                 <div className="text-2xl font-bold text-orange-500 font-rajdhani">500+</div>
                 <div className="text-[11px] text-gray-400">Students Active</div>
               </div>
-              <div className="p-3 rounded-[3px] bg-neutral-950/80 border border-neutral-800">
+              <div className="p-3 rounded-[3px] bg-black border border-neutral-800">
                 <div className="text-2xl font-bold text-orange-500 font-rajdhani">20+</div>
                 <div className="text-[11px] text-gray-400">Universities</div>
               </div>
-              <div className="p-3 rounded-[3px] bg-neutral-950/80 border border-neutral-800">
+              <div className="p-3 rounded-[3px] bg-black border border-neutral-800">
                 <div className="text-2xl font-bold text-orange-500 font-rajdhani">100%</div>
-                <div className="text-[11px] text-gray-400">Free Access</div>
+                <div className="text-[11px] text-gray-400">Open Access</div>
               </div>
             </div>
           </div>
 
-          {/* Right Interactive Code Terminal Window */}
-          <div className="lg:col-span-6">
-            <div className="rounded-[3px] bg-black border border-neutral-800 shadow-2xl overflow-hidden font-mono text-left">
-              {/* Terminal Titlebar */}
-              <div className="px-4 py-3 bg-neutral-900/90 border-b border-neutral-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+          {/* Right Workstation IDE Display Container (Equal Height) */}
+          <div className="lg:col-span-6 flex flex-col h-full rounded-[3px] bg-neutral-950 border border-neutral-800 shadow-2xl overflow-hidden font-mono text-left">
+            
+            {/* Monitor / Bezel Titlebar with Tabs */}
+            <div className="px-4 py-2.5 bg-neutral-900 border-b border-neutral-800 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-[1px] bg-red-500/80" />
                   <div className="w-2.5 h-2.5 rounded-[1px] bg-yellow-500/80" />
                   <div className="w-2.5 h-2.5 rounded-[1px] bg-green-500/80" />
                 </div>
-                <span className="text-xs text-gray-400">community.manifest.ts</span>
-                <Terminal className="w-4 h-4 text-gray-500" />
-              </div>
-
-              {/* Code Snippet */}
-              <div className="p-5 text-xs sm:text-[13px] leading-relaxed overflow-x-auto text-gray-300 bg-black">
-                <p><span className="text-purple-400">export const</span> <span className="text-yellow-300">RiseTogether</span>: <span className="text-cyan-400">Community</span> = &#123;</p>
-                <p className="pl-4"><span className="text-blue-300">name</span>: <span className="text-emerald-300">'RiseTogether'</span>,</p>
-                <p className="pl-4"><span className="text-blue-300">founded</span>: <span className="text-amber-300">2024</span>,</p>
-                <p className="pl-4"><span className="text-blue-300">mission</span>: <span className="text-emerald-300">'Learn. Build. Grow.'</span>,</p>
-                <p className="pl-4"><span className="text-blue-300">values</span>: [</p>
-                <p className="pl-8"><span className="text-emerald-300">'Peer Learning'</span>,</p>
-                <p className="pl-8"><span className="text-emerald-300">'Open Source Excellence'</span>,</p>
-                <p className="pl-8"><span className="text-emerald-300">'Gamified DSA Problem Solving'</span>,</p>
-                <p className="pl-4">],</p>
-                <p className="pl-4"><span className="text-blue-300">isFreeForever</span>: <span className="text-orange-400">true</span>,</p>
-                <p>&#125;;</p>
-                <div className="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between text-[11px] text-gray-400">
-                  <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-[1px] bg-emerald-400 animate-ping" />
-                    All Systems Operational
-                  </span>
-                  <span>v2.0 Production</span>
+                {/* Tabs */}
+                <div className="flex items-center gap-1 ml-2">
+                  <button
+                    onClick={() => setActiveWorkstationTab('manifest')}
+                    className={`px-3 py-1 rounded-[2px] text-xs font-mono transition-colors cursor-pointer ${
+                      activeWorkstationTab === 'manifest'
+                        ? 'bg-black text-orange-400 border border-neutral-800'
+                        : 'text-gray-400 hover:text-gray-200'
+                    }`}
+                  >
+                    manifest.ts
+                  </button>
+                  <button
+                    onClick={() => setActiveWorkstationTab('engine')}
+                    className={`px-3 py-1 rounded-[2px] text-xs font-mono transition-colors cursor-pointer ${
+                      activeWorkstationTab === 'engine'
+                        ? 'bg-black text-orange-400 border border-neutral-800'
+                        : 'text-gray-400 hover:text-gray-200'
+                    }`}
+                  >
+                    dsa_engine.py
+                  </button>
                 </div>
               </div>
+              <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
+                <Monitor className="w-3.5 h-3.5 text-gray-400" />
+                <span>DISPLAY // 60Hz</span>
+              </div>
             </div>
+
+            {/* Code Editor Pane */}
+            <div className="flex-1 p-5 text-xs sm:text-[13px] leading-relaxed overflow-x-auto text-gray-300 bg-black/95 flex flex-col justify-between">
+              {activeWorkstationTab === 'manifest' ? (
+                <div className="space-y-1">
+                  <p><span className="text-purple-400">export const</span> <span className="text-yellow-300">RiseTogether</span>: <span className="text-cyan-400">Community</span> = &#123;</p>
+                  <p className="pl-4"><span className="text-blue-300">name</span>: <span className="text-emerald-300">'RiseTogether Ecosystem'</span>,</p>
+                  <p className="pl-4"><span className="text-blue-300">established</span>: <span className="text-amber-300">2024</span>,</p>
+                  <p className="pl-4"><span className="text-blue-300">corePillars</span>: [<span className="text-emerald-300">'Learn'</span>, <span className="text-emerald-300">'Build'</span>, <span className="text-emerald-300">'Grow'</span>],</p>
+                  <p className="pl-4"><span className="text-blue-300">features</span>: &#123;</p>
+                  <p className="pl-8"><span className="text-blue-300">dsaGrindArena</span>: <span className="text-orange-400">true</span>,</p>
+                  <p className="pl-8"><span className="text-blue-300">collaborativeProjects</span>: <span className="text-orange-400">true</span>,</p>
+                  <p className="pl-8"><span className="text-blue-300">careerAccelerators</span>: <span className="text-orange-400">true</span>,</p>
+                  <p className="pl-4">&#125;,</p>
+                  <p className="pl-4"><span className="text-blue-300">isOpenSource</span>: <span className="text-orange-400">true</span>,</p>
+                  <p>&#125;;</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p><span className="text-purple-400">class</span> <span className="text-yellow-300">Grind500Engine</span>:</p>
+                  <p className="pl-4"><span className="text-purple-400">def</span> <span className="text-blue-300">calculate_score</span>(self, difficulty, complexity, streak):</p>
+                  <p className="pl-8">base_pts = &#123;<span className="text-emerald-300">'Easy'</span>: 10, <span className="text-emerald-300">'Medium'</span>: 25, <span className="text-emerald-300">'Hard'</span>: 50&#125;[difficulty]</p>
+                  <p className="pl-8">streak_mult = 1.5 <span className="text-purple-400">if</span> streak &gt; 7 <span className="text-purple-400">else</span> 1.0</p>
+                  <p className="pl-8"><span className="text-purple-400">return</span> int(base_pts * streak_mult)</p>
+                </div>
+              )}
+
+              {/* Status Console Footer */}
+              <div className="mt-6 pt-3 border-t border-neutral-800 flex items-center justify-between text-[11px] text-gray-400">
+                <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5" />
+                  Build Succeeded (0 errors)
+                </span>
+                <span className="text-gray-500 font-mono">UTF-8 • TSX/Py</span>
+              </div>
+            </div>
+
           </div>
 
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. OUR MISSION (3 SIGNATURE PILLARS WITH DISTINCT ACCENTS)                */}
+      {/* 3. OUR MISSION (INTERACTIVE 3-STAGE MISSION PIPELINE)                      */}
       {/* ========================================================================= */}
       <section id="mission" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-left mb-12">
+        <div className="text-left mb-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-semibold uppercase tracking-wider mb-2">
             <Layers className="w-3.5 h-3.5" />
-            <span>Three Pillars</span>
+            <span>Mission Blueprint</span>
           </div>
           <h2 className="font-rajdhani text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white mb-2">
             OUR <span className="text-orange-500">MISSION</span>
           </h2>
           <p className="text-sm text-gray-400 max-w-2xl">
-            A comprehensive developer flywheel designed to accelerate student developers from their first line of code to top engineering roles.
+            A structured developer flywheel accelerating students from fundamental code syntax to high-impact production engineering roles.
           </p>
         </div>
 
+        {/* 3-Stage Pipeline Layout */}
         <div className="grid md:grid-cols-3 gap-6">
           
-          {/* Pillar 1: Learn */}
-          <div className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-cyan-500/40 transition-all text-left flex flex-col justify-between relative overflow-hidden group">
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500" />
+          {/* Stage 01: LEARN */}
+          <div className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-cyan-500/40 transition-all text-left flex flex-col justify-between relative overflow-hidden group shadow-md">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-500" />
             <div>
-              <div className="w-12 h-12 rounded-[3px] bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-5 text-cyan-400">
-                <BookOpen className="w-6 h-6" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-[3px] bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-1 rounded-[2px] text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                  STAGE 01
+                </span>
               </div>
-              <span className="text-[11px] font-semibold text-cyan-400 uppercase tracking-wider font-mono">
-                Pillar 01 • Learn
-              </span>
-              <h3 className="font-rajdhani text-2xl font-bold text-white mt-1 mb-2">Master Modern Stacks</h3>
+              <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">Learn with Rigor</h3>
               <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-5">
-                Master modern engineering through structured workshops, interactive DSA problem sessions, and system design masterclasses.
+                Master modern engineering through structured workshops, interactive DSA problem-solving sessions, and system design fundamentals.
               </p>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-3 border-t border-neutral-800">
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">DSA Patterns</span>
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Full Stack</span>
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">System Design</span>
+            <div className="space-y-2 pt-3 border-t border-neutral-800">
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3.5 h-3.5 text-cyan-400" />
+                <span>DSA Patterns & Grind 500 Daily Streaks</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Full-Stack Architecture Masterclasses</span>
+              </div>
             </div>
           </div>
 
-          {/* Pillar 2: Build */}
-          <div className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-orange-500/40 transition-all text-left flex flex-col justify-between relative overflow-hidden group">
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-500" />
+          {/* Stage 02: BUILD */}
+          <div className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-orange-500/40 transition-all text-left flex flex-col justify-between relative overflow-hidden group shadow-md">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-amber-500" />
             <div>
-              <div className="w-12 h-12 rounded-[3px] bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-5 text-orange-400">
-                <Hammer className="w-6 h-6" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-[3px] bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
+                  <Hammer className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-1 rounded-[2px] text-[10px] font-mono font-bold bg-orange-500/15 text-orange-400 border border-orange-500/30">
+                  STAGE 02
+                </span>
               </div>
-              <span className="text-[11px] font-semibold text-orange-400 uppercase tracking-wider font-mono">
-                Pillar 02 • Build
-              </span>
-              <h3 className="font-rajdhani text-2xl font-bold text-white mt-1 mb-2">Ship Real Solutions</h3>
+              <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">Build Production Systems</h3>
               <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-5">
-                Transform ideas into production software through collaborative open-source repositories, team hackathons, and sprint showcases.
+                Transform ideas into software through collaborative open-source repositories, team hackathons, and sprint-based project deployments.
               </p>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-3 border-t border-neutral-800">
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-orange-500/10 text-orange-300 border border-orange-500/20">Open Source</span>
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-orange-500/10 text-orange-300 border border-orange-500/20">Hackathons</span>
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-orange-500/10 text-orange-300 border border-orange-500/20">Portfolio MVPs</span>
+            <div className="space-y-2 pt-3 border-t border-neutral-800">
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3.5 h-3.5 text-orange-400" />
+                <span>Collaborative Open-Source Repositories</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3.5 h-3.5 text-orange-400" />
+                <span>48-Hour HackSprint Competitions</span>
+              </div>
             </div>
           </div>
 
-          {/* Pillar 3: Grow */}
-          <div className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-purple-500/40 transition-all text-left flex flex-col justify-between relative overflow-hidden group">
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+          {/* Stage 03: GROW */}
+          <div className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-purple-500/40 transition-all text-left flex flex-col justify-between relative overflow-hidden group shadow-md">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500" />
             <div>
-              <div className="w-12 h-12 rounded-[3px] bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-5 text-purple-400">
-                <Rocket className="w-6 h-6" />
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-[3px] bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                  <Rocket className="w-5 h-5" />
+                </div>
+                <span className="px-2.5 py-1 rounded-[2px] text-[10px] font-mono font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                  STAGE 03
+                </span>
               </div>
-              <span className="text-[11px] font-semibold text-purple-400 uppercase tracking-wider font-mono">
-                Pillar 03 • Grow
-              </span>
-              <h3 className="font-rajdhani text-2xl font-bold text-white mt-1 mb-2">Accelerate Careers</h3>
+              <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">Grow Engineering Careers</h3>
               <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-5">
-                Access technical resume reviews, mock interview sessions with senior developers, and direct referral opportunities.
+                Unlock career placement via 1-on-1 technical mock interviews, verified resume reviews, and direct referral opportunities from alumni.
               </p>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-3 border-t border-neutral-800">
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-purple-500/10 text-purple-300 border border-purple-500/20">Mock Interviews</span>
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-purple-500/10 text-purple-300 border border-purple-500/20">Resume Reviews</span>
-              <span className="px-2 py-0.5 rounded-[2px] text-[11px] bg-purple-500/10 text-purple-300 border border-purple-500/20">Referrals</span>
+            <div className="space-y-2 pt-3 border-t border-neutral-800">
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3.5 h-3.5 text-purple-400" />
+                <span>Alumni 1-on-1 Technical Mock Interviews</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Check className="w-3.5 h-3.5 text-purple-400" />
+                <span>Direct Job Referrals & Tech Summit</span>
+              </div>
             </div>
           </div>
 
@@ -576,117 +809,90 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 5. RECENT ACTIVITIES & LIVE SCHEDULE TIMELINE                             */}
+      {/* 5. QUARTERLY SCHEDULE & ROADMAP (3-MONTH COMMUNITY CALENDAR)              */}
       {/* ========================================================================= */}
       <section id="activities" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10 text-left">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 text-left">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-semibold uppercase tracking-wider mb-2">
               <Calendar className="w-3.5 h-3.5" />
-              <span>Community Calendar</span>
+              <span>Quarterly Roadmap</span>
             </div>
             <h2 className="font-rajdhani text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white">
-              WEEKLY <span className="text-orange-500">SCHEDULE & EVENTS</span>
+              QUARTERLY <span className="text-orange-500">SCHEDULE & EVENTS</span>
             </h2>
+          </div>
+
+          {/* 3-Month Quarter Selector Tabs */}
+          <div className="flex items-center gap-1.5 bg-neutral-950 p-1 rounded-[3px] border border-neutral-800">
+            {quarterlyRoadmap.map((month) => (
+              <button
+                key={month.monthIndex}
+                type="button"
+                onClick={() => setActiveQuarterMonth(month.monthIndex)}
+                className={`h-8 px-3.5 rounded-[2px] text-xs font-semibold transition-all cursor-pointer ${
+                  activeQuarterMonth === month.monthIndex
+                    ? 'bg-neutral-800 text-white border border-neutral-700 shadow-sm'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {month.monthName}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Current Month Banner */}
+        <div className="p-4 mb-6 rounded-[3px] bg-neutral-950 border border-neutral-800 flex items-center justify-between text-left">
+          <div>
+            <span className="text-xs font-mono text-orange-400 uppercase tracking-wider">{currentMonthData.period}</span>
+            <h3 className="font-rajdhani text-xl font-bold text-white mt-0.5">{currentMonthData.monthTitle}</h3>
           </div>
           <Link
             to="/community/activities"
-            className="text-xs font-semibold uppercase tracking-wider text-orange-400 hover:text-orange-300 flex items-center gap-1"
+            className="text-xs font-semibold text-gray-400 hover:text-orange-400 flex items-center gap-1"
           >
-            <span>View All Activities</span>
+            <span>All Activities</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
 
+        {/* Event Cards */}
         <div className="space-y-4">
-          
-          {/* Schedule Item 1 */}
-          <div className="p-5 sm:p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-neutral-700 transition-all text-left flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-[3px] bg-orange-500/10 border border-orange-500/20 flex flex-col items-center justify-center shrink-0 text-orange-400">
-                <span className="text-[10px] font-bold uppercase">SAT</span>
-                <span className="text-lg font-bold font-rajdhani">18:00</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2 py-0.5 rounded-[2px] text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    LIVE WORKSHOP
-                  </span>
-                  <span className="text-xs text-gray-400 font-mono">Weekly Series</span>
-                </div>
-                <h3 className="font-rajdhani text-xl font-bold text-white">Advanced Full-Stack & System Architecture</h3>
-                <p className="text-xs text-gray-300 mt-1 max-w-xl">
-                  Interactive hands-on session on designing scalable microservices, async celery workers, and state hydration.
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/community/activities"
-              className="h-10 px-4 rounded-[3px] text-xs font-semibold bg-neutral-900 hover:bg-orange-500 text-gray-200 hover:text-white transition-colors shrink-0 flex items-center gap-1 border border-neutral-800"
+          {currentMonthData.events.map((ev) => (
+            <div
+              key={ev.id}
+              className="p-5 sm:p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-neutral-700 transition-all text-left flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
             >
-              <span>RSVP Session</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {/* Schedule Item 2 */}
-          <div className="p-5 sm:p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-neutral-700 transition-all text-left flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-[3px] bg-purple-500/10 border border-purple-500/20 flex flex-col items-center justify-center shrink-0 text-purple-400">
-                <span className="text-[10px] font-bold uppercase">FRI</span>
-                <span className="text-lg font-bold font-rajdhani">19:30</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2 py-0.5 rounded-[2px] text-[10px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/30">
-                    DEMO DAY
-                  </span>
-                  <span className="text-xs text-gray-400 font-mono">Monthly Event</span>
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-[3px] bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0 text-orange-400">
+                  <Calendar className="w-5 h-5" />
                 </div>
-                <h3 className="font-rajdhani text-xl font-bold text-white">Monthly Open-Source Project Showcase</h3>
-                <p className="text-xs text-gray-300 mt-1 max-w-xl">
-                  Student teams demo their shipped builds, receive code reviews, and pitch for community project of the month.
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/community/projects"
-              className="h-10 px-4 rounded-[3px] text-xs font-semibold bg-neutral-900 hover:bg-orange-500 text-gray-200 hover:text-white transition-colors shrink-0 flex items-center gap-1 border border-neutral-800"
-            >
-              <span>Join Showcase</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {/* Schedule Item 3 */}
-          <div className="p-5 sm:p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 hover:border-neutral-700 transition-all text-left flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-[3px] bg-cyan-500/10 border border-cyan-500/20 flex flex-col items-center justify-center shrink-0 text-cyan-400">
-                <span className="text-[10px] font-bold uppercase">48H</span>
-                <span className="text-lg font-bold font-rajdhani">SPRINT</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2 py-0.5 rounded-[2px] text-[10px] font-semibold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
-                    HACKATHON
-                  </span>
-                  <span className="text-xs text-gray-400 font-mono">Quarterly Sprint</span>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`px-2 py-0.5 rounded-[2px] text-[10px] font-semibold border ${ev.tagColor}`}>
+                      {ev.tag}
+                    </span>
+                    <span className="text-xs text-gray-400 font-mono">{ev.timing}</span>
+                  </div>
+                  <h3 className="font-rajdhani text-xl font-bold text-white">{ev.title}</h3>
+                  <p className="text-xs text-gray-300 mt-1 max-w-xl">
+                    {ev.description}
+                  </p>
+                  <div className="mt-2 text-[11px] text-gray-400">
+                    Lead: <span className="text-gray-200">{ev.lead}</span>
+                  </div>
                 </div>
-                <h3 className="font-rajdhani text-xl font-bold text-white">RiseTogether HackSprint 2026</h3>
-                <p className="text-xs text-gray-300 mt-1 max-w-xl">
-                  48-hour team hackathon building solutions for sustainability, accessibility, and AI developer tooling.
-                </p>
               </div>
+              <Link
+                to={ev.link}
+                className="h-10 px-5 rounded-[3px] text-xs font-semibold bg-neutral-900 hover:bg-orange-500 text-gray-200 hover:text-white transition-colors shrink-0 flex items-center gap-1.5 border border-neutral-800"
+              >
+                <span>{ev.actionText}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
-            <Link
-              to="/community/activities"
-              className="h-10 px-4 rounded-[3px] text-xs font-semibold bg-neutral-900 hover:bg-orange-500 text-gray-200 hover:text-white transition-colors shrink-0 flex items-center gap-1 border border-neutral-800"
-            >
-              <span>Learn More</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
+          ))}
         </div>
       </section>
 
@@ -705,7 +911,7 @@ export const HomePage: React.FC = () => {
             </h2>
           </div>
 
-          {/* CATEGORY FILTER PILLS (STANDARDIZED h-8 px-3 rounded-[3px]) */}
+          {/* CATEGORY FILTER PILLS */}
           <div className="flex flex-wrap gap-1.5">
             {[
               { key: 'all', label: 'All (6)' },
@@ -810,8 +1016,8 @@ export const HomePage: React.FC = () => {
                   </span>
                 </div>
                 <span className="text-xs text-amber-400 flex items-center gap-1 font-mono">
-                  <Star className="w-3.5 h-3.5 fill-amber-400" />
-                  <span>Featured</span>
+                  <Medal className="w-3.5 h-3.5" />
+                  <span>Featured Project</span>
                 </span>
               </div>
               <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">
@@ -849,7 +1055,7 @@ export const HomePage: React.FC = () => {
                 </div>
                 <span className="text-xs text-purple-400 flex items-center gap-1 font-mono">
                   <Award className="w-3.5 h-3.5" />
-                  <span>Winner</span>
+                  <span>Hackathon Winner</span>
                 </span>
               </div>
               <h3 className="font-rajdhani text-2xl font-bold text-white mb-2">
@@ -875,7 +1081,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 8. TESTIMONIALS (COMMUNITY VOICES)                                        */}
+      {/* 8. STUDENT STORIES (VERIFIED DEVELOPER EXPERIENCES WITHOUT STARS)          */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left mb-10">
@@ -895,6 +1101,8 @@ export const HomePage: React.FC = () => {
                 'Rise Together completely transformed my college experience. I went from knowing basic C++ to building full-stack web apps and winning hackathons with my team.',
               name: 'Aarav Sharma',
               role: 'Full Stack Member',
+              badge: 'Cohort of \'24',
+              placement: 'Placed @ Microsoft',
               avatar:
                 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
             },
@@ -903,6 +1111,8 @@ export const HomePage: React.FC = () => {
                 'The peer mentorship and collaborative project culture are unmatched. Writing blogs and sharing code problem solutions helped me land my first software engineering internship!',
               name: 'Priya Patel',
               role: 'Community Contributor',
+              badge: 'Top Contributor',
+              placement: 'SWE Intern',
               avatar:
                 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
             },
@@ -911,21 +1121,29 @@ export const HomePage: React.FC = () => {
                 'The Grind 500 leaderboard and daily coding streaks keep me consistent with algorithm practice. Best tech community for any aspiring developer.',
               name: 'Rohan Verma',
               role: 'DSA Lead',
+              badge: 'Top 1% Grind 500',
+              placement: 'Lead Mentor',
               avatar:
                 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
             },
           ].map((t, idx) => (
             <div
               key={idx}
-              className="p-5 sm:p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 flex flex-col justify-between shadow-sm text-left"
+              className="p-6 rounded-[3px] bg-neutral-950/80 border border-neutral-800 flex flex-col justify-between shadow-sm text-left relative overflow-hidden"
             >
               <div>
-                <div className="flex items-center gap-1 text-amber-400 mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                  ))}
+                {/* Verified Pill */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-[2px] border border-emerald-500/20 font-mono">
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>{t.badge}</span>
+                  </span>
+                  <span className="text-[11px] text-gray-400 font-mono font-medium">
+                    {t.placement}
+                  </span>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed italic mb-5">
+
+                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed italic mb-6">
                   "{t.quote}"
                 </p>
               </div>
@@ -934,7 +1152,7 @@ export const HomePage: React.FC = () => {
                 <img
                   src={t.avatar}
                   alt={t.name}
-                  className="w-9 h-9 rounded-[3px] object-cover border border-neutral-700"
+                  className="w-10 h-10 rounded-[3px] object-cover border border-neutral-700"
                 />
                 <div>
                   <div className="text-xs sm:text-sm font-semibold text-white">{t.name}</div>
@@ -992,13 +1210,13 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ========================================================================= */}
-      {/* 10. DUAL COLUMN LEADERSHIP & CONTACT HUB                                  */}
+      {/* 10. EQUAL-HEIGHT CONTACT HUB & MESSAGE FORM                               */}
       {/* ========================================================================= */}
       <section id="contact" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-8 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Left Contact Info Hub */}
-          <div className="lg:col-span-5 p-6 sm:p-8 rounded-[3px] bg-neutral-950/80 border border-neutral-800 text-left space-y-5">
+          <div className="lg:col-span-5 p-6 sm:p-8 rounded-[3px] bg-neutral-950/80 border border-neutral-800 text-left flex flex-col justify-between h-full shadow-md">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[3px] bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-semibold uppercase tracking-wider mb-2">
                 <Send className="w-3.5 h-3.5" />
@@ -1012,7 +1230,7 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 py-6">
               <div className="p-3.5 rounded-[3px] bg-black border border-neutral-800 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[3px] bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0">
                   <Send className="w-4 h-4" />
@@ -1043,69 +1261,96 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            <div className="pt-4 border-t border-neutral-800 text-xs text-gray-400 flex items-center justify-between">
+              <span>Community Discord: <span className="text-orange-400">discord.gg/risetogether</span></span>
+            </div>
           </div>
 
-          {/* Right Form Card */}
-          <div className="lg:col-span-7 p-6 sm:p-8 rounded-[3px] bg-neutral-950/80 border border-neutral-800 text-left">
-            <h3 className="font-rajdhani text-2xl font-bold uppercase text-white mb-4">
-              Send Us a Message
-            </h3>
-            <form onSubmit={handleContactSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                    Your Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    placeholder="e.g. Alex Johnson"
-                    required
-                    className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
-                  />
+          {/* Right Form Card (Equal Height) */}
+          <div className="lg:col-span-7 p-6 sm:p-8 rounded-[3px] bg-neutral-950/80 border border-neutral-800 text-left flex flex-col justify-between h-full shadow-md">
+            <div>
+              <h3 className="font-rajdhani text-2xl font-bold uppercase text-white mb-2">
+                Send Us a Message
+              </h3>
+              <p className="text-xs text-gray-400 mb-6">
+                Fill in the details below and our leadership team will get back to you within 24 hours.
+              </p>
+
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                      Your Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      placeholder="e.g. Alex Johnson"
+                      required
+                      className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="alex@example.com"
+                      required
+                      className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                    Email Address
+                    Topic / Category
                   </label>
-                  <input
-                    type="email"
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                    placeholder="alex@example.com"
+                  <select
+                    value={contactSubject}
+                    onChange={(e) => setContactSubject(e.target.value)}
+                    className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 focus:outline-none focus:border-orange-500 transition-colors cursor-pointer"
+                  >
+                    <option value="General Inquiry">General Community Inquiry</option>
+                    <option value="Workshop Collaboration">Workshop / Event Collaboration</option>
+                    <option value="Campus Ambassador">Campus Ambassador Program</option>
+                    <option value="Grind 500 Feedback">Grind 500 & DSA Feedback</option>
+                    <option value="Partnership">University / Industry Partnership</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                    Your Message
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    placeholder="How can we help or collaborate with you?"
                     required
-                    className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
+                    className="w-full p-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors resize-none"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1.5">
-                  Your Message
-                </label>
-                <textarea
-                  rows={4}
-                  value={contactMessage}
-                  onChange={(e) => setContactMessage(e.target.value)}
-                  placeholder="How can we help or collaborate with you?"
-                  required
-                  className="w-full p-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors resize-none"
-                />
-              </div>
-
-              <div className="pt-1">
-                <button
-                  type="submit"
-                  disabled={submittingContact}
-                  className="h-10 px-6 rounded-[3px] font-semibold text-xs uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white shadow-sm transition-colors cursor-pointer disabled:opacity-50 inline-flex items-center gap-2"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{submittingContact ? 'Sending Message...' : 'Send Message'}</span>
-                </button>
-              </div>
-            </form>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={submittingContact}
+                    className="h-11 px-7 rounded-[3px] font-semibold text-xs uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white shadow-sm transition-colors cursor-pointer disabled:opacity-50 inline-flex items-center gap-2"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{submittingContact ? 'Sending Message...' : 'Send Message'}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
 
         </div>
@@ -1114,3 +1359,4 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
+
