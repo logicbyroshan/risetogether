@@ -1,382 +1,923 @@
 // frontend/src/pages/HomePage.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { dsaApi } from '../api/dsaApi';
-import { LeaderboardEntry, LeaderboardResponse } from '../types/dsa';
-import { Spinner } from '../components/ui/Spinner';
-
-type TimeframeType = 'overall' | 'daily' | 'weekly' | 'monthly';
+import { useToast } from '../context/ToastContext';
+import { publicApi } from '../api/public';
+import { communityApi } from '../api/community';
+import { Blog, Project, Activity } from '../types/community';
+import { SiteContentResponse } from '../types/public';
+import {
+  Sparkles,
+  ArrowRight,
+  Users,
+  Code2,
+  Trophy,
+  Rocket,
+  BookOpen,
+  FolderGit2,
+  Calendar,
+  Send,
+  Star,
+  ChevronDown,
+  Hammer,
+  Medal,
+  Award,
+  BookMarked,
+  Video,
+  FileText,
+  FileCode,
+  Wrench,
+  Download,
+  ExternalLink,
+  ChevronRight,
+  Compass,
+} from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
-  const [timeframe, setTimeframe] = useState<TimeframeType>('overall');
-  const [data, setData] = useState<LeaderboardResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { success: toastSuccess, error: toastError } = useToast();
 
-  const fetchLeaderboard = useCallback(async (selectedTimeframe: TimeframeType) => {
-    try {
-      setLoading(true);
-      const res = await dsaApi.getLeaderboard(selectedTimeframe);
-      setData(res);
-    } catch (err) {
-      console.error('Failed to load leaderboard data:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [siteData, setSiteData] = useState<SiteContentResponse | null>(null);
+  const [featuredBlogs, setFeaturedBlogs] = useState<Blog[]>([]);
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
+  const [featuredActivities, setFeaturedActivities] = useState<Activity[]>([]);
+  const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(null);
+  const [activeResourceCategory, setActiveResourceCategory] = useState<string>('all');
+
+  // Contact Form state
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [submittingContact, setSubmittingContact] = useState(false);
 
   useEffect(() => {
-    fetchLeaderboard(timeframe);
-  }, [timeframe, fetchLeaderboard]);
+    publicApi.getSiteContent().then(setSiteData).catch(console.error);
+    communityApi.getBlogs({ page: 1 }).then((res) => setFeaturedBlogs(res.results.slice(0, 3))).catch(console.error);
+    communityApi.getProjects({ page: 1 }).then((res) => setFeaturedProjects(res.results.slice(0, 3))).catch(console.error);
+    communityApi.getActivities({ page: 1 }).then((res) => setFeaturedActivities(res.results.slice(0, 3))).catch(console.error);
+  }, []);
 
-  const defaultAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';
-  const userAvatar = user?.profile?.profile_pic || defaultAvatar;
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) return;
 
-  // Fallback top players if database has empty/partial entries
-  const topUsers: LeaderboardEntry[] = data?.top_users || [];
-  const otherUsers: LeaderboardEntry[] = data?.other_users || [];
-  const totalCount = data?.total_user_count || 0;
-  const currentRank = data?.current_user_rank || '-';
+    try {
+      setSubmittingContact(true);
+      const res = await publicApi.submitContact({
+        name: contactName,
+        email: contactEmail,
+        message: contactMessage,
+      });
+      toastSuccess(res.message || 'Thank you for reaching out! We will be in touch shortly.');
+      setContactName('');
+      setContactEmail('');
+      setContactMessage('');
+    } catch (err: any) {
+      toastError(err.customMessage || 'Failed to submit contact message.');
+    } finally {
+      setSubmittingContact(false);
+    }
+  };
 
-  const player1 = topUsers[0] || null;
-  const player2 = topUsers[1] || null;
-  const player3 = topUsers[2] || null;
+  const stats = siteData?.stats || {
+    membersCount: 150,
+    sessionsCount: 75,
+    projectsCount: 25,
+    blogsCount: 18,
+    activitiesCount: 12,
+  };
+
+  const faqs = siteData?.faqs || [
+    {
+      id: 1,
+      question: 'What is RiseTogether?',
+      answer: 'Rise Together is an open-source student tech community where future developers, designers, and innovators come together to learn, build collaborative projects, and grow their careers.',
+    },
+    {
+      id: 2,
+      question: 'How do I join the community?',
+      answer: 'Joining is 100% free! Simply click "Join the Community" to create an account, access learning workshops, join project teams, and start sharing your journey.',
+    },
+    {
+      id: 3,
+      question: 'What is Grind 500 and the Leaderboard?',
+      answer: 'Grind 500 is our gamified algorithm problem-solving arena. You can post problem solutions, earn activity points based on problem difficulty and time complexity, build daily streaks, and compete on the overall, daily, weekly, and monthly leaderboards.',
+    },
+    {
+      id: 4,
+      question: 'Can I showcase my own projects and write blogs?',
+      answer: 'Yes! Registered members can publish technical guides to the blog index, showcase GitHub repositories with live links, and share code snippets directly on the social feed.',
+    },
+  ];
+
+  const resources = [
+    {
+      id: 1,
+      title: 'Full Stack Development Course',
+      category: 'videos',
+      categoryLabel: 'Video Series',
+      description: 'Complete MERN stack development tutorial series covering React, Node.js, MongoDB, and Express.',
+      meta: '45 hours',
+      icon: <Video className="w-5 h-5 text-red-500" />,
+      link: 'https://youtube.com',
+      actionText: 'Watch',
+    },
+    {
+      id: 2,
+      title: 'Data Structures & Algorithms',
+      category: 'pdfs',
+      categoryLabel: 'PDF Guide',
+      description: 'Comprehensive guide covering all important DSA concepts with examples and practice problems.',
+      meta: '250 pages',
+      icon: <FileText className="w-5 h-5 text-red-400" />,
+      link: '#',
+      actionText: 'Download',
+    },
+    {
+      id: 3,
+      title: 'AI/ML Fundamentals',
+      category: 'articles',
+      categoryLabel: 'Article Series',
+      description: 'In-depth articles explaining machine learning concepts from basics to advanced neural architectures.',
+      meta: '12 articles',
+      icon: <BookMarked className="w-5 h-5 text-blue-400" />,
+      link: '/community/blogs',
+      actionText: 'Read',
+    },
+    {
+      id: 4,
+      title: 'Mobile App Development',
+      category: 'videos',
+      categoryLabel: 'Video Workshop',
+      description: 'React Native workshop covering cross-platform mobile app development from scratch.',
+      meta: '8 hours',
+      icon: <Video className="w-5 h-5 text-red-500" />,
+      link: 'https://youtube.com',
+      actionText: 'Watch',
+    },
+    {
+      id: 5,
+      title: 'Developer Toolkit',
+      category: 'tools',
+      categoryLabel: 'Essential Tools',
+      description: 'Curated list of essential development tools, IDE configurations, and productivity extensions.',
+      meta: '50+ tools',
+      icon: <Wrench className="w-5 h-5 text-emerald-400" />,
+      link: '/community/resources',
+      actionText: 'Explore',
+    },
+    {
+      id: 6,
+      title: 'System Design Guide',
+      category: 'pdfs',
+      categoryLabel: 'PDF Guide',
+      description: 'Complete system design handbook covering scalability, database partitioning, and microservices.',
+      meta: '180 pages',
+      icon: <FileCode className="w-5 h-5 text-amber-400" />,
+      link: '#',
+      actionText: 'Download',
+    },
+  ];
+
+  const filteredResources =
+    activeResourceCategory === 'all'
+      ? resources
+      : resources.filter((r) => r.category === activeResourceCategory);
 
   return (
-    <div className="w-full flex justify-center items-start min-h-[90vh] py-4 px-2 sm:px-4 font-poppins text-gray-200">
-      <div className="w-full max-w-[1200px] bg-[#1c212c] rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
-        
-        {/* ================= NAVBAR ================= */}
-        <header className="flex flex-wrap justify-between items-center px-6 sm:px-8 py-4 bg-[#151a24] border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <img
-              src="/assets/images/rt.png"
-              alt="Nexrise / Grind 500 Logo"
-              className="h-10 w-auto rounded-lg shadow-md object-contain"
-              onError={(e) => {
-                (e.target as HTMLElement).style.display = 'none';
-              }}
-            />
-            <span className="text-xl font-bold tracking-tight text-white font-rajdhani uppercase">
-              Grind 500
-            </span>
+    <div className="w-full space-y-24 sm:space-y-32 overflow-hidden text-gray-100 font-inter pb-16">
+      
+      {/* ========================================================================= */}
+      {/* 1. HERO SECTION (BIG BACKGROUND IMAGE WITH DARK OVERLAY & HERO CONTENT)   */}
+      {/* ========================================================================= */}
+      <section
+        id="home"
+        className="min-h-[92vh] flex items-center justify-center relative overflow-hidden pt-12 pb-24"
+      >
+        {/* BIG BACKGROUND IMAGE */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-105"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80')`,
+          }}
+        />
+
+        {/* DARK OVERLAY WITH BLUR */}
+        <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]" />
+
+        {/* GRADIENT ATMOSPHERE OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0a0d14]" />
+
+        {/* ORANGE RADIAL GLOW */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.15)_0%,transparent_70%)] pointer-events-none" />
+
+        {/* FLOATING PARTICLES */}
+        <div className="absolute w-2 h-2 rounded-full bg-orange-400/40 blur-xs top-[20%] left-[10%] animate-pulse" />
+        <div className="absolute w-3 h-3 rounded-full bg-amber-400/30 blur-xs top-[60%] left-[80%] animate-pulse delay-700" />
+        <div className="absolute w-1.5 h-1.5 rounded-full bg-orange-400/40 blur-xs top-[30%] left-[70%] animate-pulse delay-1000" />
+        <div className="absolute w-2.5 h-2.5 rounded-full bg-amber-300/30 blur-xs top-[80%] left-[20%] animate-pulse delay-500" />
+
+        {/* HERO CONTENT OVERLAY */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          
+          {/* TOP ANNOUNCEMENT PILL */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-xs font-semibold text-orange-400 mb-8 border border-orange-500/40 shadow-[0_0_20px_rgba(249,115,22,0.3)] animate-float">
+            <Sparkles className="w-4 h-4 text-orange-400" />
+            <span>Empowering India's Premier Student Tech Movement</span>
           </div>
 
-          <nav className="order-3 sm:order-2 w-full sm:w-auto mt-3 sm:mt-0">
-            <ul className="flex justify-center items-center gap-6 text-sm font-medium">
-              <li className="relative">
-                <button
-                  type="button"
-                  className="text-white font-semibold pb-1 relative transition-colors focus:outline-none"
-                >
-                  Leaderboard
-                  <span className="absolute bottom-[-10px] left-0 w-full h-[3px] bg-[#ca651d] rounded-full shadow-[0_0_10px_#ca651d]" />
-                </button>
-              </li>
-              <li>
-                <Link
-                  to="/feed"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Social Feed
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/community/blogs"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Tech Blogs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/community/projects"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Projects
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          {/* MAIN HEADING */}
+          <h1 className="font-rajdhani text-5xl sm:text-7xl md:text-8xl font-extrabold uppercase tracking-tight text-white mb-6 drop-shadow-[0_0_35px_rgba(249,115,22,0.4)]">
+            RISE TOGETHER
+          </h1>
 
-          <div className="order-2 sm:order-3 flex items-center gap-4">
+          {/* TAGLINE */}
+          <p className="text-xl sm:text-3xl font-rajdhani font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 tracking-wider">
+            LEARN. BUILD. GROW.
+          </p>
+
+          {/* DESCRIPTION */}
+          <p className="text-base sm:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed mb-10 font-normal">
+            Join India's most innovative student tech community where future developers, designers, and innovators come together to create extraordinary solutions and build the next generation of technology.
+          </p>
+
+          {/* CTA BUTTONS */}
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
             <Link
-              to="/feed"
-              aria-label="Notifications"
-              className="text-gray-400 hover:text-white transition-colors text-lg"
+              to={isAuthenticated ? '/feed' : '/join'}
+              className="w-full sm:w-auto px-9 py-4 rounded-full text-base font-bold uppercase tracking-wider bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-[0_0_25px_rgba(249,115,22,0.6)] hover:shadow-[0_0_35px_rgba(249,115,22,0.8)] transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
             >
-              <i className="fas fa-bell" />
+              <Users className="w-5 h-5" />
+              <span>{isAuthenticated ? 'Go to Social Feed' : 'Join the Community'}</span>
             </Link>
 
-            {isAuthenticated ? (
-              <Link to="/profile" className="flex items-center">
-                <img
-                  src={userAvatar}
-                  alt={user?.username || 'User Avatar'}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-[#ca651d] shadow-sm hover:scale-105 transition-transform"
-                />
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg bg-[#ca651d] hover:bg-[#b05315] text-white transition-colors"
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
-        </header>
+            <Link
+              to="/community/projects"
+              className="w-full sm:w-auto px-9 py-4 rounded-full text-base font-semibold text-orange-400 border-2 border-orange-500/80 hover:bg-orange-500 hover:text-white transition-all duration-300 backdrop-blur-md bg-black/40 flex items-center justify-center gap-2 shadow-lg"
+            >
+              <FolderGit2 className="w-5 h-5" />
+              <span>Explore Projects</span>
+            </Link>
 
-        {/* ================= LEADERBOARD CONTENT ================= */}
-        <main className="p-4 sm:p-8 bg-gradient-to-b from-[#0d111b]/90 to-[#1c212c]/95 backdrop-blur-md">
+            <Link
+              to="/leaderboard"
+              className="w-full sm:w-auto px-7 py-4 rounded-full text-base font-semibold text-gray-200 border border-white/20 hover:border-orange-400 hover:text-white transition-all duration-300 backdrop-blur-md bg-white/5 flex items-center justify-center gap-2"
+            >
+              <Trophy className="w-5 h-5 text-yellow-400" />
+              <span>Grind 500 Arena</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* SCROLL DOWN INDICATOR */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce z-10">
+          <div className="w-6 h-10 border-2 border-orange-400/80 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-orange-400 rounded-full mt-2 animate-pulse" />
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 2. ABOUT US SECTION                                                       */}
+      {/* ========================================================================= */}
+      <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-4">
+            ABOUT <span className="text-orange-500">US</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full" />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-6">
+              Rise Together is more than just a tech community—we're a movement of passionate students who believe in the power of collaboration, innovation, and continuous learning. Founded by students, for students, we create an ecosystem where ideas flourish and dreams become reality.
+            </p>
+            <p className="text-base sm:text-lg text-gray-300 leading-relaxed mb-8">
+              From beginner coders to seasoned developers, from creative designers to strategic thinkers, we welcome everyone who shares our vision of building a better tomorrow through technology.
+            </p>
+
+            {/* LIVE STATS */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-4 rounded-2xl bg-gray-900/80 border border-gray-800 backdrop-blur-md">
+                <div className="text-3xl font-bold text-orange-500 font-rajdhani">
+                  {stats.membersCount}+
+                </div>
+                <div className="text-xs text-gray-400 uppercase font-semibold mt-1">Members</div>
+              </div>
+
+              <div className="text-center p-4 rounded-2xl bg-gray-900/80 border border-gray-800 backdrop-blur-md">
+                <div className="text-3xl font-bold text-orange-500 font-rajdhani">
+                  {stats.sessionsCount}+
+                </div>
+                <div className="text-xs text-gray-400 uppercase font-semibold mt-1">Sessions</div>
+              </div>
+
+              <div className="text-center p-4 rounded-2xl bg-gray-900/80 border border-gray-800 backdrop-blur-md">
+                <div className="text-3xl font-bold text-orange-500 font-rajdhani">
+                  {stats.projectsCount}+
+                </div>
+                <div className="text-xs text-gray-400 uppercase font-semibold mt-1">Projects</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-br from-gray-900 via-gray-900/90 to-black border border-white/10 shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"
+                alt="Community Workshop"
+                className="rounded-2xl w-full h-auto object-cover shadow-lg border border-white/5"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 3. OUR MISSION SECTION                                                    */}
+      {/* ========================================================================= */}
+      <section id="mission" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-4">
+            OUR <span className="text-orange-500">MISSION</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full mb-6" />
+          <p className="text-base sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Empowering the next generation of tech leaders through collaborative learning, innovative projects, and career growth opportunities.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="p-8 rounded-3xl bg-gray-900/80 border border-gray-800 text-center hover:border-orange-500/50 transition-all duration-300 group shadow-xl">
+            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(249,115,22,0.4)] group-hover:scale-110 transition-transform">
+              <BookOpen className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="font-rajdhani text-2xl font-bold text-white mb-3">Learn Together</h3>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Master cutting-edge technologies through interactive workshops, peer-to-peer learning, and mentorship from industry experts.
+            </p>
+          </div>
+
+          <div className="p-8 rounded-3xl bg-gray-900/80 border border-gray-800 text-center hover:border-orange-500/50 transition-all duration-300 group shadow-xl">
+            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(249,115,22,0.4)] group-hover:scale-110 transition-transform">
+              <Hammer className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="font-rajdhani text-2xl font-bold text-white mb-3">Build Projects</h3>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Transform ideas into reality through collaborative open-source projects, hackathons, and real-world problem-solving initiatives.
+            </p>
+          </div>
+
+          <div className="p-8 rounded-3xl bg-gray-900/80 border border-gray-800 text-center hover:border-orange-500/50 transition-all duration-300 group shadow-xl">
+            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(249,115,22,0.4)] group-hover:scale-110 transition-transform">
+              <Rocket className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="font-rajdhani text-2xl font-bold text-white mb-3">Grow Careers</h3>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Build your professional network, develop leadership skills, and access exclusive internship, referral, and job opportunities.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 4. ACHIEVEMENTS & AWARDS SECTION                                          */}
+      {/* ========================================================================= */}
+      <section id="achievements" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-4">
+            OUR <span className="text-orange-500">ACHIEVEMENTS</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full" />
+        </div>
+
+        {/* MAJOR ACHIEVEMENTS CARDS */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-12">
           
-          {/* TIMEFRAME TABS */}
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex bg-[#2d3442] p-1.5 rounded-full shadow-inner border border-white/5 gap-1">
-              {(['overall', 'daily', 'weekly', 'monthly'] as TimeframeType[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setTimeframe(t)}
-                  className={`px-6 py-2 rounded-full text-sm font-semibold capitalize transition-all duration-200 cursor-pointer ${
-                    timeframe === t
-                      ? 'bg-[#ca651d] text-white shadow-[0_4px_15px_rgba(202,101,29,0.45)]'
-                      : 'text-gray-400 hover:text-gray-200 bg-transparent'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
+          <div className="p-8 rounded-3xl bg-gray-900/90 border border-gray-800 shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="flex items-start mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mr-6 shadow-md shrink-0">
+                <Trophy className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="font-rajdhani text-2xl font-bold text-white mb-1">
+                  National Hackathon Winners
+                </h3>
+                <p className="text-orange-400 font-semibold text-sm mb-3">
+                  Smart India Hackathon 2024
+                </p>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  Our student team secured 1st place in Smart India Hackathon with an innovative AI-powered education platform, competing against 10,000+ participants nationwide.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t border-gray-800 text-xs text-gray-400">
+              <span>March 2024</span>
+              <div className="flex items-center text-orange-400 font-bold gap-1">
+                <Medal className="w-4 h-4" />
+                <span>1st Place Champions</span>
+              </div>
             </div>
           </div>
 
-          {loading ? (
-            <div className="py-24 flex flex-col items-center justify-center gap-3">
-              <Spinner size="lg" />
-              <p className="text-sm text-gray-400">Loading live rankings...</p>
+          <div className="p-8 rounded-3xl bg-gray-900/90 border border-gray-800 shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="flex items-start mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mr-6 shadow-md shrink-0">
+                <Award className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="font-rajdhani text-2xl font-bold text-white mb-1">
+                  Best Student Tech Community
+                </h3>
+                <p className="text-orange-400 font-semibold text-sm mb-3">
+                  Tech Innovation Awards 2024
+                </p>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  Recognized as the "Best Student Tech Community" for outstanding contribution to collaborative student skill development and open-source project initiatives.
+                </p>
+              </div>
             </div>
-          ) : (
-            <>
-              {/* ================= TOP PLAYERS SHOWCASE ================= */}
-              <div className="flex flex-col lg:flex-row justify-center items-center lg:items-end gap-16 lg:gap-8 mt-28 mb-14">
-                
-                {/* #2 PLAYER CARD */}
-                {player2 ? (
-                  <div className="w-full max-w-[280px] min-h-[255px] bg-[#1a202c] rounded-2xl p-6 text-center flex flex-col justify-end items-center relative shadow-[0_8px_25px_rgba(0,0,0,0.4)] border border-white/10 order-2 lg:order-1">
-                    <img
-                      src={player2.profile_pic || defaultAvatar}
-                      alt={player2.full_name || player2.username}
-                      className="w-[120px] h-[120px] rounded-full object-cover border-4 border-[#ca651d] absolute -top-[60px] left-1/2 -translate-x-1/2 shadow-lg"
-                    />
-                    <h3 className="text-lg font-bold text-white mt-16 mb-2 truncate max-w-[230px]">
-                      {player2.full_name || player2.username}
-                    </h3>
-                    <div className="flex items-center gap-2 text-gray-300 text-xs mb-3 bg-[#4c51bf]/20 px-3 py-1 rounded-full border border-purple-500/20">
-                      <i className="fas fa-trophy text-[#f7cd57]" />
-                      <span>Rank #2</span>
-                    </div>
-                    <div className="flex flex-col items-center text-[#f7cd57] font-bold">
-                      <i className="fas fa-gem text-cyan-400 text-2xl mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
-                      <span className="text-2xl font-rajdhani">
-                        {timeframe === 'daily'
-                          ? player2.daily_points
-                          : timeframe === 'weekly'
-                          ? player2.weekly_points
-                          : timeframe === 'monthly'
-                          ? player2.monthly_points
-                          : player2.total_points}
-                      </span>
-                      <p className="text-xs text-gray-400 font-normal mt-0.5">Total Points</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-full max-w-[280px] min-h-[240px] bg-[#1a202c]/50 rounded-2xl p-6 text-center flex flex-col justify-center items-center border border-dashed border-gray-700 order-2 lg:order-1">
-                    <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 mb-3">
-                      #2
-                    </div>
-                    <p className="text-xs text-gray-400">Position Open</p>
-                  </div>
-                )}
+            <div className="flex items-center justify-between pt-4 border-t border-gray-800 text-xs text-gray-400">
+              <span>January 2024</span>
+              <div className="flex items-center text-orange-400 font-bold gap-1">
+                <Award className="w-4 h-4" />
+                <span>Winner</span>
+              </div>
+            </div>
+          </div>
 
-                {/* #1 MAIN PLAYER CARD */}
-                {player1 ? (
-                  <div className="w-full max-w-[300px] min-h-[290px] bg-gradient-to-br from-[#2d3748] to-[#1a202c] rounded-2xl p-6 text-center flex flex-col justify-end items-center relative shadow-[0_15px_40px_rgba(202,101,29,0.5)] border-3 border-[#ca651d] lg:-translate-y-5 lg:scale-105 order-1 lg:order-2">
-                    <img
-                      src={player1.profile_pic || defaultAvatar}
-                      alt={player1.full_name || player1.username}
-                      className="w-[145px] h-[145px] rounded-full object-cover border-4 border-[#ca651d] absolute -top-[72px] left-1/2 -translate-x-1/2 shadow-[0_0_0_5px_rgba(202,101,29,0.4)]"
-                    />
-                    <h3 className="text-xl font-bold text-white mt-20 mb-2 truncate max-w-[250px]">
-                      {player1.full_name || player1.username}
-                    </h3>
-                    <div className="flex items-center gap-2 text-white text-xs mb-3 bg-white/10 px-3.5 py-1 rounded-full border border-yellow-500/30">
-                      <i className="fas fa-trophy text-[#f7cd57]" />
-                      <span className="font-semibold">Top Rank #1</span>
-                    </div>
-                    <div className="flex flex-col items-center text-white font-bold">
-                      <i className="fas fa-gem text-cyan-400 text-3xl mb-1 drop-shadow-[0_0_12px_rgba(0,188,212,0.8)] animate-pulse" />
-                      <span className="text-3xl font-rajdhani text-yellow-300">
-                        {timeframe === 'daily'
-                          ? player1.daily_points
-                          : timeframe === 'weekly'
-                          ? player1.weekly_points
-                          : timeframe === 'monthly'
-                          ? player1.monthly_points
-                          : player1.total_points}
-                      </span>
-                      <p className="text-xs text-gray-300 font-normal mt-0.5">Total Points</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-full max-w-[300px] min-h-[270px] bg-gradient-to-br from-[#2d3748]/50 to-[#1a202c]/50 rounded-2xl p-6 text-center flex flex-col justify-center items-center border-2 border-dashed border-[#ca651d]/40 order-1 lg:order-2">
-                    <div className="w-20 h-20 rounded-full bg-[#ca651d]/20 border border-[#ca651d] flex items-center justify-center text-[#ca651d] font-bold text-xl mb-3">
-                      #1
-                    </div>
-                    <p className="text-sm text-gray-300 font-semibold">Top Rank Open</p>
-                    <p className="text-xs text-gray-400 mt-1">Be the first to solve DSA problems!</p>
-                  </div>
-                )}
+        </div>
 
-                {/* #3 PLAYER CARD */}
-                {player3 ? (
-                  <div className="w-full max-w-[280px] min-h-[255px] bg-[#1a202c] rounded-2xl p-6 text-center flex flex-col justify-end items-center relative shadow-[0_8px_25px_rgba(0,0,0,0.4)] border border-white/10 order-3">
-                    <img
-                      src={player3.profile_pic || defaultAvatar}
-                      alt={player3.full_name || player3.username}
-                      className="w-[120px] h-[120px] rounded-full object-cover border-4 border-[#ca651d] absolute -top-[60px] left-1/2 -translate-x-1/2 shadow-lg"
-                    />
-                    <h3 className="text-lg font-bold text-white mt-16 mb-2 truncate max-w-[230px]">
-                      {player3.full_name || player3.username}
-                    </h3>
-                    <div className="flex items-center gap-2 text-gray-300 text-xs mb-3 bg-[#4c51bf]/20 px-3 py-1 rounded-full border border-purple-500/20">
-                      <i className="fas fa-trophy text-[#cd7f32]" />
-                      <span>Rank #3</span>
-                    </div>
-                    <div className="flex flex-col items-center text-[#f7cd57] font-bold">
-                      <i className="fas fa-gem text-cyan-400 text-2xl mb-1 drop-shadow-[0_0_8px_rgba(0,188,212,0.6)]" />
-                      <span className="text-2xl font-rajdhani">
-                        {timeframe === 'daily'
-                          ? player3.daily_points
-                          : timeframe === 'weekly'
-                          ? player3.weekly_points
-                          : timeframe === 'monthly'
-                          ? player3.monthly_points
-                          : player3.total_points}
-                      </span>
-                      <p className="text-xs text-gray-400 font-normal mt-0.5">Total Points</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-full max-w-[280px] min-h-[240px] bg-[#1a202c]/50 rounded-2xl p-6 text-center flex flex-col justify-center items-center border border-dashed border-gray-700 order-3">
-                    <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 mb-3">
-                      #3
-                    </div>
-                    <p className="text-xs text-gray-400">Position Open</p>
-                  </div>
-                )}
+        {/* COUNTER METRICS */}
+        <div className="p-8 rounded-3xl bg-gray-900/60 border border-gray-800 shadow-xl backdrop-blur-md">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+            <div>
+              <Trophy className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-orange-400 font-rajdhani">25+</div>
+              <div className="text-xs text-gray-400 mt-1 uppercase font-semibold">Awards Won</div>
+            </div>
+            <div>
+              <Medal className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-orange-400 font-rajdhani">50+</div>
+              <div className="text-xs text-gray-400 mt-1 uppercase font-semibold">Competitions</div>
+            </div>
+            <div>
+              <Sparkles className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-orange-400 font-rajdhani">15+</div>
+              <div className="text-xs text-gray-400 mt-1 uppercase font-semibold">Media Features</div>
+            </div>
+            <div>
+              <Users className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-orange-400 font-rajdhani">20+</div>
+              <div className="text-xs text-gray-400 mt-1 uppercase font-semibold">Partnerships</div>
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <Rocket className="w-6 h-6 text-orange-500 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-orange-400 font-rajdhani">500+</div>
+              <div className="text-xs text-gray-400 mt-1 uppercase font-semibold">Students Mentored</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      {/* ========================================================================= */}
+      {/* 5. RECENT ACTIVITIES & SESSIONS                                            */}
+      {/* ========================================================================= */}
+      <section id="activities" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
+          <div>
+            <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-2">
+              RECENT <span className="text-orange-500">ACTIVITIES</span>
+            </h2>
+            <p className="text-sm text-gray-400">Interactive programming sessions, showcases, and sprint hackathons.</p>
+          </div>
+          <Link
+            to="/community/activities"
+            className="text-xs font-bold uppercase tracking-wider text-orange-400 hover:text-orange-300 flex items-center gap-1.5"
+          >
+            <span>View All Activities</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="rounded-3xl bg-gray-900 border border-gray-800 overflow-hidden shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="h-44 bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
+              <Code2 className="w-14 h-14 text-white opacity-85" />
+            </div>
+            <div className="p-6">
+              <h3 className="font-rajdhani text-xl font-bold text-white mb-2">Weekly Coding Classes</h3>
+              <p className="text-xs text-gray-300 leading-relaxed mb-4">
+                Interactive hands-on programming sessions covering Web Development, DSA, and System Architecture.
+              </p>
+              <div className="flex items-center text-xs text-orange-400 font-medium gap-1.5">
+                <Calendar className="w-4 h-4" />
+                <span>Every Saturday at 6:00 PM IST</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl bg-gray-900 border border-gray-800 overflow-hidden shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="h-44 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+              <Trophy className="w-14 h-14 text-white opacity-85" />
+            </div>
+            <div className="p-6">
+              <h3 className="font-rajdhani text-xl font-bold text-white mb-2">Project Showcases</h3>
+              <p className="text-xs text-gray-300 leading-relaxed mb-4">
+                Monthly presentations where student teams demo innovative production builds and receive senior review.
+              </p>
+              <div className="flex items-center text-xs text-orange-400 font-medium gap-1.5">
+                <Users className="w-4 h-4" />
+                <span>Monthly Event (Next: Last Friday)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl bg-gray-900 border border-gray-800 overflow-hidden shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="h-44 bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center">
+              <Sparkles className="w-14 h-14 text-white opacity-85" />
+            </div>
+            <div className="p-6">
+              <h3 className="font-rajdhani text-xl font-bold text-white mb-2">Hackathon Sprints</h3>
+              <p className="text-xs text-gray-300 leading-relaxed mb-4">
+                Rapid 24-48 hour collaborative hack sprints solving community challenges with modern tech stacks.
+              </p>
+              <div className="flex items-center text-xs text-orange-400 font-medium gap-1.5">
+                <Rocket className="w-4 h-4" />
+                <span>Quarterly Community Sprint</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 6. LEARNING RESOURCES SECTION                                             */}
+      {/* ========================================================================= */}
+      <section id="resources" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-4">
+            LEARNING <span className="text-orange-500">RESOURCES</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full mb-8" />
+
+          {/* CATEGORY FILTER PILLS */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {[
+              { key: 'all', label: 'All Resources' },
+              { key: 'videos', label: 'Videos' },
+              { key: 'pdfs', label: 'PDF Guides' },
+              { key: 'articles', label: 'Articles' },
+              { key: 'tools', label: 'Dev Tools' },
+            ].map((cat) => (
+              <button
+                key={cat.key}
+                type="button"
+                onClick={() => setActiveResourceCategory(cat.key)}
+                className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                  activeResourceCategory === cat.key
+                    ? 'bg-orange-500 text-white shadow-md'
+                    : 'bg-gray-900 text-gray-400 hover:text-white border border-gray-800'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredResources.map((res) => (
+            <div
+              key={res.id}
+              className="p-6 rounded-3xl bg-gray-900/90 border border-gray-800 hover:border-orange-500/40 transition-all flex flex-col justify-between shadow-lg"
+            >
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0">
+                    {res.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-rajdhani text-lg font-bold text-white line-clamp-1">
+                      {res.title}
+                    </h3>
+                    <span className="text-xs text-orange-400 font-semibold uppercase font-mono">
+                      {res.categoryLabel}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-300 leading-relaxed mb-6">
+                  {res.description}
+                </p>
               </div>
 
-              {/* USER STATS BANNER */}
-              <div className="text-center text-sm text-gray-400 mb-10 py-3 px-6 rounded-xl bg-[#1a202c]/80 border border-white/5 max-w-xl mx-auto">
-                {isAuthenticated ? (
-                  <span>
-                    You are ranked{' '}
-                    <strong className="text-orange-400 font-bold text-base px-1">
-                      {currentRank}
-                    </strong>{' '}
-                    out of <span className="text-white font-semibold">{totalCount} users</span>
-                  </span>
-                ) : (
-                  <span>
-                    <Link to="/join" className="text-orange-400 hover:underline font-semibold">
-                      Create an account
-                    </Link>{' '}
-                    to climb the leaderboard and track your daily coding rank!
-                  </span>
+              <div className="flex items-center justify-between pt-4 border-t border-gray-800/80 text-xs">
+                <span className="text-gray-400 font-mono">{res.meta}</span>
+                <a
+                  href={res.link}
+                  className="px-4 py-2 rounded-xl text-xs font-bold uppercase bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>{res.actionText}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 7. PROJECT HIGHLIGHTS SECTION                                             */}
+      {/* ========================================================================= */}
+      <section id="projects" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
+          <div>
+            <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-2">
+              PROJECT <span className="text-orange-500">HIGHLIGHTS</span>
+            </h2>
+            <p className="text-sm text-gray-400">Open-source applications engineered by student contributors.</p>
+          </div>
+          <Link
+            to="/community/projects"
+            className="text-xs font-bold uppercase tracking-wider text-orange-400 hover:text-orange-300 flex items-center gap-1.5"
+          >
+            <span>Browse All Projects</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          
+          <div className="rounded-3xl bg-gray-900 border border-gray-800 overflow-hidden shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="relative h-56 bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
+              <div className="absolute top-4 right-4 bg-black/60 px-3 py-1 rounded-full text-xs font-semibold text-yellow-300 border border-yellow-400/30 flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 fill-yellow-300" />
+                <span>Featured Project</span>
+              </div>
+              <Code2 className="w-20 h-20 text-white opacity-85" />
+            </div>
+            <div className="p-8">
+              <div className="flex gap-2 mb-4">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                  AI / ML
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                  Python
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  TensorFlow
+                </span>
+              </div>
+              <h3 className="font-rajdhani text-2xl font-bold text-white mb-3">
+                Smart Study Assistant
+              </h3>
+              <p className="text-xs text-gray-300 leading-relaxed mb-6">
+                An AI-powered study companion that personalizes learning experiences, tracks student mastery, and provides automated coding solution recommendations.
+              </p>
+              <div className="flex items-center justify-between pt-4 border-t border-gray-800 text-xs">
+                <span className="text-gray-400 font-medium">Built by Community Core Team</span>
+                <Link
+                  to="/community/projects"
+                  className="text-orange-400 hover:text-white font-bold flex items-center gap-1"
+                >
+                  <span>View Details</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl bg-gray-900 border border-gray-800 overflow-hidden shadow-xl hover:border-orange-500/40 transition-all">
+            <div className="relative h-56 bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
+              <div className="absolute top-4 right-4 bg-black/60 px-3 py-1 rounded-full text-xs font-semibold text-yellow-300 border border-yellow-400/30 flex items-center gap-1">
+                <Award className="w-3.5 h-3.5 fill-yellow-300" />
+                <span>Award Winner</span>
+              </div>
+              <Compass className="w-20 h-20 text-white opacity-85" />
+            </div>
+            <div className="p-8">
+              <div className="flex gap-2 mb-4">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                  React Native
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  Firebase
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  Mobile
+                </span>
+              </div>
+              <h3 className="font-rajdhani text-2xl font-bold text-white mb-3">
+                EcoTrack Mobile Platform
+              </h3>
+              <p className="text-xs text-gray-300 leading-relaxed mb-6">
+                A sustainability-focused mobile app helping college students calculate carbon footprints and discover eco-friendly transit and dining alternatives.
+              </p>
+              <div className="flex items-center justify-between pt-4 border-t border-gray-800 text-xs">
+                <span className="text-gray-400 font-medium">Built by Student Contributors</span>
+                <Link
+                  to="/community/projects"
+                  className="text-orange-400 hover:text-white font-bold flex items-center gap-1"
+                >
+                  <span>View Details</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 8. TESTIMONIALS SECTION                                                   */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-4">
+            WHAT <span className="text-orange-500">DEVELOPERS SAY</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full" />
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            {
+              quote:
+                'Rise Together completely transformed my college experience. I went from knowing basic C++ to building full-stack web apps and winning hackathons with my team.',
+              name: 'Aarav Sharma',
+              role: 'Full Stack Member',
+              avatar:
+                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+            },
+            {
+              quote:
+                'The peer mentorship and collaborative project culture are unmatched. Writing blogs and sharing code problem solutions helped me land my first software engineering internship!',
+              name: 'Priya Patel',
+              role: 'Community Contributor',
+              avatar:
+                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+            },
+            {
+              quote:
+                'The Grind 500 leaderboard and daily coding streaks keep me consistent with algorithm practice. Best tech community for any aspiring developer.',
+              name: 'Rohan Verma',
+              role: 'DSA Lead',
+              avatar:
+                'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
+            },
+          ].map((t, idx) => (
+            <div
+              key={idx}
+              className="p-8 rounded-3xl bg-gray-900/80 border border-gray-800 flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <div className="flex items-center gap-1 text-amber-400 mb-4">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-300 leading-relaxed italic mb-6">
+                  "{t.quote}"
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 border-t border-gray-800 pt-4">
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  className="w-10 h-10 rounded-full object-cover border border-orange-500"
+                />
+                <div>
+                  <div className="text-sm font-bold text-white">{t.name}</div>
+                  <div className="text-xs text-orange-400 font-mono">{t.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 9. FAQ ACCORDION SECTION                                                  */}
+      {/* ========================================================================= */}
+      <section id="faq" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-4">
+            FREQUENTLY ASKED <span className="text-orange-500">QUESTIONS</span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full" />
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, idx) => {
+            const isOpen = activeFaqIdx === idx;
+            return (
+              <div
+                key={faq.id}
+                className="rounded-2xl bg-gray-900/80 border border-gray-800 overflow-hidden transition-all shadow-md"
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveFaqIdx(isOpen ? null : idx)}
+                  className="w-full px-6 py-5 flex items-center justify-between text-left font-rajdhani font-bold text-lg text-white hover:text-orange-400 transition-colors cursor-pointer"
+                >
+                  <span>{faq.question}</span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0 ${
+                      isOpen ? 'rotate-180 text-orange-400' : ''
+                    }`}
+                  />
+                </button>
+                {isOpen && (
+                  <div className="px-6 pb-5 text-sm text-gray-300 leading-relaxed border-t border-gray-800/80 pt-3">
+                    {faq.answer}
+                  </div>
                 )}
               </div>
+            );
+          })}
+        </div>
+      </section>
 
-              {/* ================= LEADERBOARD TABLE ================= */}
-              <div className="w-full overflow-x-auto rounded-xl shadow-lg border border-white/10 bg-[#1a202c]">
-                <table className="w-full text-left border-collapse min-w-[550px]">
-                  <thead>
-                    <tr className="bg-[#2d3442] text-gray-300 text-xs font-semibold uppercase tracking-wider">
-                      <th className="py-4 px-6 text-center w-24">Rank</th>
-                      <th className="py-4 px-6">User Name</th>
-                      <th className="py-4 px-6 text-right">Total Points</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {otherUsers.length > 0 ? (
-                      otherUsers.map((player, idx) => {
-                        const rankNumber = idx + 4;
-                        const isSelf = isAuthenticated && user && player.user_id === user.id;
-                        const points =
-                          timeframe === 'daily'
-                            ? player.daily_points
-                            : timeframe === 'weekly'
-                            ? player.weekly_points
-                            : timeframe === 'monthly'
-                            ? player.monthly_points
-                            : player.total_points;
+      {/* ========================================================================= */}
+      {/* 10. CONTACT LEADERSHIP TEAM FORM                                          */}
+      {/* ========================================================================= */}
+      <section id="contact" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gray-900 border border-orange-500/40 p-8 sm:p-12 relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                        return (
-                          <tr
-                            key={player.user_id}
-                            className={`transition-colors hover:bg-[#262c3a] ${
-                              isSelf ? 'bg-[#ca651d]/15 border-l-4 border-[#ca651d]' : ''
-                            }`}
-                          >
-                            <td className="py-4 px-6 text-center font-bold text-base text-gray-300">
-                              {rankNumber}
-                            </td>
-                            <td className="py-4 px-6">
-                              <div className="flex items-center gap-3">
-                                <img
-                                  src={player.profile_pic || defaultAvatar}
-                                  alt={player.full_name || player.username}
-                                  className="w-11 h-11 rounded-full object-cover border-2 border-[#ca651d]"
-                                />
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-white text-sm">
-                                    {player.full_name || player.username}{' '}
-                                    {isSelf && (
-                                      <span className="text-xs text-orange-400 font-normal">(You)</span>
-                                    )}
-                                  </span>
-                                  <span className="text-xs text-gray-400">@{player.username}</span>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-4 px-6 text-right font-rajdhani font-bold text-xl text-cyan-400">
-                              <div className="inline-flex items-center gap-2 justify-end">
-                                <i className="fas fa-gem text-sm" />
-                                <span>{points}</span>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <tr>
-                        <td colSpan={3} className="py-12 text-center text-sm text-gray-500">
-                          {topUsers.length === 0
-                            ? 'No players ranked yet. Solve problems to claim the top spot!'
-                            : 'All current ranked players are shown in the top podium.'}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+          <div className="text-center max-w-xl mx-auto mb-8 relative z-10">
+            <h2 className="font-rajdhani text-4xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-2">
+              CONTACT OUR <span className="text-orange-500">LEADERSHIP TEAM</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-400 mt-2">
+              Have questions about organizing a workshop, sponsoring an event, or becoming a community lead? Send us a message.
+            </p>
+          </div>
+
+          <form onSubmit={handleContactSubmit} className="space-y-4 relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                  Your Full Name
+                </label>
+                <input
+                  type="text"
+                  value={contactName}
+                  onChange={(e) => setContactName(e.target.value)}
+                  placeholder="e.g. Alex Johnson"
+                  required
+                  className="w-full px-4 py-3 bg-[#10131a] border border-gray-700 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500"
+                />
               </div>
-            </>
-          )}
-        </main>
-      </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  placeholder="alex@example.com"
+                  required
+                  className="w-full px-4 py-3 bg-[#10131a] border border-gray-700 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                Your Message
+              </label>
+              <textarea
+                rows={4}
+                value={contactMessage}
+                onChange={(e) => setContactMessage(e.target.value)}
+                placeholder="How can we help or collaborate with you?"
+                required
+                className="w-full px-4 py-3 bg-[#10131a] border border-gray-700 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-orange-500"
+              />
+            </div>
+
+            <div className="text-center pt-3">
+              <button
+                type="submit"
+                disabled={submittingContact}
+                className="w-full sm:w-auto px-10 py-3.5 rounded-full font-bold text-xs uppercase tracking-wider bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-[0_0_20px_rgba(249,115,22,0.5)] transition-all cursor-pointer disabled:opacity-50 inline-flex items-center justify-center gap-2"
+              >
+                <Send className="w-4 h-4" />
+                <span>{submittingContact ? 'Sending Message...' : 'Send Message'}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
     </div>
   );
 };
