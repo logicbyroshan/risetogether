@@ -38,9 +38,13 @@ export const LoginPage: React.FC = () => {
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-500/30">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
+          <Link to="/" className="inline-block">
+            <img
+              src="/assets/images/logo.png"
+              alt="RiseTogether Logo"
+              className="w-14 h-14 rounded-[3px] object-cover border border-orange-500/40 mx-auto mb-4 shadow-xl shadow-orange-500/20 hover:scale-105 transition-transform"
+            />
+          </Link>
           <h2 className="font-rajdhani font-bold text-3xl text-white tracking-wide">
             WELCOME BACK
           </h2>

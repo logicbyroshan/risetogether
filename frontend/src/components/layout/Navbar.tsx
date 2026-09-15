@@ -69,9 +69,11 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-[3px] bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
+            <img
+              src="/assets/images/logo.png"
+              alt="RiseTogether Logo"
+              className="w-10 h-10 rounded-[3px] object-cover border border-orange-500/40 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform"
+            />
             <div className="flex flex-col">
               <span className="font-rajdhani font-bold text-2xl tracking-wider text-white group-hover:text-orange-400 transition-colors">
                 RISE<span className="text-orange-500">TOGETHER</span>
