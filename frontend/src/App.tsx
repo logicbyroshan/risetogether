@@ -3,15 +3,19 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { SmoothScroll } from './components/common/SmoothScroll';
 
 export const App: React.FC = () => {
   return (
     <ToastProvider>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <SmoothScroll>
+          <RouterProvider router={router} />
+        </SmoothScroll>
       </AuthProvider>
     </ToastProvider>
   );
 };
 
 export default App;
+

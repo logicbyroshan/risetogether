@@ -35,7 +35,7 @@ export const Footer: React.FC = () => {
               <img
                 src="/assets/images/logo.png"
                 alt="RiseTogether Logo"
-                className="w-9 h-9 rounded-[3px] object-cover border border-orange-500/40 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform"
+                className="w-9 h-9 rounded-[3px] object-cover border border-neutral-800 group-hover:border-neutral-700 transition-colors"
               />
               <span className="font-rajdhani font-bold text-2xl tracking-wider text-white">
                 RISE<span className="text-orange-500">TOGETHER</span>

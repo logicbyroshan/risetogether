@@ -11,7 +11,7 @@ export const NotFoundPage: React.FC = () => {
           <img
             src="/assets/images/logo.png"
             alt="RiseTogether Logo"
-            className="w-16 h-16 rounded-[3px] object-cover border border-orange-500/40 mx-auto shadow-2xl shadow-orange-500/20 hover:scale-105 transition-transform"
+            className="w-16 h-16 rounded-[3px] object-cover border border-neutral-800 mx-auto hover:border-neutral-700 transition-colors"
           />
         </Link>
         <h1 className="font-rajdhani font-bold text-6xl text-white">404</h1>
