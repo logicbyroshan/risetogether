@@ -1,64 +1,50 @@
-# RiseTogether Development Rules
+# RiseTogether Development & Architecture Rules
 
-## Current Architecture
+## Architecture Overview
 
-- The current product is a Django 5.2 monolith with server-rendered templates, SQLite development data, Django sessions, and Django Admin.
-- The migration target is Django plus DRF APIs and a React/TypeScript/Vite frontend, but this repository is currently in the audit phase.
-- Read `docs/MIGRATION_AUDIT.md`, `docs/FEATURE_INVENTORY.md`, and `docs/BASELINE_TEST_RESULTS.md` before changing application code.
+- **Backend**: Django 5.2 + Django REST Framework (DRF) organized as a Domain-Driven Modular Monolith in `backend/` (`accounts`, `community`, `feed`, `riseapp`).
+- **Frontend**: React 19 + TypeScript 5.8 + Vite Single Page Application in `frontend/`.
+- **Documentation**: Authoritative 24-guide engineering suite in `docs/`.
+- **Admin**: Django Admin remains server-rendered and operational at `/admin/`.
 
-## Migration Rules
+---
 
-- Preserve existing models, data, URLs, workflows, permissions, validation, media behavior, and visual styling unless a documented migration decision requires change.
-- Do not delete templates, JavaScript, static assets, migrations, database files, or legacy feed paths until equivalent behavior is implemented and verified.
-- Do not redesign the UI or invent features during migration.
-- Keep Django Admin server-rendered and working at `/admin/`.
-- Move business rules to Django services/API code, never to React.
-- Use small phases: audit, API foundation, authentication, feature APIs, React foundation, feature migration, parity verification, cleanup.
-- Update `CHANGELOG.md` and migration documents after each completed phase.
+## Frontend & Design System Rules
 
-## Backend Rules
+- **Design System First**: Always use shared UI primitives in `frontend/src/components/ui/` (`Button`, `Input`, `SearchBar`, `Dropdown`, `Modal`, `Tabs`, `Badge`, `Avatar`, `Pagination`, `LoadingState`, `EmptyState`, `ErrorState`, `FormField`). Never invent ad-hoc button, input, or modal markup.
+- **Brand Color Hierarchy**: **Orange (`#f97316`) is strictly for Brand, Action, and Focus/Emphasis.** Never turn entire surfaces, cards, or page backgrounds orange. Surfaces must remain dark neutral glassmorphic containers (`#111827`, `#1f2937`).
+- **Strict Typing**: All React components, hooks, and API responses must have strict TypeScript types. Never use `any` unless an unavoidable third-party boundary requires it.
+- **Centralized API Layer**: All HTTP calls must pass through `frontend/src/api/` modules with the centralized Axios client and automatic CSRF handling.
+- **Async State Handling**: Every data-driven view must provide `LoadingState`, `ErrorState` with retry, and `EmptyState` fallbacks.
+- **Visual Parity**: Maintain 1:1 visual fidelity with the dark futuristic glassmorphic aesthetic, font pairing (`Rajdhani` headings + `Inter` body), and responsive breakpoints.
 
-- Keep model changes to the minimum genuinely required. Never destroy existing data or reset migrations.
-- Use DRF serializers with explicit fields, read-only fields, validation, and safe nested data.
-- Use appropriate API views rather than automatically converting every endpoint into a `ModelViewSet`.
-- Enforce authentication and authorization on the backend. Frontend route guards are UX only.
-- Preserve CSRF/session security if sessions remain the chosen authentication mechanism.
-- Validate all client input server-side, including uploads, URLs, rich text, and permissions.
-- Centralize complex workflows in Django service functions where that prevents duplicate logic.
+---
 
-## Frontend Rules
+## Backend Domain Rules
 
-- Use React, TypeScript, Vite, and React Router with strict typing.
-- Do not use `any` unless an unavoidable, documented boundary requires it.
-- Keep API calls in a centralized client/service layer; do not scatter `fetch` calls through components.
-- Provide loading, error, empty, validation, and success states for API-driven views.
-- Preserve the existing template visual language, responsive breakpoints, navigation, icons, animations, and interaction behavior.
-- Keep reusable layout, feature components, hooks, services, and domain types separate without creating meaningless abstractions.
+- **Domain-Driven Modular Monolith**: Structure apps around distinct business domains (`accounts`, `community`, `feed`, `riseapp`).
+- **Layering Pattern**:
+  - `models.py`: Database schema and constraints.
+  - `serializers.py`: DRF serialization, deserialization, and validation.
+  - `services.py`: Business logic and state mutations.
+  - `selectors.py`: Complex queries and filtering with `select_related` and `prefetch_related` to eliminate N+1 queries.
+  - `api_views.py`: Request dispatching and response formatting.
+- **Backend Authoritative Security**: All authorization, validation, permissions (`IsOwnerOrReadOnly`), and activity scoring must be enforced server-side. Frontend route guards are UX only.
+- **Session & CSRF Security**: Maintain Django session authentication with `HttpOnly` and `SameSite=Lax` cookies, with CSRF token exchange on state-mutating requests.
+- **Database Safety**: Never destroy existing database records or reset migrations without explicit instruction.
 
-## API and Security Rules
+---
 
-- Design APIs around resources and correct HTTP methods.
-- Normalize API errors consistently and handle 400, 401, 403, 404, 409, 429, 500, and network failures where applicable.
-- Never expose passwords, secrets, tokens, or internal sensitive fields in serializers or frontend configuration.
-- Never disable CSRF or use unrestricted production CORS to bypass integration problems.
-- Keep Django secrets, database credentials, and service credentials out of frontend environment variables.
+## Documentation & Governance Rules
 
-## Testing and Verification
+- **Documentation Updates**: Whenever an architecture, domain, API, or design system change is made, update the corresponding file in `docs/` and log entries in `CHANGELOG.md`.
+- **Architecture Decisions**: Record significant technical choices as Architecture Decision Records (ADRs) in `docs/DECISIONS.md`.
+- **Granular PR Workflow**: Commit changes in small, atomic, well-documented commits across dedicated feature/refactor/docs branches, and merge through Pull Requests via GitHub CLI (`gh`).
 
-- Record baseline failures before migration work and distinguish pre-existing failures from migration regressions.
-- Add backend tests for authentication, permissions, serializers, validation, CRUD, uploads, filtering, pagination, and error cases.
-- Add frontend tests for routing, auth state, forms, API states, mutations, and important workflows.
-- Verify important end-to-end flows against the database and inspect browser console/network errors.
-- Run Django checks, backend tests, frontend typecheck/build, and focused tests after each migration phase.
+---
 
-## Naming and Structure
+## Verification & Testing Requirements
 
-- Follow existing Django naming and app boundaries until a documented migration step changes them.
-- Use clear domain names for serializers, services, API modules, React pages, components, hooks, and types.
-- Keep backend and frontend configuration separate; document commands and environment variables.
-
-## Forbidden Actions
-
-- Do not reset the repository, destroy the database, rewrite migrations without cause, or overwrite unrelated user changes.
-- Do not silently remove features, replace working behavior with placeholders, or mark work complete because a build compiles.
-- Do not delete old templates or JavaScript before reference and parity verification.
+- **Backend Test Suite**: `python backend/manage.py test accounts community feed riseapp` must pass with 0 errors before merging.
+- **Frontend Verification**: `npm run build` in `frontend/` must compile with 0 TypeScript or lint errors.
+- **Automation Runner**: Validate both tiers via `powershell -ExecutionPolicy Bypass -File scripts/test.ps1`.
