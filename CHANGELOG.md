@@ -2,6 +2,19 @@
 
 All notable changes to RiseTogether are documented in this file.
 
+## [Pure Jet Black Theme, Sharp Minimal Radius & Layout Alignment] - 2026-09-15
+
+### Added
+- **Subtle Background Grid Patterns (`frontend/src/index.css`)**: Integrated `.bg-grid-pattern` with dark neutral character elements and radial gradient masks for visual texture without distraction.
+
+### Changed
+- **Pure Jet Black Theme (100% Black Background)**: Replaced dark bluish tones (`#111827`, `#0b0f19`) with pure `#000000` body and root background tokens, using neutral surfaces (`#0a0a0a`, `#121212`, `border-neutral-800`).
+- **Sharp Minimal Border Radius (`rounded-[3px]`)**: Updated shared UI primitives (`Card`, `Button`, `Input`, `SearchBar`, `Dropdown`, `Badge`, `Modal`, `Tabs`, `Pagination`) and page components to use a sharp, minimal corner radius (`rounded-[3px]` / `rounded-sm`).
+- **Standardized Control Heights**: Standardized all interactive elements (`Button`, `Input`, `SearchBar`, `Dropdown`) to uniform heights (`h-10` for standard 40px, `h-11` for primary CTA 44px, and `h-8` for compact 32px).
+- **Unified Width Alignment (`max-w-7xl`)**: Aligned the container width of `Navbar`, `Footer`, and all 10 `HomePage` feature sections to `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`.
+
+---
+
 ## [DSA Gamification, Leaderboard Landing Page & Coder Social UI] - 2026-09-15
 
 ### Added
