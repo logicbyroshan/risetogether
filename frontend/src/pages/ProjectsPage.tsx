@@ -57,21 +57,23 @@ export const ProjectsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-800">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-neutral-800">
         <div>
-          <Badge variant="orange" size="md" className="mb-2">OPEN SOURCE</Badge>
+          <Badge variant="orange" size="md" className="mb-2">
+            OPEN SOURCE SHOWCASE
+          </Badge>
           <h1 className="font-rajdhani font-bold text-4xl sm:text-5xl text-white tracking-tight">
-            PROJECT SHOWCASE
+            COMMUNITY PROJECT SHOWCASE
           </h1>
           <p className="text-sm text-gray-400 mt-2 max-w-xl leading-relaxed">
-            Explore innovative projects created by the RiseTogether community. Inspect source code, test live demos, and collaborate.
+            Explore open-source software, developer tools, and full-stack applications created by RiseTogether members. Inspect source code, test live deployments, and collaborate.
           </p>
         </div>
 
         {isAuthenticated && (
           <Link to="/feed">
-            <Button variant="primary" leftIcon={<Plus className="w-4 h-4" />}>
-              Share Project on Feed
+            <Button variant="primary" size="md" leftIcon={<Plus className="w-4 h-4" />}>
+              Share Project via Feed
             </Button>
           </Link>
         )}

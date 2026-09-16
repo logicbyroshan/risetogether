@@ -6,6 +6,7 @@ import { feedApi } from '../api/feed';
 import { PostCard } from '../components/feed/PostCard';
 import { Spinner } from '../components/ui/Spinner';
 import { Badge } from '../components/ui/Badge';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export const SavedPostsPage: React.FC = () => {
   const [posts, setPosts] = useState<FeedPost[]>([]);
@@ -30,7 +31,7 @@ export const SavedPostsPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-gray-800">
+      <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
         <div>
           <Link
             to="/feed"
@@ -52,13 +53,15 @@ export const SavedPostsPage: React.FC = () => {
       {loading ? (
         <Spinner size="lg" className="py-20" />
       ) : posts.length === 0 ? (
-        <div className="text-center py-20 border border-gray-800 rounded-2xl glassmorphism">
-          <Bookmark className="w-12 h-12 text-orange-400 mx-auto mb-3 opacity-60" />
-          <h3 className="font-rajdhani font-bold text-xl text-gray-200">No Saved Posts</h3>
-          <p className="text-xs text-gray-400 mt-1">
-            Click the bookmark icon on any feed post to save it for quick reference later.
-          </p>
-        </div>
+        <EmptyState
+          icon={<Bookmark className="w-8 h-8" />}
+          title="No Saved Bookmarks"
+          description="Click the bookmark icon on any feed post to save it for quick reference later."
+          actionLabel="Explore Feed"
+          onAction={() => {
+            window.location.href = '/feed';
+          }}
+        />
       ) : (
         <div className="space-y-6">
           {posts.map((post) => (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { authApi } from '../api/auth';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Button';
@@ -38,7 +38,7 @@ export const PasswordResetPage: React.FC = () => {
             <img
               src="/assets/images/logo.png"
               alt="RiseTogether Logo"
-              className="w-14 h-14 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-4 hover:border-neutral-700 transition-colors"
+              className="w-12 h-12 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-3.5 hover:border-neutral-700 transition-colors bg-neutral-900"
             />
           </Link>
           <h2 className="font-rajdhani font-bold text-3xl text-white tracking-wide">
@@ -49,13 +49,13 @@ export const PasswordResetPage: React.FC = () => {
           </p>
         </div>
 
-        <Card className="border border-orange-500/30 p-8 shadow-2xl">
+        <Card className="border border-neutral-800 p-8 shadow-2xl bg-neutral-950/90">
           {isSuccess ? (
             <div className="text-center space-y-4 py-4">
               <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
               <h3 className="text-lg font-bold text-white font-rajdhani">Check Your Email</h3>
               <p className="text-sm text-gray-300">
-                If an account exists with <strong className="text-orange-400">{email}</strong>, you will receive password reset link instructions shortly.
+                If an account exists with <strong className="text-orange-400">{email}</strong>, you will receive password reset instructions shortly.
               </p>
               <Link to="/login" className="block pt-2">
                 <Button variant="secondary" size="md" className="w-full">
@@ -86,7 +86,7 @@ export const PasswordResetPage: React.FC = () => {
                 Send Reset Link
               </Button>
 
-              <div className="border-t border-gray-800 mt-6 pt-6 text-center text-xs text-gray-400">
+              <div className="border-t border-neutral-800 mt-6 pt-6 text-center text-xs text-gray-400">
                 Remember your password?{' '}
                 <Link to="/login" className="text-orange-400 font-bold hover:underline">
                   Log in

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Sparkles, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { authApi } from '../api/auth';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Button';
@@ -47,21 +47,24 @@ export const PasswordResetConfirmPage: React.FC = () => {
             <img
               src="/assets/images/logo.png"
               alt="RiseTogether Logo"
-              className="w-14 h-14 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-4 hover:border-neutral-700 transition-colors"
+              className="w-12 h-12 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-3.5 hover:border-neutral-700 transition-colors bg-neutral-900"
             />
           </Link>
           <h2 className="font-rajdhani font-bold text-3xl text-white tracking-wide">
             SET NEW PASSWORD
           </h2>
+          <p className="text-sm text-gray-400 mt-1">
+            Choose a strong password with at least 8 characters.
+          </p>
         </div>
 
-        <Card className="border border-orange-500/30 p-8 shadow-2xl">
+        <Card className="border border-neutral-800 p-8 shadow-2xl bg-neutral-950/90">
           {isSuccess ? (
             <div className="text-center space-y-4 py-4">
               <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
               <h3 className="text-lg font-bold text-white font-rajdhani">Password Updated!</h3>
               <p className="text-sm text-gray-300">
-                Your password has been changed. Redirecting you to login...
+                Your password has been changed successfully. Redirecting you to login...
               </p>
               <Link to="/login" className="block pt-2">
                 <Button variant="primary" size="md" className="w-full">
@@ -75,19 +78,20 @@ export const PasswordResetConfirmPage: React.FC = () => {
                 <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
                   New Password
                 </label>
-                <div className="relative">
+                <div className="relative flex items-center">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full px-4 py-3 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 pr-10"
+                    className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500 pr-10 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 cursor-pointer p-0.5"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -104,7 +108,7 @@ export const PasswordResetConfirmPage: React.FC = () => {
                   onChange={(e) => setPassword2(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full px-4 py-3 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                  className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500 transition-all"
                 />
               </div>
 
@@ -116,7 +120,7 @@ export const PasswordResetConfirmPage: React.FC = () => {
                 className="w-full mt-2"
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Reset Password
+                Save New Password
               </Button>
             </form>
           )}

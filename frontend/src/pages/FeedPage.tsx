@@ -87,12 +87,12 @@ export const FeedPage: React.FC = () => {
   };
 
   const mainTabs: TabItem[] = [
-    { id: 'all', label: 'Latest Timeline', icon: <Clock className="w-4 h-4" /> },
-    { id: 'trending', label: 'Trending', icon: <Flame className="w-4 h-4" /> },
+    { id: 'all', label: 'Timeline', icon: <Clock className="w-3.5 h-3.5" /> },
+    { id: 'trending', label: 'Trending', icon: <Flame className="w-3.5 h-3.5 text-orange-400" /> },
   ];
 
   const typeTabs: TabItem[] = [
-    { id: 'all', label: 'All Types' },
+    { id: 'all', label: 'All Posts' },
     { id: 'normal', label: 'Discussions' },
     { id: 'blog', label: 'Articles' },
     { id: 'project', label: 'Projects' },
@@ -104,7 +104,7 @@ export const FeedPage: React.FC = () => {
         {/* ============ LEFT COLUMN: FEED TIMELINE ============ */}
         <div className="lg:col-span-8 space-y-6">
           {/* Top Post Creator Bar */}
-          <Card className="border border-orange-500/30 p-4 sm:p-5 flex items-center justify-between gap-4">
+          <Card className="border border-neutral-800 p-4 sm:p-5 flex items-center justify-between gap-4 bg-neutral-950/80">
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <Avatar
                 src={user?.profile.profile_pic}
@@ -120,7 +120,7 @@ export const FeedPage: React.FC = () => {
                     window.location.href = '/login';
                   }
                 }}
-                className="flex-1 text-left px-4 py-2.5 rounded-xl bg-gray-950/80 border border-gray-800 text-xs sm:text-sm text-gray-400 hover:text-gray-200 hover:border-gray-700 transition-all cursor-pointer truncate"
+                className="flex-1 text-left px-4 py-2.5 rounded-[3px] bg-black border border-neutral-800 text-xs sm:text-sm text-gray-400 hover:text-gray-200 hover:border-neutral-700 transition-all cursor-pointer truncate"
               >
                 {isAuthenticated
                   ? `Share an update, blog article, or project, @${user?.username}...`
@@ -149,11 +149,11 @@ export const FeedPage: React.FC = () => {
             value={search}
             onChange={setSearch}
             onSearch={handleSearch}
-            placeholder="Search posts, hashtags, or topics..."
+            placeholder="Search posts, hashtags, topics, or authors..."
           />
 
           {/* Timeline Filter Controls */}
-          <div className="space-y-3 pb-2 border-b border-gray-800">
+          <div className="space-y-3 pb-2 border-b border-neutral-800">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <Tabs
                 tabs={mainTabs}
@@ -216,7 +216,7 @@ export const FeedPage: React.FC = () => {
         <div className="lg:col-span-4 space-y-6">
           {/* User Status Card */}
           {isAuthenticated && user && (
-            <Card className="border border-gray-800">
+            <Card className="border border-neutral-800 bg-neutral-950/80">
               <div className="flex items-center gap-3 mb-4">
                 <Avatar
                   src={user.profile.profile_pic}
@@ -226,21 +226,21 @@ export const FeedPage: React.FC = () => {
                 />
                 <div>
                   <h4 className="font-bold text-base text-white">@{user.username}</h4>
-                  <Badge variant="orange" size="sm">
+                  <Badge variant="orange" size="xs">
                     {user.role_display}
                   </Badge>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-gray-950/80 border border-gray-800 text-center mb-4">
+              <div className="grid grid-cols-2 gap-2 p-3 rounded-[3px] bg-black border border-neutral-800 text-center mb-4">
                 <div>
-                  <div className="text-xs text-gray-400">Activity Score</div>
+                  <div className="text-[11px] text-gray-400 font-mono">Activity Score</div>
                   <div className="font-rajdhani font-bold text-xl text-orange-400">
                     {user.profile.activity_score} pts
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-gray-400">Posts Shared</div>
+                  <div className="text-[11px] text-gray-400 font-mono">Posts Shared</div>
                   <div className="font-rajdhani font-bold text-xl text-white">
                     {user.profile.posts_shared_count}
                   </div>
@@ -261,27 +261,29 @@ export const FeedPage: React.FC = () => {
           )}
 
           {/* Leaderboard Card */}
-          <Card className="border border-gray-800">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800 mb-4">
+          <Card className="border border-neutral-800 bg-neutral-950/80">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-800 mb-4">
               <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-amber-400" />
+                <Trophy className="w-4 h-4 text-amber-400" />
                 <h3 className="font-rajdhani font-bold text-lg text-white">
                   TOP CONTRIBUTORS
                 </h3>
               </div>
-              <span className="text-[11px] font-mono text-orange-400 uppercase">Monthly</span>
+              <span className="text-[10px] font-mono text-orange-400 uppercase bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded-[2px]">
+                Monthly
+              </span>
             </div>
 
             {leaderboard.length === 0 ? (
               <p className="text-xs text-gray-500 py-3 text-center">Calculating rankings...</p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {leaderboard.map((entry, idx) => (
                   <div
                     key={entry.id || idx}
-                    className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-gray-950/60 border border-gray-800/80 hover:border-orange-500/40 transition-colors"
+                    className="flex items-center justify-between gap-3 p-2.5 rounded-[3px] bg-black border border-neutral-800 hover:border-neutral-700 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                       <span
                         className={`font-mono font-bold text-xs w-5 text-center ${
                           idx === 0
@@ -303,7 +305,7 @@ export const FeedPage: React.FC = () => {
                       <div>
                         <Link
                           to={`/profile/${entry.user.username}`}
-                          className="text-xs font-bold text-gray-200 hover:text-orange-400 transition-colors truncate max-w-[100px] block"
+                          className="text-xs font-bold text-gray-200 hover:text-orange-400 transition-colors truncate max-w-[110px] block"
                         >
                           @{entry.user.username}
                         </Link>

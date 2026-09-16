@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types/user';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
 import { Card } from '../components/ui/Card';
 
 export const JoinPage: React.FC = () => {
@@ -43,6 +44,12 @@ export const JoinPage: React.FC = () => {
   const hasLength = password.length >= 8;
   const hasMatch = password && password === password2;
 
+  const roleOptions = [
+    { value: 'member', label: 'General Member' },
+    { value: 'visitor', label: 'Visitor' },
+    { value: 'co_lead', label: 'Co-Lead Contributor' },
+  ];
+
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-lg w-full">
@@ -52,7 +59,7 @@ export const JoinPage: React.FC = () => {
             <img
               src="/assets/images/logo.png"
               alt="RiseTogether Logo"
-              className="w-14 h-14 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-4 hover:border-neutral-700 transition-colors"
+              className="w-12 h-12 rounded-[3px] object-cover border border-neutral-800 mx-auto mb-3.5 hover:border-neutral-700 transition-colors bg-neutral-900"
             />
           </Link>
           <h2 className="font-rajdhani font-bold text-3xl text-white tracking-wide">
@@ -64,7 +71,7 @@ export const JoinPage: React.FC = () => {
         </div>
 
         {/* Card */}
-        <Card className="border border-orange-500/30 p-8 shadow-2xl">
+        <Card className="border border-neutral-800 p-8 shadow-2xl bg-neutral-950/90">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
@@ -76,20 +83,12 @@ export const JoinPage: React.FC = () => {
                 required
               />
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                  Community Role
-                </label>
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
-                  className="w-full px-4 py-3 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-                >
-                  <option value="member">General Member</option>
-                  <option value="visitor">Visitor</option>
-                  <option value="co_lead">Co-Lead Contributor</option>
-                </select>
-              </div>
+              <Select
+                label="Community Role"
+                value={role}
+                options={roleOptions}
+                onChange={(e) => setRole(e.target.value as UserRole)}
+              />
             </div>
 
             <Input
@@ -106,19 +105,20 @@ export const JoinPage: React.FC = () => {
                 <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
                   Password
                 </label>
-                <div className="relative">
+                <div className="relative flex items-center">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full px-4 py-3 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 pr-10"
+                    className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500 pr-10 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 cursor-pointer p-0.5"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -135,7 +135,7 @@ export const JoinPage: React.FC = () => {
                   onChange={(e) => setPassword2(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full px-4 py-3 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                  className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500 transition-all"
                 />
               </div>
             </div>
@@ -162,7 +162,7 @@ export const JoinPage: React.FC = () => {
             </Button>
           </form>
 
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-xs text-gray-400">
+          <div className="border-t border-neutral-800 mt-6 pt-6 text-center text-xs text-gray-400">
             Already have an account?{' '}
             <Link to="/login" className="text-orange-400 font-bold hover:underline">
               Log in here

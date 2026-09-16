@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Clock, ArrowLeft, Share2, Sparkles, BookOpen } from 'lucide-react';
+import { Clock, ArrowLeft, Share2, BookOpen } from 'lucide-react';
 import { Blog } from '../types/community';
 import { communityApi } from '../api/community';
 import { useToast } from '../context/ToastContext';
 import { Spinner } from '../components/ui/Spinner';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { Avatar } from '../components/ui/Avatar';
 import { RichTextViewer } from '../components/ui/RichTextViewer';
 
 export const BlogDetailPage: React.FC = () => {
@@ -53,7 +54,7 @@ export const BlogDetailPage: React.FC = () => {
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Breadcrumb / Back button */}
+      {/* Breadcrumb / Actions */}
       <div className="flex items-center justify-between">
         <Link
           to="/community/blogs"
@@ -67,7 +68,7 @@ export const BlogDetailPage: React.FC = () => {
           variant="outline"
           size="sm"
           onClick={handleShare}
-          leftIcon={<Share2 className="w-3.5 h-3.5" />}
+          leftIcon={<Share2 className="w-3.5 h-3.5 text-orange-400" />}
         >
           Share
         </Button>
@@ -79,7 +80,7 @@ export const BlogDetailPage: React.FC = () => {
           <Badge variant="orange" size="sm">
             Technical Article
           </Badge>
-          <div className="flex items-center gap-1.5 text-xs text-orange-400 font-semibold">
+          <div className="flex items-center gap-1.5 text-xs text-orange-400 font-semibold font-mono">
             <Clock className="w-3.5 h-3.5" />
             <span>{blog.read_time}</span>
           </div>
@@ -90,15 +91,12 @@ export const BlogDetailPage: React.FC = () => {
         </h1>
 
         {/* Author Bio Banner */}
-        <div className="flex items-center gap-4 py-4 border-y border-gray-800">
+        <div className="flex items-center gap-3.5 py-4 border-y border-neutral-800">
           <Link to={`/profile/${blog.author.username}`}>
-            <img
-              src={
-                blog.author.profile_pic ||
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-              }
-              alt={blog.author.username}
-              className="w-12 h-12 rounded-full object-cover border-2 border-orange-500/50"
+            <Avatar
+              src={blog.author.profile_pic}
+              name={blog.author.username}
+              size="lg"
             />
           </Link>
           <div>
@@ -108,7 +106,7 @@ export const BlogDetailPage: React.FC = () => {
             >
               @{blog.author.username}
             </Link>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-gray-400 font-mono mt-0.5">
               Published on{' '}
               {new Date(blog.created_at).toLocaleDateString(undefined, {
                 month: 'long',
@@ -122,13 +120,13 @@ export const BlogDetailPage: React.FC = () => {
 
       {/* Cover Thumbnail */}
       {blog.thumbnail && (
-        <div className="rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
+        <div className="rounded-[3px] overflow-hidden border border-neutral-800 shadow-2xl">
           <img src={blog.thumbnail} alt={blog.title} className="w-full max-h-[480px] object-cover" />
         </div>
       )}
 
       {/* Main Content */}
-      <div className="glassmorphism rounded-2xl p-6 sm:p-10 border border-gray-800">
+      <div className="glassmorphism rounded-[3px] p-6 sm:p-10 border border-neutral-800">
         <RichTextViewer content={blog.content || blog.excerpt} />
       </div>
     </article>

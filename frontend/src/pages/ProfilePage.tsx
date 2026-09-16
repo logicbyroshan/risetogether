@@ -1,7 +1,5 @@
-// frontend/src/pages/ProfilePage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { accountsApi } from '../api/accounts';
@@ -12,7 +10,9 @@ import { CodingPostCard } from '../components/features/dsa/CodingPostCard';
 import { CreateCodingPostModal } from '../components/features/dsa/CreateCodingPostModal';
 import { EditProfileModal } from '../components/profile/EditProfileModal';
 import { Spinner } from '../components/ui/Spinner';
-import { Plus, LogOut, ArrowLeft, Edit3, Code2, Trophy } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { Plus, LogOut, Edit3, Code2, Trophy, Gem } from 'lucide-react';
 
 type ProfileTab = 'problems' | 'leaderboard';
 
@@ -44,7 +44,6 @@ export const ProfilePage: React.FC = () => {
         setProfileUser(currentUser);
         setProfileData(currentUser.profile || null);
         
-        // Fetch posts, stats, and leaderboard in parallel
         const [postsRes, statsRes, lbRes] = await Promise.all([
           dsaApi.getCodingPosts({ mine: true }),
           dsaApi.getUserStats().catch(() => null),
@@ -123,118 +122,105 @@ export const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="w-full flex justify-center items-center min-h-[90vh] py-6 px-2 sm:px-4 font-inter text-gray-100 bg-black">
-      
-      {/* ================= TABLET CONTAINER ================= */}
-      <div className="w-full max-w-[1280px] bg-neutral-950 border border-neutral-800 rounded-[3px] shadow-2xl overflow-hidden flex flex-col">
-        
-        {/* ================= PROFILE HEADER ================= */}
-        <header className="relative p-6 sm:p-12 pb-6 border-b border-neutral-800 bg-black">
-          
-          {/* COVER GRADIENT */}
-          <div className="w-full h-44 sm:h-48 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 absolute top-0 left-0 right-0 border-b border-neutral-800" />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+      {/* Profile Container */}
+      <div className="bg-neutral-950 border border-neutral-800 rounded-[3px] shadow-2xl overflow-hidden flex flex-col">
+        {/* Profile Header Cover */}
+        <header className="relative p-6 sm:p-10 pb-6 border-b border-neutral-800 bg-black">
+          {/* Cover Gradient */}
+          <div className="w-full h-36 sm:h-44 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 absolute top-0 left-0 right-0 border-b border-neutral-800" />
 
-          {/* PROFILE INFO ROW */}
-          <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mt-16 sm:mt-20">
-            
-            {/* DETAILS (AVATAR + TEXT) */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 w-full lg:w-auto text-center sm:text-left">
+          {/* Profile Info Row */}
+          <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mt-14 sm:mt-16">
+            {/* Details (Avatar + Text) */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5 sm:gap-6 w-full lg:w-auto text-center sm:text-left">
               <img
                 src={displayPic}
                 alt={displayName}
-                className="w-36 h-36 sm:w-48 sm:h-48 rounded-[3px] object-cover border-[6px] border-neutral-950 shadow-2xl flex-shrink-0 bg-neutral-900"
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-[3px] object-cover border-[5px] border-neutral-950 shadow-2xl shrink-0 bg-neutral-900"
               />
 
-              <div className="flex flex-col justify-end gap-2.5 pb-2">
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                  {displayName}
-                </h1>
-                <p className="text-sm text-gray-400 max-w-md">
+              <div className="flex flex-col justify-end gap-2 pb-1">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-rajdhani">
+                    {displayName}
+                  </h1>
+                  <span className="text-xs text-gray-400 font-mono">@{profileUser?.username}</span>
+                  {profileUser?.role_display && (
+                    <Badge variant="orange" size="xs">
+                      {profileUser.role_display}
+                    </Badge>
+                  )}
+                </div>
+
+                <p className="text-sm text-gray-400 max-w-lg leading-relaxed">
                   {profileData?.bio || 'Full-Stack Developer & Problem Solver | Rising Together'}
                 </p>
 
-                {/* PRIMARY ACTIONS */}
+                {/* Primary Actions */}
                 {isOwnProfile && (
                   <div className="flex flex-wrap gap-2.5 mt-2 justify-center sm:justify-start">
-                    <button
-                      type="button"
+                    <Button
+                      variant="primary"
+                      size="sm"
                       onClick={() => {
                         setEditingPost(null);
                         setIsCreateModalOpen(true);
                       }}
-                      className="h-10 px-5 rounded-[3px] text-xs font-bold uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                      leftIcon={<Plus className="w-4 h-4" />}
                     >
-                      <Plus className="w-4 h-4" />
-                      Post Now
-                    </button>
+                      Post Solution
+                    </Button>
 
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="h-10 px-4 rounded-[3px] text-xs font-semibold text-gray-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors flex items-center gap-1.5 cursor-pointer"
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsEditProfileOpen(true)}
+                      leftIcon={<Edit3 className="w-3.5 h-3.5 text-orange-400" />}
                     >
-                      <LogOut className="w-3.5 h-3.5" />
+                      Edit Profile
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      leftIcon={<LogOut className="w-3.5 h-3.5 text-rose-400" />}
+                      className="text-rose-400 hover:text-rose-300 hover:bg-rose-950/30"
+                    >
                       Logout
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* STATS & SECONDARY ACTIONS */}
-            <div className="flex flex-col sm:flex-row lg:flex-col items-center sm:items-end justify-between w-full lg:w-auto gap-4 pb-2 border-t lg:border-t-0 border-neutral-800 pt-4 lg:pt-0">
-              
-              {/* RANK STATS */}
-              <div className="flex gap-6 sm:gap-8 justify-center sm:justify-end w-full">
-                <div className="flex flex-col items-center sm:items-end">
-                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">M Rank</span>
-                  <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
-                    {userStats?.monthly_rank || '-'}
-                  </strong>
-                </div>
-
-                <div className="flex flex-col items-center sm:items-end">
-                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">W Rank</span>
-                  <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
-                    {userStats?.weekly_rank || '-'}
-                  </strong>
-                </div>
-
-                <div className="flex flex-col items-center sm:items-end">
-                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">D Rank</span>
-                  <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
-                    {userStats?.daily_rank || '-'}
-                  </strong>
-                </div>
+            {/* Stats Ranks */}
+            <div className="flex items-center justify-around sm:justify-end w-full lg:w-auto gap-6 sm:gap-8 pb-2 border-t lg:border-t-0 border-neutral-800 pt-4 lg:pt-0">
+              <div className="flex flex-col items-center sm:items-end">
+                <span className="text-[10px] text-gray-400 uppercase tracking-wider font-mono">Monthly Rank</span>
+                <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
+                  #{userStats?.monthly_rank || '-'}
+                </strong>
               </div>
 
-              {/* SECONDARY ACTIONS */}
-              <div className="flex gap-2.5">
-                <Link
-                  to="/"
-                  className="h-9 px-4 rounded-[3px] text-xs font-semibold text-gray-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors flex items-center gap-1.5"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  Back Home
-                </Link>
-
-                {isOwnProfile && (
-                  <button
-                    type="button"
-                    onClick={() => setIsEditProfileOpen(true)}
-                    className="h-9 px-4 rounded-[3px] text-xs font-semibold text-gray-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                    Edit Profile
-                  </button>
-                )}
+              <div className="flex flex-col items-center sm:items-end">
+                <span className="text-[10px] text-gray-400 uppercase tracking-wider font-mono">Weekly Rank</span>
+                <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
+                  #{userStats?.weekly_rank || '-'}
+                </strong>
               </div>
 
+              <div className="flex flex-col items-center sm:items-end">
+                <span className="text-[10px] text-gray-400 uppercase tracking-wider font-mono">Daily Rank</span>
+                <strong className="text-2xl font-bold text-orange-400 font-rajdhani">
+                  #{userStats?.daily_rank || '-'}
+                </strong>
+              </div>
             </div>
-
           </div>
 
-          {/* NAVIGATION TABS */}
+          {/* Navigation Tabs */}
           <div className="flex gap-6 mt-8 border-b border-neutral-800">
             <button
               type="button"
@@ -246,12 +232,12 @@ export const ProfilePage: React.FC = () => {
               }`}
             >
               <Code2 className="w-4 h-4" />
-              <span>Problems</span>
-              <sup className="text-xs bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded-[2px] font-mono text-gray-300">
+              <span>DSA Solutions</span>
+              <sup className="text-xs bg-neutral-900 border border-neutral-800 px-1.5 py-0.2 rounded-[2px] font-mono text-gray-300">
                 {posts.length}
               </sup>
               {activeTab === 'problems' && (
-                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-white shadow-sm" />
+                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-orange-500 shadow-glow-orange" />
               )}
             </button>
 
@@ -265,18 +251,16 @@ export const ProfilePage: React.FC = () => {
               }`}
             >
               <Trophy className="w-4 h-4" />
-              <span>Leaderboard</span>
+              <span>Rankings</span>
               {activeTab === 'leaderboard' && (
-                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-white shadow-sm" />
+                <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-orange-500 shadow-glow-orange" />
               )}
             </button>
           </div>
-
         </header>
 
-        {/* ================= CONTENT BODY ================= */}
-        <main className="p-6 sm:p-12 overflow-y-auto min-h-[400px] bg-neutral-950">
-          
+        {/* Content Body */}
+        <main className="p-6 sm:p-10 overflow-y-auto min-h-[400px] bg-neutral-950">
           {/* PROBLEMS TAB */}
           {activeTab === 'problems' && (
             <div>
@@ -294,26 +278,27 @@ export const ProfilePage: React.FC = () => {
                 </div>
               ) : (
                 <div className="py-20 text-center flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 rounded-[3px] bg-neutral-900 border border-neutral-800 flex items-center justify-center text-orange-400 mb-4 shadow-inner">
-                    <Code2 className="w-8 h-8" />
+                  <div className="w-14 h-14 rounded-[3px] bg-neutral-900 border border-neutral-800 flex items-center justify-center text-orange-400 mb-4 shadow-inner">
+                    <Code2 className="w-7 h-7" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-1">No coding problems shared yet</h3>
-                  <p className="text-xs text-gray-400 max-w-sm mb-6">
+                  <h3 className="text-lg font-bold text-white font-rajdhani mb-1">No coding solutions shared yet</h3>
+                  <p className="text-xs text-gray-400 max-w-sm mb-6 leading-relaxed">
                     {isOwnProfile
                       ? 'Share your algorithmic solutions, earn ranking points, and build your developer portfolio.'
                       : 'This user has not shared any coding solutions yet.'}
                   </p>
                   {isOwnProfile && (
-                    <button
-                      type="button"
+                    <Button
+                      variant="primary"
+                      size="md"
                       onClick={() => {
                         setEditingPost(null);
                         setIsCreateModalOpen(true);
                       }}
-                      className="h-10 px-6 rounded-[3px] font-bold text-xs uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white shadow-lg transition-transform active:scale-95 cursor-pointer"
+                      leftIcon={<Plus className="w-4 h-4" />}
                     >
                       Post Your First Solution
-                    </button>
+                    </Button>
                   )}
                 </div>
               )}
@@ -322,7 +307,7 @@ export const ProfilePage: React.FC = () => {
 
           {/* LEADERBOARD TAB */}
           {activeTab === 'leaderboard' && (
-            <div className="max-w-3xl mx-auto space-y-3">
+            <div className="max-w-3xl mx-auto space-y-2.5">
               {allLeaderboardEntries.length > 0 ? (
                 allLeaderboardEntries.map((entry, idx) => {
                   const rank = idx + 1;
@@ -331,21 +316,21 @@ export const ProfilePage: React.FC = () => {
                   return (
                     <div
                       key={entry.user_id}
-                      className={`flex items-center justify-between p-4 rounded-[3px] border transition-all ${
+                      className={`flex items-center justify-between p-3.5 rounded-[3px] border transition-all ${
                         isSelf
-                          ? 'bg-neutral-900 border-neutral-700 shadow-lg ring-1 ring-neutral-700'
+                          ? 'bg-neutral-900 border-neutral-700 shadow-md ring-1 ring-neutral-700'
                           : 'bg-black border-neutral-800 hover:bg-neutral-900'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold text-base text-gray-400 w-8 text-center font-rajdhani">
+                      <div className="flex items-center gap-3.5">
+                        <span className="font-bold text-sm text-gray-400 w-8 text-center font-rajdhani">
                           #{rank}
                         </span>
 
                         <img
                           src={entry.profile_pic || defaultAvatar}
                           alt={entry.full_name || entry.username}
-                          className="w-10 h-10 rounded-[3px] object-cover border border-neutral-700"
+                          className="w-9 h-9 rounded-[3px] object-cover border border-neutral-700 bg-neutral-900"
                         />
 
                         <div className="flex flex-col">
@@ -359,8 +344,9 @@ export const ProfilePage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="text-right font-mono text-sm font-semibold text-emerald-400">
-                        {entry.total_points} pts
+                      <div className="text-right font-mono text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                        <Gem className="w-3.5 h-3.5" />
+                        <span>{entry.total_points} pts</span>
                       </div>
                     </div>
                   );
@@ -372,7 +358,6 @@ export const ProfilePage: React.FC = () => {
               )}
             </div>
           )}
-
         </main>
       </div>
 
@@ -400,7 +385,6 @@ export const ProfilePage: React.FC = () => {
           }}
         />
       )}
-
     </div>
   );
 };
