@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Send, Heart } from 'lucide-react';
+import { Send, Heart } from 'lucide-react';
 import { publicApi } from '../../api/public';
 import { useToast } from '../../context/ToastContext';
 
@@ -159,19 +159,20 @@ export const Footer: React.FC = () => {
               Get weekly project digests, workshop invitations, and top technical blogs.
             </p>
             <form onSubmit={handleSubscribe} className="space-y-2">
-              <div className="relative">
+              <div className="relative flex items-center">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
-                  className="w-full h-10 px-4 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 pr-10"
+                  className="w-full h-10 px-3.5 bg-black border border-neutral-800 rounded-[3px] text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500/40 focus:border-orange-500 pr-12 transition-all"
                 />
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="absolute right-1 top-1 bottom-1 px-3 bg-gradient-to-r from-orange-600 to-amber-500 text-white rounded-[2px] flex items-center justify-center hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
+                  className="absolute right-1 top-1 bottom-1 px-3 bg-orange-500 hover:bg-orange-600 text-white rounded-[2px] flex items-center justify-center transition-all disabled:opacity-50 cursor-pointer shadow-sm"
+                  aria-label="Subscribe to newsletter"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>

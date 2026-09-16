@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Menu,
   X,
-  Sparkles,
   User as UserIcon,
   LogOut,
   Settings,
