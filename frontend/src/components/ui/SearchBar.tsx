@@ -35,6 +35,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && onSearch) {
       onSearch(internalVal);
+    } else if (e.key === 'Escape') {
+      handleClear();
     }
   };
 
@@ -63,7 +65,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className={`relative flex items-center w-full ${className}`}>
+    <div className={`relative flex items-center w-full group ${className}`}>
       <Search className={`absolute ${iconSizes[size]} text-gray-400 pointer-events-none transition-colors group-focus-within:text-orange-400`} />
       <input
         type="text"
@@ -78,7 +80,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <button
           type="button"
           onClick={handleClear}
-          className={`absolute ${clearSizes[size]} text-gray-400 hover:text-gray-200 transition-colors p-0.5 rounded-[2px] hover:bg-neutral-800`}
+          className={`absolute ${clearSizes[size]} text-gray-400 hover:text-gray-200 transition-colors p-0.5 rounded-[2px] hover:bg-neutral-800 cursor-pointer`}
           aria-label="Clear search"
         >
           <X className="w-full h-full" />

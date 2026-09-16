@@ -9,7 +9,7 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, helperText, maxLength, showCount = false, value, className = '', id, ...props }, ref) => {
+  ({ label, error, helperText, maxLength, showCount = false, value, className = '', id, rows = 4, ...props }, ref) => {
     const textareaId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
     const currentLength = typeof value === 'string' ? value.length : 0;
 
@@ -32,9 +32,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           value={value}
           maxLength={maxLength}
-          rows={props.rows || 4}
-          className={`w-full px-4 py-3 bg-gray-900/90 border rounded-xl text-gray-100 placeholder-gray-500 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/50 resize-y ${
-            error ? 'border-rose-500 focus:border-rose-500' : 'border-gray-700/80 focus:border-orange-500/80'
+          rows={rows}
+          className={`w-full px-3.5 py-3 bg-black border rounded-[3px] text-gray-100 placeholder-gray-500 text-sm transition-all focus:outline-none focus:ring-1 focus:ring-orange-500/30 resize-y disabled:opacity-50 disabled:cursor-not-allowed ${
+            error ? 'border-rose-500 focus:border-rose-500' : 'border-neutral-800 focus:border-orange-500'
           } ${className}`}
           {...props}
         />

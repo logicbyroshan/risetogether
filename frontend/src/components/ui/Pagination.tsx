@@ -55,7 +55,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="p-2 rounded-[3px] border border-neutral-800 bg-neutral-900/80 text-gray-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="p-2 rounded-[3px] border border-neutral-800 bg-neutral-900/80 text-gray-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           aria-label="Previous page"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -76,7 +76,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               key={`page-${p}`}
               type="button"
               onClick={() => onPageChange(Number(p))}
-              className={`min-w-8 h-8 px-2 text-xs font-semibold rounded-[3px] transition-all ${
+              className={`min-w-8 h-8 px-2 text-xs font-semibold rounded-[3px] transition-all cursor-pointer ${
                 isCurrent
                   ? 'bg-neutral-800 text-white border border-neutral-700 font-bold shadow-sm'
                   : 'border border-neutral-800 bg-neutral-900/80 text-gray-300 hover:bg-neutral-800 hover:text-white'
@@ -91,7 +91,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="p-2 rounded-[3px] border border-neutral-800 bg-neutral-900/80 text-gray-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="p-2 rounded-[3px] border border-neutral-800 bg-neutral-900/80 text-gray-400 hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           aria-label="Next page"
         >
           <ChevronRight className="w-4 h-4" />

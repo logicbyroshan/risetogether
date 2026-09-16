@@ -28,9 +28,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             id={inputId}
             ref={ref}
-            className={`w-full h-10 ${leftIcon ? 'pl-10' : 'pl-3.5'} ${rightIcon ? 'pr-10' : 'pr-3.5'} bg-black border rounded-[3px] text-gray-100 placeholder-gray-500 text-sm transition-all focus:outline-none focus:ring-1 focus:ring-orange-500/50 ${
+            className={`w-full h-10 ${leftIcon ? 'pl-10' : 'pl-3.5'} ${rightIcon ? 'pr-10' : 'pr-3.5'} bg-black border rounded-[3px] text-gray-100 placeholder-gray-500 text-sm transition-all focus:outline-none focus:ring-1 focus:ring-orange-500/30 ${
               error ? 'border-rose-500 focus:border-rose-500' : 'border-neutral-800 focus:border-orange-500'
-            } ${className}`}
+            } disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
             {...props}
           />
           {rightIcon && (

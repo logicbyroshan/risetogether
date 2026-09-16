@@ -1,31 +1,32 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 export interface DividerProps {
-  children?: ReactNode;
+  label?: string;
   orientation?: 'horizontal' | 'vertical';
   className?: string;
 }
 
 export const Divider: React.FC<DividerProps> = ({
-  children,
+  label,
   orientation = 'horizontal',
   className = '',
 }) => {
   if (orientation === 'vertical') {
-    return <div className={`w-[1px] bg-gray-800 self-stretch my-1 ${className}`} />;
+    return <div className={`w-[1px] self-stretch bg-neutral-800 ${className}`} />;
   }
 
-  if (children) {
+  if (label) {
     return (
-      <div className={`relative flex items-center my-4 ${className}`}>
-        <div className="flex-grow border-t border-gray-800" />
-        <span className="flex-shrink mx-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
-          {children}
+      <div className={`relative flex items-center justify-center my-4 ${className}`}>
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-neutral-800" />
+        </div>
+        <span className="relative bg-black px-3 text-xs font-mono uppercase tracking-wider text-gray-400">
+          {label}
         </span>
-        <div className="flex-grow border-t border-gray-800" />
       </div>
     );
   }
 
-  return <hr className={`border-t border-gray-800 my-4 ${className}`} />;
+  return <hr className={`border-t border-neutral-800 my-4 ${className}`} />;
 };

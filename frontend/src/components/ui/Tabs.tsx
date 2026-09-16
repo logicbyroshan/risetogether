@@ -12,7 +12,7 @@ export interface TabsProps {
   activeTab: string;
   onChange: (tabId: string) => void;
   variant?: 'pills' | 'underline';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
 }
 
@@ -25,6 +25,7 @@ export const Tabs: React.FC<TabsProps> = ({
   className = '',
 }) => {
   const sizeStyles = {
+    xs: 'px-2.5 py-1 text-xs gap-1',
     sm: 'px-3 py-1.5 text-xs gap-1.5',
     md: 'px-4 py-2 text-sm gap-2',
     lg: 'px-5 py-2.5 text-base gap-2.5',
@@ -32,15 +33,20 @@ export const Tabs: React.FC<TabsProps> = ({
 
   if (variant === 'underline') {
     return (
-      <div className={`flex border-b border-neutral-800 space-x-6 overflow-x-auto ${className}`}>
+      <div
+        role="tablist"
+        className={`flex border-b border-neutral-800 space-x-6 overflow-x-auto ${className}`}
+      >
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={isActive}
               type="button"
               onClick={() => onChange(tab.id)}
-              className={`flex items-center gap-2 pb-3 font-medium transition-colors cursor-pointer border-b-2 whitespace-nowrap text-sm ${
+              className={`flex items-center gap-2 pb-3 font-medium transition-all cursor-pointer border-b-2 whitespace-nowrap text-sm ${
                 isActive
                   ? 'border-white text-white font-semibold'
                   : 'border-transparent text-gray-400 hover:text-gray-200'
@@ -49,7 +55,13 @@ export const Tabs: React.FC<TabsProps> = ({
               {tab.icon}
               <span>{tab.label}</span>
               {typeof tab.count === 'number' && (
-                <span className={`px-1.5 py-0.5 rounded-[2px] text-xs ${isActive ? 'bg-neutral-800 text-white border border-neutral-700' : 'bg-neutral-900 text-gray-400'}`}>
+                <span
+                  className={`px-1.5 py-0.2 rounded-[2px] text-xs font-mono ${
+                    isActive
+                      ? 'bg-neutral-800 text-white border border-neutral-700'
+                      : 'bg-neutral-900 text-gray-400 border border-neutral-800'
+                  }`}
+                >
                   {tab.count}
                 </span>
               )}
@@ -61,24 +73,35 @@ export const Tabs: React.FC<TabsProps> = ({
   }
 
   return (
-    <div className={`flex flex-wrap gap-2 p-1 bg-black rounded-[3px] border border-neutral-800 ${className}`}>
+    <div
+      role="tablist"
+      className={`inline-flex flex-wrap gap-1 p-1 bg-black rounded-[3px] border border-neutral-800 ${className}`}
+    >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={isActive}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={`flex items-center rounded-[3px] font-medium transition-all cursor-pointer ${sizeStyles[size]} ${
+            className={`flex items-center rounded-[3px] font-medium transition-all cursor-pointer ${
+              sizeStyles[size]
+            } ${
               isActive
                 ? 'bg-neutral-800 text-white border border-neutral-700 font-semibold shadow-sm'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-neutral-900'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-neutral-900/80 border border-transparent'
             }`}
           >
             {tab.icon}
             <span>{tab.label}</span>
             {typeof tab.count === 'number' && (
-              <span className={`ml-1.5 px-1.5 py-0.2 rounded-[2px] text-xs ${isActive ? 'bg-neutral-700 text-white' : 'bg-neutral-900 text-gray-400'}`}>
+              <span
+                className={`ml-1.5 px-1.5 py-0.2 rounded-[2px] text-xs font-mono ${
+                  isActive ? 'bg-neutral-700 text-white' : 'bg-neutral-900 text-gray-400'
+                }`}
+              >
                 {tab.count}
               </span>
             )}

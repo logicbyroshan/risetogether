@@ -48,7 +48,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   return (
     <div className={`relative inline-block shrink-0 ${className}`}>
       <div
-        className={`${sizeStyles[size]} rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-gray-800 to-gray-700 text-orange-400 border border-gray-700/80 shadow-inner`}
+        className={`${sizeStyles[size]} rounded-[3px] overflow-hidden flex items-center justify-center bg-neutral-900 text-orange-400 border border-neutral-800 shadow-inner select-none`}
       >
         {hasValidImage ? (
           <img
@@ -64,8 +64,8 @@ export const Avatar: React.FC<AvatarProps> = ({
 
       {typeof isOnline === 'boolean' && (
         <span
-          className={`absolute rounded-full border-gray-900 ${
-            isOnline ? 'bg-emerald-500' : 'bg-gray-500'
+          className={`absolute rounded-full border-black ${
+            isOnline ? 'bg-emerald-500' : 'bg-neutral-600'
           } ${badgeSizeStyles[size]}`}
         />
       )}

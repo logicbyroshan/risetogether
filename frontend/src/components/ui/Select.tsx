@@ -28,13 +28,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             id={selectId}
             ref={ref}
-            className={`w-full appearance-none px-4 py-3 bg-gray-900/90 border rounded-xl text-gray-100 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500/50 cursor-pointer ${
-              error ? 'border-rose-500 focus:border-rose-500' : 'border-gray-700/80 focus:border-orange-500/80'
+            className={`w-full h-10 appearance-none px-3.5 pr-10 bg-black border rounded-[3px] text-gray-100 text-sm transition-all focus:outline-none focus:ring-1 focus:ring-orange-500/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+              error ? 'border-rose-500 focus:border-rose-500' : 'border-neutral-800 focus:border-orange-500'
             } ${className}`}
             {...props}
           >
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value} className="bg-gray-900 text-gray-100 py-1">
+              <option key={opt.value} value={opt.value} className="bg-neutral-950 text-gray-100 py-1.5">
                 {opt.label}
               </option>
             ))}
