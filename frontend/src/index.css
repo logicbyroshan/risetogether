@@ -1,23 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Tokens */
+  /* Brand Accent Tokens */
   --color-brand-primary: #f97316;
   --color-brand-hover: #ea580c;
   --color-brand-active: #c2410c;
   --color-brand-soft: rgba(249, 115, 22, 0.1);
   --color-brand-glow: rgba(249, 115, 22, 0.25);
 
-  /* Pure 100% Jet Black Surface & Background Tokens */
+  /* Pure Jet Black & Neutral Surface Hierarchy */
   --color-bg-base: #000000;
   --color-bg-deep: #000000;
-  --color-surface: rgba(12, 12, 12, 0.95);
+  --color-surface: rgba(10, 10, 10, 0.95);
   --color-surface-elevated: rgba(18, 18, 18, 0.9);
   --color-surface-hover: rgba(26, 26, 26, 0.85);
 
   /* Border Tokens */
-  --color-border-brand: rgba(249, 115, 22, 0.3);
   --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-medium: rgba(255, 255, 255, 0.14);
+  --color-border-brand: rgba(249, 115, 22, 0.3);
   --color-border-focus: rgba(249, 115, 22, 0.8);
 
   /* Typography Tokens */
@@ -31,11 +32,18 @@
   --color-warning: #f59e0b;
   --color-error: #f43f5e;
   --color-info: #3b82f6;
+
+  /* Standardized Border Radius Scale */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-full: 9999px;
 }
 
 @layer base {
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
     background-color: #000000;
     color: #f4f4f5;
@@ -46,7 +54,11 @@
   font-family: 'Rajdhani', sans-serif;
 }
 
-/* Subtle Dark Character Background Grid & Dots */
+.font-fira {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Character Background Grid & Dots */
 .bg-grid-pattern {
   background-size: 40px 40px;
   background-image: 
@@ -85,49 +97,17 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.gradient-bg {
-  background: #000000;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-@keyframes pulseSlow {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.05);
-  }
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-pulse-slow {
-  animation: pulseSlow 5s ease-in-out infinite;
-}
-
 .hero-gradient {
   background: radial-gradient(circle at center, rgba(249, 115, 22, 0.08) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 80%);
 }
 
 .card-hover {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
   border-color: rgba(255, 255, 255, 0.16);
 }
 
@@ -152,15 +132,8 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.team-lead-special {
-  background: #0d0d0d;
-  border: 1px solid rgba(249, 115, 22, 0.4);
-  position: relative;
-  overflow: hidden;
-}
-
 .leaderboard-card {
-  background: #0e0e0e;
+  background: #0a0a0a;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.2s ease;
 }
