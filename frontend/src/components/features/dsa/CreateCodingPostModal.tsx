@@ -1,5 +1,3 @@
-// frontend/src/components/features/dsa/CreateCodingPostModal.tsx
-
 import React, { useState, useEffect } from 'react';
 import { dsaApi } from '../../../api/dsaApi';
 import {
@@ -9,7 +7,12 @@ import {
   LanguageChoice,
 } from '../../../types/dsa';
 import { useToast } from '../../../context/ToastContext';
-import { X, Code2, Sparkles } from 'lucide-react';
+import { Modal } from '../../ui/Modal';
+import { Button } from '../../ui/Button';
+import { Input } from '../../ui/Input';
+import { Textarea } from '../../ui/Textarea';
+import { Select } from '../../ui/Select';
+import { Sparkles, Code2 } from 'lucide-react';
 
 interface CreateCodingPostModalProps {
   isOpen: boolean;
@@ -65,8 +68,6 @@ export const CreateCodingPostModal: React.FC<CreateCodingPostModalProps> = ({
     else if (py.some((k) => codeSnippet.includes(k))) setDetectedLang('PYTHON');
   }, [codeSnippet]);
 
-  if (!isOpen) return null;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !codeSnippet.trim()) {
@@ -84,7 +85,7 @@ export const CreateCodingPostModal: React.FC<CreateCodingPostModalProps> = ({
           time_complexity: timeComplexity,
           language: detectedLang,
         });
-        toastSuccess('Coding problem updated successfully!');
+        toastSuccess('Coding problem solution updated!');
       } else {
         const created = await dsaApi.createCodingPost({
           title,
@@ -93,128 +94,100 @@ export const CreateCodingPostModal: React.FC<CreateCodingPostModalProps> = ({
           time_complexity: timeComplexity,
           language: detectedLang,
         });
-        toastSuccess(`Problem posted! Earned ${created.points_earned} points!`);
+        toastSuccess(`Problem posted! Earned +${created.points_earned} points!`);
       }
       onSuccess();
       onClose();
     } catch (err: any) {
-      toastError(err.customMessage || err.message || 'Failed to submit problem post.');
+      toastError(err.customMessage || err.message || 'Failed to submit problem solution.');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-[#24283b] border border-[#414868] rounded-2xl w-full max-w-xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-        
-        {/* CLOSE BUTTON */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-5 right-5 text-gray-400 hover:text-white p-1 rounded-lg transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
+  const difficultyOptions = [
+    { value: 'EASY', label: 'Easy (+2 Base Pts)' },
+    { value: 'MEDIUM', label: 'Medium (+5 Base Pts)' },
+    { value: 'HARD', label: 'Hard (+10 Base Pts)' },
+  ];
 
-        <div className="flex items-center gap-2 text-[#bb9af7] mb-6">
-          <Code2 className="w-6 h-6" />
-          <h2 className="text-xl font-bold tracking-wide font-rajdhani uppercase">
-            {editingPost ? 'Edit Coding Problem' : 'Create a New Post'}
-          </h2>
+  const complexityOptions = [
+    { value: 'O(1)', label: 'O(1) - Constant (+10 Pts)' },
+    { value: 'O(log n)', label: 'O(log n) - Logarithmic (+9 Pts)' },
+    { value: 'O(n)', label: 'O(n) - Linear (+5 Pts)' },
+    { value: 'O(n log n)', label: 'O(n log n) - Log-Linear (+6 Pts)' },
+    { value: 'O(n^2)', label: 'O(n^2) - Quadratic (+7 Pts)' },
+    { value: 'O(n^3)', label: 'O(n^3) - Cubic (+3 Pts)' },
+    { value: 'O(2^n)', label: 'O(2^n) - Exponential (+2 Pts)' },
+    { value: 'O(n!)', label: 'O(n!) - Factorial (+1 Pt)' },
+  ];
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={editingPost ? 'Edit Coding Problem' : 'Post Coding Solution'}
+      maxWidth="xl"
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title */}
+        <Input
+          label="Problem Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="e.g. 217. Contains Duplicate (Hash Set Approach)"
+          required
+        />
+
+        {/* Code Snippet with Language Detector */}
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider">
+              Code Solution Snippet
+            </label>
+            <div className="flex items-center gap-1.5 text-xs text-orange-400 font-mono">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Detected: {detectedLang}</span>
+            </div>
+          </div>
+          <textarea
+            rows={7}
+            value={codeSnippet}
+            onChange={(e) => setCodeSnippet(e.target.value)}
+            placeholder={`def containsDuplicate(nums: list[int]) -> bool:\n    seen = set()\n    for n in nums:\n        if n in seen:\n            return True\n        seen.add(n)\n    return False`}
+            required
+            className="w-full p-3.5 bg-black border border-neutral-800 rounded-[3px] font-mono text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 resize-y leading-relaxed"
+            data-lenis-prevent
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* TITLE */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              Problem Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. 217. Contains Duplicate (Hash Set Approach)"
-              required
-              className="w-full px-4 py-2.5 bg-[#1a1b26] border border-[#414868] rounded-xl text-sm text-[#c0caf5] placeholder-gray-500 focus:outline-none focus:border-[#bb9af7]"
-            />
-          </div>
+        {/* Selectors Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Select
+            label="Difficulty"
+            value={difficulty}
+            options={difficultyOptions}
+            onChange={(e) => setDifficulty(e.target.value as DifficultyLevel)}
+          />
 
-          {/* CODE SNIPPET */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider">
-                Code Snippet / Solution
-              </label>
-              <div className="flex items-center gap-1.5 text-xs text-[#7dcfff] font-mono">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Detected: {detectedLang}</span>
-              </div>
-            </div>
-            <textarea
-              rows={8}
-              value={codeSnippet}
-              onChange={(e) => setCodeSnippet(e.target.value)}
-              placeholder={`def containsDuplicate(nums: list[int]) -> bool:\n    seen = set()\n    for n in nums:\n        if n in seen:\n            return True\n        seen.add(n)\n    return False`}
-              required
-              className="w-full p-4 bg-[#101116] border border-[#414868] rounded-xl font-mono text-xs text-[#c0caf5] placeholder-gray-600 focus:outline-none focus:border-[#bb9af7] resize-y leading-relaxed"
-            />
-          </div>
+          <Select
+            label="Time Complexity"
+            value={timeComplexity}
+            options={complexityOptions}
+            onChange={(e) => setTimeComplexity(e.target.value as TimeComplexityChoice)}
+          />
+        </div>
 
-          {/* SELECTORS ROW */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                Difficulty
-              </label>
-              <select
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as DifficultyLevel)}
-                className="w-full px-4 py-2.5 bg-[#1a1b26] border border-[#414868] rounded-xl text-sm text-[#c0caf5] focus:outline-none focus:border-[#bb9af7]"
-              >
-                <option value="EASY">Easy (+2 Base Pts)</option>
-                <option value="MEDIUM">Medium (+5 Base Pts)</option>
-                <option value="HARD">Hard (+10 Base Pts)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                Time Complexity
-              </label>
-              <select
-                value={timeComplexity}
-                onChange={(e) => setTimeComplexity(e.target.value as TimeComplexityChoice)}
-                className="w-full px-4 py-2.5 bg-[#1a1b26] border border-[#414868] rounded-xl text-sm text-[#c0caf5] focus:outline-none focus:border-[#bb9af7]"
-              >
-                <option value="O(1)">O(1) - Constant (+10 Pts)</option>
-                <option value="O(log n)">O(log n) - Logarithmic (+9 Pts)</option>
-                <option value="O(n)">O(n) - Linear (+5 Pts)</option>
-                <option value="O(n log n)">O(n log n) - Log-Linear (+6 Pts)</option>
-                <option value="O(n^2)">O(n^2) - Quadratic (+7 Pts)</option>
-                <option value="O(n^3)">O(n^3) - Cubic (+3 Pts)</option>
-                <option value="O(2^n)">O(2^n) - Exponential (+2 Pts)</option>
-                <option value="O(n!)">O(n!) - Factorial (+1 Pt)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* SUBMIT BUTTON */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 px-6 rounded-xl font-bold text-sm bg-[#bb9af7] hover:bg-[#a982f5] text-[#1a1b26] shadow-lg transition-all transform active:scale-95 disabled:opacity-50 cursor-pointer"
-            >
-              {loading
-                ? 'Processing Problem...'
-                : editingPost
-                ? 'Save Changes'
-                : 'Post Problem'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        {/* Submit Button */}
+        <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" isLoading={loading}>
+            {editingPost ? 'Save Changes' : 'Submit Solution'}
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 };

@@ -131,7 +131,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
   };
 
   return (
-    <div className="border-t border-gray-800/80 pt-4 mt-4 space-y-4">
+    <div className="border-t border-neutral-800 pt-4 mt-4 space-y-4">
       {/* New Comment Input */}
       {isAuthenticated ? (
         <form onSubmit={handleCreateComment} className="flex gap-2 items-center">
@@ -140,23 +140,26 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
             name={user?.username}
             size="sm"
           />
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Write a supportive comment or question..."
-            className="flex-1 px-4 py-2.5 bg-gray-900/90 border border-gray-700/80 rounded-xl text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/80"
-          />
-          <button
-            type="submit"
-            disabled={submitting || !newComment.trim()}
-            className="p-2.5 bg-gradient-to-r from-orange-600 to-amber-500 text-white rounded-xl hover:opacity-90 disabled:opacity-40 transition-all cursor-pointer"
-          >
-            <Send className="w-4 h-4" />
-          </button>
+          <div className="relative flex-1 flex items-center">
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a supportive comment or question..."
+              className="w-full h-10 px-3.5 pr-10 bg-black border border-neutral-800 rounded-[3px] text-xs sm:text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500 transition-all"
+            />
+            <button
+              type="submit"
+              disabled={submitting || !newComment.trim()}
+              className="absolute right-1 top-1 bottom-1 px-3 bg-orange-500 hover:bg-orange-600 text-white rounded-[2px] flex items-center justify-center disabled:opacity-40 transition-all cursor-pointer shadow-sm"
+              aria-label="Post comment"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </form>
       ) : (
-        <div className="p-3 rounded-xl bg-gray-900/60 border border-gray-800 text-center text-xs text-gray-400">
+        <div className="p-3 rounded-[3px] bg-neutral-900/60 border border-neutral-800 text-center text-xs text-gray-400">
           <a href="/login" className="text-orange-400 font-semibold hover:underline">
             Log in
           </a>{' '}
@@ -173,7 +176,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
         <div className="space-y-3">
           {comments.map((comment) => (
             <div key={comment.id} className="space-y-2">
-              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-gray-900/60 border border-gray-800/60">
+              <div className="flex items-start gap-2.5 p-3 rounded-[3px] bg-neutral-900/60 border border-neutral-800">
                 <Avatar
                   src={comment.author.profile_pic}
                   name={comment.author.username}
@@ -183,9 +186,9 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-bold text-gray-200">@{comment.author.username}</span>
-                    <span className="text-[10px] text-gray-500">{new Date(comment.created_at).toLocaleDateString()}</span>
+                    <span className="text-[10px] text-gray-500 font-mono">{new Date(comment.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p className="text-sm text-gray-300 mt-1 leading-relaxed break-words">{comment.content}</p>
+                  <p className="text-xs sm:text-sm text-gray-300 mt-1 leading-relaxed break-words">{comment.content}</p>
 
                   {/* Actions */}
                   <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
@@ -228,13 +231,13 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
                         placeholder={`Replying to @${comment.author.username}...`}
-                        className="flex-1 px-3 py-1.5 bg-gray-950 border border-gray-700 rounded-lg text-xs text-gray-200 focus:outline-none focus:border-orange-500"
+                        className="flex-1 px-3 py-1.5 bg-black border border-neutral-800 rounded-[3px] text-xs text-gray-200 focus:outline-none focus:border-orange-500"
                         autoFocus
                       />
                       <button
                         onClick={() => handleCreateReply(comment.id)}
                         disabled={submitting || !replyContent.trim()}
-                        className="px-3 py-1 bg-orange-600 text-white rounded-lg text-xs font-semibold hover:bg-orange-500 disabled:opacity-50 cursor-pointer"
+                        className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-[3px] text-xs font-semibold disabled:opacity-50 cursor-pointer shadow-sm transition-colors"
                       >
                         Reply
                       </button>
@@ -249,7 +252,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
                   {comment.replies.map((reply) => (
                     <div
                       key={reply.id}
-                      className="flex items-start gap-2.5 p-2.5 rounded-xl bg-gray-950/70 border border-gray-800/80"
+                      className="flex items-start gap-2.5 p-2.5 rounded-[3px] bg-black border border-neutral-800"
                     >
                       <CornerDownRight className="w-3.5 h-3.5 text-orange-400 mt-1 shrink-0" />
                       <Avatar
@@ -260,7 +263,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-bold text-gray-200">@{reply.author.username}</span>
-                          <span className="text-[10px] text-gray-500">{new Date(reply.created_at).toLocaleDateString()}</span>
+                          <span className="text-[10px] text-gray-500 font-mono">{new Date(reply.created_at).toLocaleDateString()}</span>
                         </div>
                         <p className="text-xs text-gray-300 mt-0.5 leading-relaxed break-words">{reply.content}</p>
 
@@ -279,6 +282,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId, onCommen
                             <button
                               onClick={() => handleDeleteComment(reply.id)}
                               className="text-gray-500 hover:text-rose-400 transition-colors ml-auto cursor-pointer"
+                              title="Delete reply"
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>

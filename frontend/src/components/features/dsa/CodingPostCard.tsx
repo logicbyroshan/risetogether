@@ -1,8 +1,7 @@
-// frontend/src/components/features/dsa/CodingPostCard.tsx
-
 import React, { useState, useRef, useEffect } from 'react';
 import { CodingProblemPost } from '../../../types/dsa';
-import { MoreVertical, Star, Edit, Trash2, Code2, Terminal, FileCode } from 'lucide-react';
+import { MoreVertical, Star, Edit3, Trash2, Code2, Terminal, FileCode, Gem } from 'lucide-react';
+import { Badge } from '../../ui/Badge';
 
 interface CodingPostCardProps {
   post: CodingProblemPost;
@@ -35,34 +34,33 @@ export const CodingPostCard: React.FC<CodingPostCardProps> = ({
   const getLanguageIcon = (lang: string) => {
     switch (lang) {
       case 'PYTHON':
-        return <Terminal className="w-4 h-4 text-[#4B8BBE]" />;
+        return <Terminal className="w-3.5 h-3.5 text-blue-400" />;
       case 'JAVA':
-        return <Code2 className="w-4 h-4 text-[#f89820]" />;
+        return <Code2 className="w-3.5 h-3.5 text-amber-400" />;
       case 'CPP':
-        return <Code2 className="w-4 h-4 text-[#38bdf8]" />;
+        return <Code2 className="w-3.5 h-3.5 text-cyan-400" />;
       case 'TYPESCRIPT':
       case 'JAVASCRIPT':
-        return <FileCode className="w-4 h-4 text-[#f7df1e]" />;
+        return <FileCode className="w-3.5 h-3.5 text-yellow-400" />;
       default:
-        return <Code2 className="w-4 h-4 text-cyan-400" />;
+        return <Code2 className="w-3.5 h-3.5 text-orange-400" />;
     }
   };
 
-  const getDifficultyColor = (diff: string) => {
+  const getDifficultyBadge = (diff: string) => {
     switch (diff) {
       case 'EASY':
-        return 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10';
+        return <Badge variant="emerald" size="xs">{post.difficulty_display || 'Easy'}</Badge>;
       case 'HARD':
-        return 'text-rose-400 border-rose-500/30 bg-rose-500/10';
+        return <Badge variant="red" size="xs">{post.difficulty_display || 'Hard'}</Badge>;
       case 'MEDIUM':
       default:
-        return 'text-amber-400 border-amber-500/30 bg-amber-500/10';
+        return <Badge variant="yellow" size="xs">{post.difficulty_display || 'Medium'}</Badge>;
     }
   };
 
   return (
-    <div className="bg-[#1a1b26] border border-[#414868] rounded-2xl overflow-hidden relative shadow-[0_4px_16px_rgba(0,0,0,0.4)] flex flex-col transition-all hover:border-[#bb9af7]/60 group">
-      
+    <div className="bg-neutral-950/90 border border-neutral-800 rounded-[3px] overflow-hidden relative shadow-lg flex flex-col transition-all hover:border-neutral-700 group">
       {/* 3-DOT MENU */}
       {isOwner && (
         <div className="absolute top-3.5 right-3.5 z-10" ref={menuRef}>
@@ -72,14 +70,14 @@ export const CodingPostCard: React.FC<CodingPostCardProps> = ({
               e.stopPropagation();
               setMenuOpen(!menuOpen);
             }}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#31354b] transition-colors"
-            aria-label="Options"
+            className="p-1 rounded-[2px] text-gray-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+            aria-label="Post options"
           >
             <MoreVertical className="w-4 h-4" />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-full mt-1 bg-[#24283b] border border-[#414868] rounded-lg shadow-xl py-1 min-w-[130px] z-20 overflow-hidden">
+            <div className="absolute right-0 top-full mt-1 bg-neutral-950 border border-neutral-800 rounded-[3px] shadow-2xl py-1 min-w-[130px] z-20 overflow-hidden animate-fade-in">
               {onEdit && (
                 <button
                   type="button"
@@ -87,10 +85,10 @@ export const CodingPostCard: React.FC<CodingPostCardProps> = ({
                     setMenuOpen(false);
                     onEdit(post);
                   }}
-                  className="w-full px-4 py-2 text-left text-xs font-medium text-gray-300 hover:bg-[#31354b] hover:text-white flex items-center gap-2"
+                  className="w-full px-3.5 py-2 text-left text-xs font-medium text-gray-300 hover:bg-neutral-900 hover:text-white flex items-center gap-2 cursor-pointer transition-colors"
                 >
-                  <Edit className="w-3.5 h-3.5" />
-                  Edit Post
+                  <Edit3 className="w-3.5 h-3.5 text-orange-400" />
+                  <span>Edit Solution</span>
                 </button>
               )}
               {onDelete && (
@@ -100,10 +98,10 @@ export const CodingPostCard: React.FC<CodingPostCardProps> = ({
                     setMenuOpen(false);
                     onDelete(post);
                   }}
-                  className="w-full px-4 py-2 text-left text-xs font-medium text-rose-400 hover:bg-rose-500/20 flex items-center gap-2"
+                  className="w-full px-3.5 py-2 text-left text-xs font-medium text-rose-400 hover:bg-rose-950/40 flex items-center gap-2 cursor-pointer transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  Delete Post
+                  <span>Delete Solution</span>
                 </button>
               )}
             </div>
@@ -112,37 +110,38 @@ export const CodingPostCard: React.FC<CodingPostCardProps> = ({
       )}
 
       {/* HEADER INFO */}
-      <div className="bg-[#31354b] p-4 pt-4 border-b border-[#414868]">
-        <h3 className="font-bold text-base text-[#c0caf5] mb-2 truncate pr-6">
+      <div className="bg-neutral-900/60 p-4 border-b border-neutral-800">
+        <h3 className="font-rajdhani font-bold text-lg text-white mb-2.5 truncate pr-8">
           {post.title}
         </h3>
         <div className="flex flex-wrap gap-2 items-center">
-          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${getDifficultyColor(post.difficulty)}`}>
-            {post.difficulty_display || post.difficulty}
-          </span>
-          <span className="text-xs font-mono text-gray-300 bg-[#24283b] border border-[#414868] px-2.5 py-0.5 rounded-full">
+          {getDifficultyBadge(post.difficulty)}
+          <span className="text-[11px] font-mono text-gray-300 bg-neutral-900 border border-neutral-800 px-2 py-0.5 rounded-[2px]">
             {post.time_complexity_display || post.time_complexity}
           </span>
         </div>
       </div>
 
       {/* CODE EDITOR BLOCK */}
-      <div className="bg-[#101116] p-4 h-[220px] overflow-y-auto font-mono text-xs text-[#c0caf5] leading-relaxed select-text">
-        <pre className="m-0 p-0 whitespace-pre-wrap font-fira">
+      <div
+        className="bg-black p-4 h-[200px] overflow-y-auto font-mono text-xs text-gray-200 leading-relaxed select-text"
+        data-lenis-prevent
+      >
+        <pre className="m-0 p-0 whitespace-pre-wrap font-fira text-[12px] text-gray-300">
           <code>{post.code_snippet}</code>
         </pre>
       </div>
 
       {/* FOOTER STATS */}
-      <div className="bg-[#24283b] px-4 py-3 flex justify-between items-center border-t border-[#414868] text-xs">
-        <div className="flex items-center gap-1.5 text-yellow-400 font-semibold">
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-          <span>{post.points_earned} Points</span>
+      <div className="bg-neutral-900/40 px-4 py-3 flex justify-between items-center border-t border-neutral-800 text-xs">
+        <div className="flex items-center gap-1.5 text-orange-400 font-semibold font-mono">
+          <Gem className="w-3.5 h-3.5 text-cyan-400" />
+          <span>+{post.points_earned} Pts</span>
         </div>
 
-        <div className="flex items-center gap-2 text-gray-300 font-medium">
+        <div className="flex items-center gap-1.5 text-gray-400 font-medium text-[11px]">
           {getLanguageIcon(post.language)}
-          <span>{post.language_display || post.language}</span>
+          <span className="font-mono">{post.language_display || post.language}</span>
         </div>
       </div>
     </div>

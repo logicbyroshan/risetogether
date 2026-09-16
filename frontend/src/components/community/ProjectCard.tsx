@@ -3,6 +3,7 @@ import { ExternalLink, Users } from 'lucide-react';
 import { Project } from '../../types/community';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
+import { Avatar } from '../ui/Avatar';
 
 interface ProjectCardProps {
   project: Project;
@@ -10,7 +11,7 @@ interface ProjectCardProps {
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
-    <Card className="flex flex-col h-full !p-0 group border border-neutral-800 hover:border-orange-500/50 bg-neutral-950/80">
+    <Card padding="none" className="flex flex-col h-full group border border-neutral-800 hover:border-orange-500/50 bg-neutral-950/80">
       {/* Thumbnail */}
       <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-neutral-900">
         <img
@@ -38,7 +39,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </div>
 
         {project.project_type === 'team' && (
-          <div className="absolute top-3 right-3 px-2 py-1 rounded-[3px] bg-black/80 backdrop-blur-md border border-neutral-700 text-xs text-gray-300 font-semibold flex items-center gap-1 shadow-lg">
+          <div className="absolute top-3 right-3 px-2 py-1 rounded-[2px] bg-black/80 backdrop-blur-md border border-neutral-700 text-xs text-gray-300 font-semibold flex items-center gap-1 shadow-lg">
             <Users className="w-3 h-3 text-orange-400" />
             <span>Team</span>
           </div>
@@ -51,7 +52,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           {project.title}
         </h3>
 
-        <p className="text-sm text-gray-400 line-clamp-3 mb-4 flex-1">
+        <p className="text-sm text-gray-400 line-clamp-3 mb-4 flex-1 leading-relaxed">
           {project.description}
         </p>
 
@@ -68,7 +69,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               </span>
             ))}
             {project.skills.length > 4 && (
-              <span className="px-1.5 py-0.5 text-[11px] text-gray-500">
+              <span className="px-1.5 py-0.5 text-[11px] text-gray-500 font-mono">
                 +{project.skills.length - 4}
               </span>
             )}
@@ -79,13 +80,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         <div className="border-t border-neutral-800 pt-4 flex items-center justify-between gap-3 mt-auto">
           {project.leader ? (
             <div className="flex items-center gap-2">
-              <img
-                src={
-                  project.leader.profile_pic ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-                }
-                alt={project.leader.username}
-                className="w-6 h-6 rounded-[2px] object-cover border border-orange-500/40"
+              <Avatar
+                src={project.leader.profile_pic}
+                name={project.leader.username}
+                size="xs"
               />
               <span className="text-xs text-gray-300 font-medium">@{project.leader.username}</span>
             </div>

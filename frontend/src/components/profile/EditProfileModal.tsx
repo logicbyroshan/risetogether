@@ -6,6 +6,7 @@ import { useToast } from '../../context/ToastContext';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { Textarea } from '../ui/Textarea';
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -87,21 +88,21 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Your Profile" maxWidth="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title="Edit Developer Profile" maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Profile Picture Upload & Preview */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 pb-2">
           <div className="relative group">
             <img
               src={
                 previewPicUrl ||
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
               }
               alt="Avatar preview"
-              className="w-20 h-20 rounded-full object-cover border-2 border-orange-500/60 shadow-lg"
+              className="w-18 h-18 rounded-[3px] object-cover border-2 border-orange-500/60 shadow-lg bg-neutral-900"
             />
-            <label className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-              <Camera className="w-5 h-5" />
+            <label className="absolute inset-0 bg-black/70 rounded-[3px] flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+              <Camera className="w-5 h-5 text-orange-400" />
               <input
                 type="file"
                 accept="image/*"
@@ -111,15 +112,15 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </label>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-gray-200">Profile Photo</h4>
+            <h4 className="text-sm font-bold text-gray-200">Profile Picture</h4>
             <p className="text-xs text-gray-400 mt-0.5">
-              Click photo to upload PNG or JPG (recommended square 400x400).
+              Click thumbnail to upload a custom PNG or JPG avatar.
             </p>
           </div>
         </div>
 
         {/* Name Fields */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="First Name"
             value={firstName}
@@ -135,23 +136,18 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         </div>
 
         {/* Bio */}
-        <div>
-          <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-            Bio / Headline
-          </label>
-          <textarea
-            rows={3}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            placeholder="Tell the community about your technical interests, skills, or what you're building..."
-            className="w-full px-4 py-3 bg-gray-950 border border-gray-700/80 rounded-xl text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
-          />
-        </div>
+        <Textarea
+          label="Bio / Headline"
+          rows={3}
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          placeholder="Tell the community about your technical interests, skills, or what you're building..."
+        />
 
         {/* Social Links Formset */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+            <label className="text-xs font-semibold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
               <LinkIcon className="w-3.5 h-3.5 text-orange-400" />
               Social & Portfolio Links
             </label>
@@ -174,20 +170,21 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   value={link.title}
                   onChange={(e) => handleLinkChange(idx, 'title', e.target.value)}
                   placeholder="Platform (GitHub, LinkedIn, Web)"
-                  className="w-1/3 px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-200"
+                  className="w-1/3 h-9 px-3 bg-black border border-neutral-800 rounded-[3px] text-xs text-gray-200 focus:outline-none focus:border-orange-500"
                 />
                 <input
                   type="url"
                   value={link.url}
                   onChange={(e) => handleLinkChange(idx, 'url', e.target.value)}
                   placeholder="https://..."
-                  className="flex-1 px-3 py-2 bg-gray-950 border border-gray-700 rounded-xl text-xs text-gray-200"
+                  className="flex-1 h-9 px-3 bg-black border border-neutral-800 rounded-[3px] text-xs text-gray-200 focus:outline-none focus:border-orange-500"
                 />
                 {links.length > 1 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveLink(idx)}
-                    className="p-2 text-gray-500 hover:text-rose-400"
+                    className="p-1.5 text-gray-500 hover:text-rose-400 cursor-pointer"
+                    aria-label="Remove link"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -198,7 +195,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+        <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
