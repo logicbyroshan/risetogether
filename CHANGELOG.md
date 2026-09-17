@@ -2,7 +2,24 @@
 
 All notable changes to RiseTogether are documented in this file.
 
-## [Community Visuals, 4 Projects Grid, Lenis Smooth Scroll & Active State Neutralization] - 2026-09-16
+## [Homepage UI/UX Overhaul, Bento Grid & Open-Source Focus] - 2026-09-17
+
+### Added
+- **Developer Bento Grid (`frontend/src/components/features/DeveloperBentoGrid.tsx`)**: 5-card interactive bento layout showcasing open-source sprint squads with role applications, national hackathon trophy case, peer PR reviews, alumni career network, and system design masterclasses.
+- **Interactive Project Explorer (`frontend/src/components/features/ProjectShowcaseExplorer.tsx`)**: Filterable project showcase across AI/ML, Web Applications, Mobile Engineering, and Educational Tech with direct GitHub and Live Demo links.
+- **Developer Acceleration Blueprint (`frontend/src/components/features/DeveloperHowItWorks.tsx`)**: 3-phase structured progression (`Discover & Assemble` -> `Ship & Peer Review` -> `Showcase & Land Offers`).
+- **Interactive Developer Terminal (`frontend/src/components/features/DevInteractiveTerminal.tsx`)**: Sandbox with command runner (`risetogether --status`, `git fetch --sprints`, `npm run build:prod`, `squad init SIH`), pull request stream, and React 19 component preview.
+- **Live Activity Telemetry (`frontend/src/components/features/LiveActivityTicker.tsx`)**: Real-time open-source marquee stream tracking merged pull requests, hackathon squads, and architecture guides.
+- **Pristine Developer Constellation Canvas (`frontend/src/components/common/DeveloperBackgroundCanvas.tsx`)**: Lightweight GPU-accelerated constellation network with interactive mouse gravitation and ambient radial glow.
+
+### Changed
+- **Homepage Layout & Aesthetics (`HomePage.tsx`)**: Streamlined hero section with clean dual CTAs (`Join Community Free` + `Explore Projects`), refined typography hierarchy, and integrated interactive sections.
+- **Navigation Dropdown (`Navbar.tsx`)**: Updated community links to emphasize open-source projects and developer resources.
+
+### Removed
+- **Grind Arena Decoupling**: Removed all algorithm arena references, cluttering background text strings, and repetitive blocky card layouts from the home page.
+
+---
 
 ### Added
 - **3D Isometric Community Hero (`frontend/public/assets/images/community_3d_hero.jpg`)**: Replaced text pulse box with an authentic 3D isometric community hub visual featuring status indicators, real-time activity chip, and college chapters metric.

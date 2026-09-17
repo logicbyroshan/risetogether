@@ -53,7 +53,7 @@ export const Navbar: React.FC = () => {
     { name: 'Blogs', path: '/community/blogs', desc: 'Read insights & tutorials', icon: <BookOpen className="w-4 h-4 text-orange-400" /> },
     { name: 'Projects', path: '/community/projects', desc: 'Explore community builds', icon: <FolderGit2 className="w-4 h-4 text-orange-400" /> },
     { name: 'Activities', path: '/community/activities', desc: 'Workshops & events', icon: <Calendar className="w-4 h-4 text-orange-400" /> },
-    { name: 'Grind 500 Leaderboard', path: '/leaderboard', desc: 'DSA rankings & streaks', icon: <Trophy className="w-4 h-4 text-orange-400" /> },
+    { name: 'Community Leaderboard', path: '/leaderboard', desc: 'Member rankings & metrics', icon: <Trophy className="w-4 h-4 text-orange-400" /> },
   ];
 
   return (
@@ -74,11 +74,11 @@ export const Navbar: React.FC = () => {
               className="w-10 h-10 rounded-[3px] object-cover border border-neutral-800 group-hover:border-neutral-700 transition-colors"
             />
             <div className="flex flex-col">
-              <span className="font-rajdhani font-bold text-2xl tracking-wider text-white group-hover:text-orange-400 transition-colors">
+              <span className="font-brand font-bold text-xl tracking-wider text-white group-hover:text-orange-400 transition-colors">
                 RISE<span className="text-orange-500">TOGETHER</span>
               </span>
-              <span className="text-[10px] text-gray-400 tracking-widest font-mono uppercase -mt-1">
-                Developer Hub
+              <span className="text-[9px] text-gray-400 tracking-widest font-mono uppercase -mt-0.5">
+                // DEV COMMUNITY
               </span>
             </div>
           </Link>
